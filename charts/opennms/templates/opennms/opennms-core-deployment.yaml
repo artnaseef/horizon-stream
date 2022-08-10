@@ -39,7 +39,7 @@ spec:
       containers:
         - name: {{ .Values.OpenNMS.Core.ServiceName }}
           image: {{ .Values.OpenNMS.Core.Image }}
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           {{ if not .Values.TestDeploy }}
           args: [ "-f" ]
           {{ end }}

@@ -39,7 +39,7 @@ spec:
       containers:
         - name: horizon-stream-api
           image: {{ .Values.OpenNMS.API.Image }}
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://{{ .Values.Postgres.ServiceName }}:5432/horizon_stream"
