@@ -2,7 +2,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ .Values.Operator.serviceName }}
-  namespace: {{ .Values.Operator.Namespace }}
 rules:
   - apiGroups:
       - rbac.authorization.k8s.io

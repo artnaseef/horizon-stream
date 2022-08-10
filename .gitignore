@@ -38,3 +38,6 @@ java/bin/
 *.iml
 idea/
 
+# Helm
+charts/opennms-operator/charts
+charts/opennms-operator-dependencies/charts
