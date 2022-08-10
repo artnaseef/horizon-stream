@@ -2,7 +2,6 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: {{ .Values.Kafka.ServiceName }}
-  namespace: {{ .Values.Namespace }}
 spec:
   kafka:
     replicas: 1
