@@ -1,4 +1,3 @@
-# nonk8s
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
@@ -28,6 +27,7 @@ build:
         - '**/*.tsx'
         - '**/*.css'
         - '**/*.vue'
+        - '**/*.html'
     docker:
       dockerfile: dev/Dockerfile
   - image: opennms/horizon-stream-keycloak
@@ -41,102 +41,82 @@ build:
     context: grafana
     docker:
       dockerfile: Dockerfile
+  - image: opennms/operator
+    context: operator
+    docker:
+      dockerfile: Dockerfile
 
 portForward:
   - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: opennms-ui
     port: 3000 # Vite dev server
   - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: opennms-rest-server
     port: 9090 # HTTP
   - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: opennms-rest-server
     port: 5005 # Debug
     localPort: 5006
   - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: opennms-core
     port: 8181 # HTTP
     localPort: 18181
   - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: opennms-core
     port: 8101 # SSH
     localPort: 18101
   - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: opennms-core
     port: 5005 # Debug
     localPort: 5005
+#  - resourceType: deployment
+#    resourceName: keycloak
+#    port: 8080 # HTTP
+#    localPort: 28080
+#  - resourceType: deployment
+#    resourceName: my-minion
+#    port: 8201 # SSH
+#    localPort: 38101
+#  - resourceType: deployment
+#    resourceName: api-gateway
+#    port: 80 # HTTP
+#    localPort: 48080
+#  - resourceType: deployment
+#    resourceName: horizon-mail-server
+#    port: 8025 # HTTP
+#    localPort: 8025
+#  - resourceType: deployment
+#    resourceName: horizon-mail-server
+#    port: 1025 # SMTP
+#    localPort: 1025
   - resourceType: deployment
-    resourceName: keycloak
-    port: 8080 # HTTP
-    localPort: 28080
-  - resourceType: deployment
-    resourceName: my-minion
-    port: 8201 # SSH
-    localPort: 38101
-  - resourceType: deployment
-    resourceName: api-gateway
-    port: 80 # HTTP
-    localPort: 48080
-  - resourceType: deployment
-    resourceName: horizon-mail-server
-    port: 8025 # HTTP
-    localPort: 8025
-  - resourceType: deployment
-    resourceName: horizon-mail-server
-    port: 1025 # SMTP
-    localPort: 1025
-  - resourceType: deployment
+    namespace: skaffold-instance
     resourceName: postgres
     port: 5432 # Postgres
     localPort: 5432
 deploy:
-  statusCheckDeadlineSeconds: 600
-  helm:
-    releases:
-      - name: opennms
-        namespace: skaffold-instance
-        createNamespace: true
-        setValues:
-          Namespace: skaffold-instance
-          OpenNMS.Core.ImagePullPolicy: Never
-          OpenNMS.API.ImagePullPolicy: Never
-          OpenNMS.UI.ImagePullPolicy: Never
-          Grafana.Image: hendrikmaus/kubernetes-dummy-image
-          Grafana.ImagePullPolicy: IfNotPresent
-        chartPath: charts/opennms
-        artifactOverrides:
-          OpenNMS.Core.Image: opennms/horizon-stream-core
-          OpenNMS.API.Image: opennms/horizon-stream-rest-server
-          OpenNMS.UI.Image: opennms/horizon-stream-ui
-          Keycloak.Image: opennms/horizon-stream-keycloak
-#  kubectl:
+  kubectl:
 #    defaultNamespace: skaffold-instance
-#    manifests:
-#      - operator/skaffold-instance.yaml
-#resourceSelector:
-#  allow:
-#    - groupKind: "OpenNMS.opennms.k8s.opennms.com"
-#      image: [".*"]
-#      labels: [".*"]
-
----
-
-apiVersion: skaffold/v2beta28
-kind: Config
-metadata:
-  name: horizon-stream-operator
-build:
-  artifacts:
-    - image: opennms/operator
-      context: operator
-      docker:
-        dockerfile: Dockerfile
-deploy:
+    manifests:
+      - operator/local-instance.yaml
   helm:
     releases:
       - name: opennms-operator
+        namespace: skaffold-operator
+        createNamespace: true
         chartPath: charts/opennms-operator
         valuesFiles:
           - operator/values.yaml
         artifactOverrides:
           Operator.image: opennms/operator
+resourceSelector:
+  allow:
+    - groupKind: "OpenNMS.opennms.k8s.opennms.com"
+      image: [ ".*" ]
+      labels: [ ".*" ]

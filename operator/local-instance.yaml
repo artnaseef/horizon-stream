@@ -2,21 +2,22 @@ apiVersion: opennms.k8s.opennms.com/v1alpha1
 kind: OpenNMS
 metadata:
   name: local-instance
+#  namespace: skaffold-instance
 spec:
   allowedUsers: []
   host: ignore-for-now-onmshs
-  namespace: local-instance
+  namespace: skaffold-instance
   core:
     image: opennms/horizon-stream-core
-    cpu: "2"
+    cpu: "0"
     mem: 4Gi # FIXME: find appropriate value
   api:
     image: opennms/horizon-stream-rest-server
-    cpu: "2"
+    cpu: "0"
     mem: 2Gi # FIXME: find appropriate value
   ui:
     image: opennms/horizon-stream-ui
-    cpu: "2"
+    cpu: "0"
     mem: 2Gi # FIXME: find appropriate value
   postgres:
     image: postgres:13.3-alpine
