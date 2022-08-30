@@ -50,3 +50,5 @@ jobs:
         uses: ./.github/actions/rest-server
         with:
           dir-location: 'rest-server'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
