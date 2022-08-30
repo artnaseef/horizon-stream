@@ -1,5 +1,5 @@
-name: 'Build and test rest-server'
-description: 'This implements unit and built-time integration tests on rest-server.'
+name: 'Build and test notification'
+description: 'This implements unit and built-time integration tests on notification.'
 inputs:
   dir-location:
     description: 'The dir containing the change.'
@@ -19,5 +19,5 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         SONAR_TOKEN: ${{ inputs.sonar-token }}
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar jib:build -Dimage=opennms/horizon-stream-rest-server:local -f ${{ inputs.dir-location }}
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar jib:build -Dimage=opennms/horizon-stream-notification:local -f ${{ inputs.dir-location }}
       shell: bash
