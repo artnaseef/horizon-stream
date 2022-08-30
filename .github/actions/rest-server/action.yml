@@ -10,13 +10,8 @@ runs:
   using: "composite"
   steps:
     - name: build-image
-      run: |
-
-        cd ${{ inputs.dir-location }}
-
-        # When there are tests to run, put those here.
-
-        # Create the docker image.
-        mvn clean install jib:dockerBuild -Dimage=opennms/horizon-stream-rest-server:local
-
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar jib:dockerBuild -Dsonar.projectKey=opennms_horizon-stream_bff -Dimage=opennms/horizon-stream-rest-server:local -f ${{ inputs.dir-location }}
       shell: bash
