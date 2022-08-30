@@ -19,5 +19,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         SONAR_TOKEN: ${{ inputs.sonar-token }}
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f ${{ inputs.dir-location }}
+      run: mvn clean install -f ${{ inputs.dir-location }}
+      # FIXME: Reenable SonarCloud scanning
+      # run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f ${{ inputs.dir-location }}
       shell: bash
