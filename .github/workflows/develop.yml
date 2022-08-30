@@ -54,6 +54,14 @@ jobs:
         with:
           dir-location: 'shared-lib'
 
+      - name: feature-rest-server
+        id: action-rest-server
+        uses: ./.github/actions/rest-server
+        with:
+          dir-location: 'rest-server'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+
       #- name: Setup tmate session
       #  uses: mxschmitt/action-tmate@v3
 
@@ -69,11 +77,7 @@ jobs:
       #  with:
       #    dir-location: 'platform'
 
-      #- name: feature-rest-server
-      #  id: action-rest-server
-      #  uses: ./.github/actions/rest-server
-      #  with:
-      #    dir-location: 'rest-server'
+
 
       #- name: external-it
       #  id: action-external-it
