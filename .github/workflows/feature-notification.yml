@@ -38,6 +38,8 @@ jobs:
         uses: ./.github/actions/shared-lib
         with:
           dir-location: 'shared-lib'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
       - name: feature-notification
         id: action-feature-notification
         uses: ./.github/actions/notification
