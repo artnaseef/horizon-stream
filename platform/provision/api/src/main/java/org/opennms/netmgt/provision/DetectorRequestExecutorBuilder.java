@@ -28,35 +28,37 @@
 
 package org.opennms.netmgt.provision;
 
-import java.net.InetAddress;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
 import io.opentracing.Span;
 
-public interface DetectorRequestBuilder {
+import java.net.InetAddress;
+import java.util.Map;
 
-    DetectorRequestBuilder withLocation(String location);
+public interface DetectorRequestExecutorBuilder {
 
-    DetectorRequestBuilder withSystemId(String systemId);
+    DetectorRequestExecutorBuilder withLocation(String location);
 
-    DetectorRequestBuilder withServiceName(String serviceName);
+    DetectorRequestExecutorBuilder withSystemId(String systemId);
 
-    DetectorRequestBuilder withClassName(String className);
+    DetectorRequestExecutorBuilder withServiceName(String serviceName);
 
-    DetectorRequestBuilder withAddress(InetAddress address);
+    // Being removed - use detectorName
+    @Deprecated
+    DetectorRequestExecutorBuilder withClassName(String className);
 
-    DetectorRequestBuilder withAttribute(String key, String value);
+    DetectorRequestExecutorBuilder withDetectorName(String detectorName);
 
-    DetectorRequestBuilder withAttributes(Map<String, String> attributes);
+    DetectorRequestExecutorBuilder withAddress(InetAddress address);
 
-    DetectorRequestBuilder withNodeId(Integer nodeId);
+    DetectorRequestExecutorBuilder withAttribute(String key, String value);
 
-    DetectorRequestBuilder withParentSpan(Span span);
+    DetectorRequestExecutorBuilder withAttributes(Map<String, String> attributes);
 
-    DetectorRequestBuilder withPreDetectCallback(PreDetectCallback preDetectCallback);
+    DetectorRequestExecutorBuilder withNodeId(Integer nodeId);
 
+    DetectorRequestExecutorBuilder withParentSpan(Span span);
 
-    CompletableFuture<Boolean> execute();
+    DetectorRequestExecutorBuilder withPreDetectCallback(PreDetectCallback preDetectCallback);
+
+    DetectorRequestExecutor build();
 
 }

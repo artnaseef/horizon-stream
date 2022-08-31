@@ -171,6 +171,11 @@
         <feature>horizon-events</feature>
         <feature>horizon-ignite</feature>
         <feature>horizon-db</feature>
+        <feature>horizon-icmp</feature>
+        <feature>horizon-snmp</feature>
+        <feature>horizon-shared-lang</feature>
+        <feature>horizon-shared-task-set-service</feature>
+        <feature>horizon-ignite</feature>
         <feature>horizon-shared-task-set-publisher</feature>
 
         <bundle>mvn:org.opennms.horizon.core/monitor/${project.version}</bundle>
@@ -251,6 +256,7 @@
         <feature>horizon-grpc</feature>
         <feature>horizon-configvar-scopes</feature>
         <feature>3rdparty-bsf</feature>
+        <feature>provision-ignite</feature>
 
         <feature>opennms-activemq-client-fix</feature>
 
@@ -285,6 +291,25 @@
         <!-- TODO: which JCIFS dependency should be used?  The classic pom uses a shaded jar, but the feature has the un-shaded jar + bouncycastle? -->
         <!-- https://issues.opennms.org/browse/NMS-13111 -->
         <!--<bundle>mvn:org.opennms.horizon.provision/detector-smb/${project.version}</bundle>-->
+    </feature>
+
+    <feature name="provision-ignite" version="${project.version}">
+        <feature>horizon-ignite</feature>
+        <feature>minion-gateway-ignite-detector</feature>
+        <feature>shared-ignite-remote-async</feature>
+
+        <bundle>mvn:org.opennms.horizon.provision/ignite-service/${project.version}</bundle>
+    </feature>
+
+    <!-- TBD: move to minion-gateway features -->
+    <feature name="minion-gateway-ignite-detector" version="${project.version}">
+        <bundle>mvn:org.opennms.horizon.minion.gateway/minion-gateway-ignite-detector-api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.minion.gateway/minion-gateway-ignite-detector-client/${project.version}</bundle>
+    </feature>
+
+    <!-- TBD: move to shared lib features? -->
+    <feature name="shared-ignite-remote-async" version="${project.version}">
+        <bundle>mvn:org.opennms.horizon.shared/ignite-remote-async/${project.version}</bundle>
     </feature>
 
     <!--                -->

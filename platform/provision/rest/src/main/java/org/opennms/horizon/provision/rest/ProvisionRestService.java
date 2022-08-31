@@ -76,4 +76,10 @@ public interface ProvisionRestService {
     @Consumes({MediaType.APPLICATION_JSON})
 //    @RolesAllowed({"admin"})
     Response publishForeignSource(final String foreignSource);
+
+    @POST
+    @Path("run/igniteTest")
+    @Consumes({MediaType.APPLICATION_JSON})
+//    @RolesAllowed({"admin"})
+    Response runIgniteTest(final String foreignSource);
 }

@@ -29,17 +29,22 @@
 
     <reference id="ignite" interface="org.apache.ignite.Ignite"/>
     <reference id="igniteTaskSetClientFactory" interface="org.opennms.taskset.service.igniteclient.TaskSetIgnitePublisherFactory"/>
-    <!--<reference id="locationAwareSnmpClient" interface="org.opennms.horizon.shared.snmp.proxy.LocationAwareSnmpClient"/>-->
 
-    <!-- TODO: how much in core? how much in gateway? -->
-    <!--<bean id="minionRpcMonitorManager" class="org.opennms.horizon.core.monitor.MinionRpcMonitorManager"-->
-    <!--      init-method="init" destroy-method="shutdown">-->
-    <!--    <argument ref="rpcClientFactory"/>-->
-    <!--    <argument ref="metricsAdapter"/>-->
-    <!--    <argument ref="sessionUtils"/>-->
-    <!--    <argument ref="minionDao"/>-->
-    <!--    <argument ref="eventSubscriptionService"/>-->
-    <!--</bean>-->
+    <bean id="minionRpcMonitorManager" class="org.opennms.horizon.core.monitor.MinionRpcMonitorManager" init-method="init">
+        <property name="rpcClientFactory" ref="rpcClientFactory"/>
+        <property name="metricsAdapter" ref="metricsAdapter"/>
+    </bean>
+
+    <bean id="minionRpcMonitorMinionManagerListener" class="org.opennms.horizon.core.monitor.MinionRpcMonitorMinionManagerListener">
+        <property name="minionRpcMonitorManager" ref="minionRpcMonitorManager"/>
+    </bean>
+
+    <bean id="minionMonitorListenerRegistration" class="org.opennms.core.ipc.grpc.server.manager.util.MinionManagerListenerRegistrar"
+          init-method="init" destroy-method="shutdown">
+
+        <property name="minionManager" ref="minionManager"/>
+        <property name="listener" ref="minionRpcMonitorMinionManagerListener"/>
+    </bean>
 
     <bean id="taskSetIgniteClient" factory-ref="igniteTaskSetClientFactory" factory-method="create">
         <argument ref="ignite"/>

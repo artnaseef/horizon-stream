@@ -1,6 +1,8 @@
 package org.opennms.miniongateway.ignite;
 
 import org.apache.ignite.Ignite;
+import org.apache.ignite.IgniteCheckedException;
+import org.apache.ignite.IgniteSpring;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.DataStorageConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
@@ -8,7 +10,9 @@ import org.apache.ignite.kubernetes.configuration.KubernetesConnectionConfigurat
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +25,9 @@ public class IgniteConfig {
     @Value("${ignite.kubernetes-service-name:unknown}")
     private String kubernetesServiceName;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
 //========================================
 // Beans
 //----------------------------------------
@@ -29,7 +36,11 @@ public class IgniteConfig {
     public Ignite ignite() {
         IgniteConfiguration igniteConfiguration = this.prepareIgniteConfiguration();
 
-        return Ignition.start(igniteConfiguration);
+        try {
+            return IgniteSpring.start(igniteConfiguration, applicationContext);
+        } catch (IgniteCheckedException icExc) {
+            throw new RuntimeException("failed to start Ignite", icExc);
+        }
     }
 
 //========================================

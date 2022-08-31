@@ -2,11 +2,15 @@ package org.opennms.horizon.provision.rest;
 
 import com.google.gson.Gson;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.opennms.horizon.db.dao.api.SessionUtils;
+import org.opennms.netmgt.provision.DetectorRequestExecutorBuilder;
+import org.opennms.netmgt.provision.LocationAwareDetectorClient;
 import org.opennms.netmgt.provision.persistence.dto.ForeignSourceDTO;
 import org.opennms.netmgt.provision.persistence.dto.RequisitionDTO;
 import org.opennms.netmgt.provision.service.Provisioner;
@@ -17,6 +21,7 @@ public class ProvisionRestServiceImpl implements ProvisionRestService {
     private final Provisioner provisioner;
     private final SessionUtils sessionUtils;
     private Gson gson = new Gson();
+    private final LocationAwareDetectorClient locationAwareDetectorClient;
 
     @Override
     public Response publishRequisition(String requisition) {
@@ -90,5 +95,24 @@ public class ProvisionRestServiceImpl implements ProvisionRestService {
                 return Response.serverError().entity(e.getMessage()).build();
             }
         });
+    }
+
+    @Override
+    public Response runIgniteTest(String foreignSource) {
+        DetectorRequestExecutorBuilder detectorRequestExecutorBuilder = locationAwareDetectorClient.detect();
+        CompletableFuture<Boolean> future = detectorRequestExecutorBuilder.build().execute();
+        try {
+            boolean results = future.get().booleanValue();
+            if (results) {
+                return Response.ok().build();
+            }
+            else {
+                return Response.serverError().build();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
