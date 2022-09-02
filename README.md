@@ -1,7 +1,36 @@
-# Horizon Stream
+# Horizon Stream 🚀
 
-**Horizon Stream** is a new distribution of OpenNMS, inspired from the existing platform
+Horizon Stream is an open source network monitoring tool.
+It aims to be an easy to use, secure, reliable and extensible open-source network monitoring plattform.
+The goal is to give our users network visibility and actionable insights helping them to provide better IT services. 
 
-See [Getting Started on the Wiki](https://github.com/OpenNMS/horizon-stream/wiki/Getting-Started) for development instructions.
+☣️  The project is in a very early stage and things break and move around. It is not ready to run production workloads.
 
-See [PLATFORM](platform/README.md) for details on the work in progress.
+## Supported Platforms
+
+To deploy the whole application a [Kubernetes (K8s)](https://kubernetes.io/) cluster is required.
+As it is right now you need a K8s cluster with 24GB RAM.
+
+## Documentation
+
+We use the GitHub Wiki in the Horizon Stream GitHub project for documentation of the project.
+It gives us enough flexibility and structure to migrate it later to a more sophisticated versioned documentation framework.
+You find the documentation how to get it installed in the [administrators getting started](https://github.com/OpenNMS/horizon-stream/wiki/Getting-Started---Admin) section.
+If you are interested in building it from source you find instruction in our [developers getting started](https://github.com/OpenNMS/horizon-stream/wiki/Getting-Started) chapter.
+In case you want to contribute code you can find instructions in our [contribution guidelines](https://github.com/OpenNMS/horizon-stream/wiki/Development-Guidelines).  
+
+In case you run into problems, you can look into [troubleshooting](https://github.com/OpenNMS/horizon-stream/wiki/Troubleshooting) for quick help.
+If you have questions feel free and talk to people in our community in our [opennms-discussion](https://chat.opennms.com/opennms-discuss) channel in Mattermost.
+
+## Questions
+
+### How does this relate to OpenNMS Horizon?
+
+To get these principles addressed without breaking people's current solutions and implementations.
+We know people in the OpenNMS community and commercial customers spent time and money to integrate OpenNMS Horizon into their environments. OpenNMS Horizon gets the maintenance and enhancements through the OpenNMS Plugin API extensions without a change.
+We can't do a major re-architecture of the platform without breaking things for our current users.
+Our goal is to take over the OpenNMS Plugin API as an integration contract, and we aim to make the existing plugins compatible.
+
+## License
+
+The software is licensed under the GNU Affero General Public License 3.0.
