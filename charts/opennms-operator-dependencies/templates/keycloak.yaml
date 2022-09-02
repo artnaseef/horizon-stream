@@ -11,7 +11,7 @@ kind: Subscription
 metadata:
   name: keycloak-operator
 spec:
-  channel: alpha
+  channel: candidate
   name: keycloak-operator
   source: operatorhubio-catalog
   sourceNamespace: olm

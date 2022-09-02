@@ -6,7 +6,7 @@ metadata:
     app: {{ .Values.Prometheus.PushGateway.ServiceName }}
   namespace: {{ .Values.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.Prometheus.PushGateway.Replicas }}
   selector:
     matchLabels:
       app: {{ .Values.Prometheus.PushGateway.ServiceName }}
@@ -36,12 +36,12 @@ spec:
         - name: {{ .Values.Prometheus.PushGateway.ServiceName }}
           image: {{ .Values.Prometheus.PushGateway.Image }}
           ports:
-            - containerPort: 9091
+            - containerPort: {{ .Values.Prometheus.PushGateway.Port }}
           resources:
             limits:
-              cpu: "2"
-              memory: 512Mi
+              cpu: {{ .Values.Prometheus.PushGateway.Resources.Limits.Cpu }}
+              memory: {{ .Values.Prometheus.PushGateway.Resources.Limits.Memory }}
             requests:
-              cpu: 100m
-              memory: 100Mi
+              cpu: {{ .Values.Prometheus.PushGateway.Resources.Requests.Cpu }}
+              memory: {{ .Values.Prometheus.PushGateway.Resources.Requests.Memory }}
 

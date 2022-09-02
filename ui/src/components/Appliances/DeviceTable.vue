@@ -1,43 +1,89 @@
 <template>
-  <div class="device-container">
-    <div class="search-filter">
-      <FeatherInput v-model="searchValue" type="text" label="Search device" :background="true" />
-      <FeatherButton icon="Filter">
-        <FeatherIcon :icon="FilterAlt" />
-      </FeatherButton>
+  <TableCard>
+    <div class="header">
+      <div class="title-container">
+        <FeatherButton
+          data-test="show-minions-btn"
+          icon="Show Minions" 
+          @click="appliancesStore.showMinionsTable"
+          v-if="!appliancesStore.minionsTableOpen && !widgetProps?.isWidget"
+        >
+          <FeatherIcon :icon="ChevronRight" />
+        </FeatherButton>
+        <span class="title">Devices</span>
+      </div>
+
+      <FeatherInput
+        v-if="!widgetProps?.isWidget"
+        class="search" 
+        v-model="searchValue" 
+        label="Devices">
+        <template v-slot:pre>
+          <FeatherIcon :icon="Search" />
+        </template>
+      </FeatherInput>
+
+      <div class="btns">
+        <FeatherButton icon="Filter">
+          <FeatherIcon :icon="FilterAlt" />
+        </FeatherButton>
+        <FeatherButton icon="Sort">
+          <FeatherIcon :icon="Sort" />
+        </FeatherButton>
+      </div>
+
     </div>
     <div class="data-table">
       <TransitionGroup name="data-table" tag="div">
-        <div class="card" v-for="(device) in listDevicesWithBgColor" :key="device.id" data-test="device-item">
-          <div class="column name" data-test="col-device">
-            {{ device.name }}
+        <div class="card" v-for="(device) in listDevicesWithBgColor" :key="(device.id as number)" data-test="device-item">
+          <div class="name" data-test="col-device">
+              <div class="name-cell">
+                <FeatherIcon :icon="Instances" class="icon"/>
+                <div class="text">
+                  <div class="name">{{ device.label }}</div>
+                  <div class="server">{{ device.createTime }}</div>
+                </div>
+              </div>
           </div>
-          <div class="column" :class="device.latencyClass" data-test="col-latency">
+          <div data-test="col-latency">
             <pre class="title">ICMP Latency</pre>
-            {{ device.icmp_latency }}
+            <div class="value" :class="device.latencyBgColor">{{ formatLatencyDisplay(device.icmp_latency) }}</div>
           </div>
-          <div class="column" :class="device.uptimeClass" data-test="col-uptime">
+          <div data-test="col-uptime">
             <pre class="title">SNMP Uptime</pre>
-            {{ device.snmp_uptime }}
+            <div class="value" :class="device.uptimeBgColor">{{ getHumanReadableDuration(device.snmp_uptime) }}</div>
           </div>
-          <div class="column" :class="device.statusClass" data-test="col-status">
-            {{ device.status }}
+          <div data-test="col-status">
+            <pre class="title">Status</pre>
+            <div class="value" :class="device.statusBgColor">{{ device.status }}</div>
           </div>
         </div>
       </TransitionGroup>
     </div>
-  </div>
+  </TableCard>
 </template>
 
 <script setup lang="ts">
 import FilterAlt from '@featherds/icon/action/FilterAlt'
-import { useDeviceQueries } from '@/store/Queries/deviceQueries'
-import { formatItemBgColor } from '@/helpers/formatting'
+import Sort from '@featherds/icon/action/Sort'
+import Search from '@featherds/icon/action/Search'
+import Instances from '@featherds/icon/hardware/Instances'
+import ChevronRight from '@featherds/icon/navigation/ChevronRight'
+import { useApplianceQueries } from '@/store/Queries/applianceQueries'
+import { useAppliancesStore } from '@/store/Views/appliancesStore'
+import { ExtendedDeviceDTOWithBGColors } from '@/types/device'
+import { ComputedRef } from 'vue'
+import { formatItemBgColor, getHumanReadableDuration, formatLatencyDisplay } from './appliances.helpers'
+import { WidgetProps } from '@/types'
 
-const deviceQueries = useDeviceQueries()
-const listDevicesWithBgColor = computed(() => formatItemBgColor(deviceQueries.listDevices))
+defineProps<{widgetProps?: WidgetProps}>()
 
-const searchValue = ''
+const appliancesStore = useAppliancesStore()
+const applianceQueries = useApplianceQueries()
+
+const listDevicesWithBgColor: ComputedRef<ExtendedDeviceDTOWithBGColors[]> = computed<any[]>(() => formatItemBgColor(applianceQueries.tableDevices))
+
+const searchValue = ref('')
 </script>
 
 <style lang="scss" scoped>
@@ -45,47 +91,85 @@ const searchValue = ''
 @import "@featherds/styles/mixins/elevation";
 @import "@featherds/styles/mixins/typography";
 
-.device-container {
-  margin-left: var($spacing-xl)
-}
-.search-filter {
-  width: 100%;
+.header {
   display: flex;
   justify-content: space-between;
-  margin-top: var($spacing-xl);
-  > .feather-input-container {
-    width: 50%;
+
+  .title-container {
+    display: flex;
+    .title {
+      @include headline3;
+      margin-left: 15px;
+      margin-top: 2px;
+    }
+  }
+  
+  .search {
+    width: 300px;
+  }
+
+  .btns {
+    display: flex;
   }
 }
-
 .card {
-  @include elevation(2);
+  border: 1px solid var($shade-4);
   display: flex;
-  margin-bottom: 2px;
-  border-radius: 1px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  height: 65px;
   
   div {
     display: flex;
     flex-direction: column;
-    text-align: center;
     justify-content: center;
     width: 20%;
     padding: 8px;
-    border-right: 1px solid var($shade-3);
     line-height: 15px;
-    font-weight: bold;
+    font-size: 11px;
 
     &.name {
       @include subtitle1;
       width: 40%;
       color: var($primary);
+
+      .name-cell {
+        flex-direction: row;
+        width: 100%;
+        justify-content: flex-start;
+        white-space: nowrap;
+        align-items: center;
+        .icon {
+          font-size: 25px;
+          color: var($shade-2);
+        }
+
+        .text {
+          flex-direction: column;
+          width: 100%;
+          .name {
+            font-size: 15px;
+            line-height: 0px;
+          }
+          .server {
+            line-height: 10px;
+            color: var($secondary)
+          }
+        }
+      }
     }
 
     .title {
       font-family: inherit;
-      font-size: 11px;
-      font-weight: 100;
       margin: 0px;
+    }
+
+    .value {
+      display: inline-table;
+      border-radius: 5px;
+      padding: 3px 10px;
+      text-align: center;
+      white-space: nowrap;
     }
   }
 }

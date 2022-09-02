@@ -9,6 +9,8 @@ import org.opennms.horizon.db.dao.util.AbstractDaoHibernate;
 import org.opennms.horizon.db.dao.api.IpInterfaceDao;
 import org.opennms.horizon.db.model.OnmsIpInterface;
 
+import java.util.List;
+
 public class IpInterfaceDaoHibernate  extends AbstractDaoHibernate<OnmsIpInterface, Integer> implements IpInterfaceDao {
 
     public IpInterfaceDaoHibernate(EntityManagerHolder persistenceContextHolder) {
@@ -40,6 +42,18 @@ public class IpInterfaceDaoHibernate  extends AbstractDaoHibernate<OnmsIpInterfa
         query.setParameter("nodeId", nodeId);
         try {
             return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<OnmsIpInterface> findInterfacesByNodeId(Integer nodeId) {
+        TypedQuery<OnmsIpInterface> query = getEntityManager().createQuery(
+            "SELECT n FROM OnmsIpInterface n WHERE n.node.id=:nodeId", OnmsIpInterface.class);
+        query.setParameter("nodeId", nodeId);
+        try {
+            return query.getResultList();
         } catch (NoResultException e) {
             return null;
         }

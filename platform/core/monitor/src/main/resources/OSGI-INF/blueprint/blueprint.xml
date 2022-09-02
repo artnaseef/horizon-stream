@@ -7,18 +7,32 @@
 
     <reference id="rpcClientFactory" interface="org.opennms.horizon.ipc.rpc.api.RpcClientFactory"/>
     <reference id="minionManager" interface="org.opennms.core.ipc.grpc.server.manager.MinionManager"/>
+    <reference id="metricsAdapter" interface="org.opennms.horizon.metrics.api.OnmsMetricsAdapter"/>
+    <reference id="eventSubscriptionService" interface="org.opennms.horizon.events.api.EventSubscriptionService" availability="mandatory"/>
+    <reference id="sessionUtils" interface="org.opennms.horizon.db.dao.api.SessionUtils" />
+    <reference id="nodeDao" interface="org.opennms.horizon.db.dao.api.NodeDao" />
+    <reference id="ipInterfaceDao" interface="org.opennms.horizon.db.dao.api.IpInterfaceDao" />
+    <reference id="minionDao" interface="org.opennms.horizon.db.dao.api.MinionDao"/>
+    <reference id="locationAwarePingClient" interface="org.opennms.netmgt.icmp.proxy.LocationAwarePingClient"/>
+    <reference id="locationAwareSnmpClient" interface="org.opennms.netmgt.snmp.proxy.LocationAwareSnmpClient"/>
 
-    <bean id="minionRpcMonitorManager" class="org.opennms.horizon.core.monitor.MinionRpcMonitorManager" init-method="init">
-        <property name="rpcClientFactory" ref="rpcClientFactory"/>
-    </bean>
-    <bean id="minionRpcMonitorMinionManagerListener" class="org.opennms.horizon.core.monitor.MinionRpcMonitorMinionManagerListener">
-        <property name="minionRpcMonitorManager" ref="minionRpcMonitorManager"/>
-    </bean>
-
-    <bean id="minionMonitorListenerRegistration" class="org.opennms.core.ipc.grpc.server.manager.util.MinionManagerListenerRegistrar"
+    <bean id="minionRpcMonitorManager" class="org.opennms.horizon.core.monitor.MinionRpcMonitorManager"
           init-method="init" destroy-method="shutdown">
+        <argument ref="rpcClientFactory"/>
+        <argument ref="metricsAdapter"/>
+        <argument ref="sessionUtils"/>
+        <argument ref="minionDao"/>
+        <argument ref="eventSubscriptionService"/>
+    </bean>
 
-        <property name="minionManager" ref="minionManager"/>
-        <property name="listener" ref="minionRpcMonitorMinionManagerListener"/>
+    <bean id="deviceMonitorManager" class="org.opennms.horizon.core.monitor.DeviceMonitorManager"
+          init-method="init" destroy-method="shutdown">
+        <argument ref="eventSubscriptionService"/>
+        <argument ref="nodeDao"/>
+        <argument ref="ipInterfaceDao"/>
+        <argument ref="sessionUtils"/>
+        <argument ref="locationAwarePingClient"/>
+        <argument ref="locationAwareSnmpClient"/>
+        <argument ref="metricsAdapter"/>
     </bean>
 </blueprint>

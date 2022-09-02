@@ -7,3 +7,5 @@ spring:
 horizon-stream:
   core:
     url: http://localhost:8181
+
+tsdb.url: http://localhost:59090/api/v1/query

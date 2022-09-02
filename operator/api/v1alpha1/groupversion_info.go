@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package v1alpha1 contains API Schema definitions for the opennms v1alpha1 API group
+// Package v2alpha1 contains API Schema definitions for the opennms v2alpha1 API group
 package v1alpha1
 
 import (
@@ -22,7 +22,7 @@ import (
 
 var (
 	// GroupVersion is group version used to register these objects
-	GroupVersion = schema.GroupVersion{Group: "opennms.k8s.opennms.com", Version: "v1alpha1"}
+	GroupVersion = schema.GroupVersion{Group: "k8s.opennms.com", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
 	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}

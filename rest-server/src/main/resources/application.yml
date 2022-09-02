@@ -1,5 +1,6 @@
 server:
   port: 9090
+
 spring:
   cache:
     caffeine:
@@ -10,6 +11,8 @@ graphql:
   spqr:
     gui:
       enabled: true
+    base-packages:
+      - org.opennms.horizon.shared.dto
 
 # keycloak admin client properties
 horizon-stream:
@@ -18,3 +21,5 @@ horizon-stream:
 
 logging:
   file.path: /var/log/restServer
+
+tsdb.url: http://localhost:59090/api/v1/query

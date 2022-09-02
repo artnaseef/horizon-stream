@@ -18,7 +18,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="alarm in dashboardQueries.alarms" :key="alarm?.id || ''">
+            <tr v-for="alarm in alarmsQueries.alarms" :key="alarm?.id || ''">
               <td>
                 <div class="severity">
                   <div :class="alarm?.severity?.toLowerCase()" class="status-box"></div>
@@ -39,11 +39,12 @@
 import { getMockEvent } from '@/types/mocks'
 import { useAlarmMutations } from '@/store/Mutations/alarmMutations'
 import { useEventMutations } from '@/store/Mutations/eventMutations'
-import { useDashboardQueries } from '@/store/Queries/dashboardQueries'
+import { useAlarmsQueries } from '@/store/Queries/alarmsQueries'
 import { AlarmAckDtoInput } from '@/types/graphql'
 import useSpinner from '@/composables/useSpinner'
+import { AlarmDto } from '@/types/graphql'
 
-const dashboardQueries = useDashboardQueries()
+const alarmsQueries = useAlarmsQueries()
 const eventMutations = useEventMutations()
 const alarmMutations = useAlarmMutations()
 const { startSpinner, stopSpinner } = useSpinner()
@@ -52,19 +53,19 @@ const trigger = async () => {
   startSpinner()
   await eventMutations.createEvent({ event: getMockEvent() })
   setTimeout(async () => {
-    await dashboardQueries.fetch()
+    await alarmsQueries.fetch()
     stopSpinner()
   }, 350)
 }
 
 const clear = async () => {
   startSpinner()
-  const promises = dashboardQueries.alarms.map((alarm) => 
+  const promises = alarmsQueries.alarms.map((alarm) => 
     alarmMutations.clearAlarm({ id: alarm?.id, ackDTO: { user: 'admin' } as AlarmAckDtoInput }))
 
   await Promise.all(promises)
   setTimeout(async () => {
-    await dashboardQueries.fetch()
+    await alarmsQueries.fetch()
     stopSpinner()
   }, 350)
 }

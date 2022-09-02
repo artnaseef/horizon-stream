@@ -12,7 +12,7 @@ const resolvers = {
   },
   Mutation: {
     saveRoutingKey: (_: any, { key }) => key,
-    saveDevice: (_: any, { device }) => device.name
+    addDevice: (_: any, { device }) => device.label
   }
 }
 

@@ -4,18 +4,15 @@ metadata:
   name: opennms-nginx-errors
   labels:
     app.kubernetes.io/name: opennms-nginx-errors
-    app.kubernetes.io/part-of: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: opennms-nginx-errors
-      app.kubernetes.io/part-of: {{ .Release.Namespace }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: opennms-nginx-errors
-        app.kubernetes.io/part-of: {{ .Release.Namespace }}
     spec:
       containers:
         - name: opennms-nginx-error-server

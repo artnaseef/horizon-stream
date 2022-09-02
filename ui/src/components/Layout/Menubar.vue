@@ -15,12 +15,19 @@
         :icon="LightDarkMode"
         class="pointer menu-icon"
         @click="toggleDark()"
+        data-test="toggle-dark"
       />
 
       <FeatherIcon
         :icon="LogOut"
-        class="pointer menu-icon logout"
+        class="pointer menu-icon"
         @click="logout()"
+      />
+
+      <FeatherIcon
+        :icon="Dashboard"
+        class="pointer menu-icon widgets"
+        @click="triggerWidgetBar()"
       />
     </template>
   </FeatherAppBar>
@@ -29,20 +36,16 @@
 <script setup lang="ts">
 import LightDarkMode from '@featherds/icon/action/LightDarkMode'
 import LogOut from '@featherds/icon/action/LogOut'
+import Dashboard from '@featherds/icon/action/Dashboard'
 import Logo from '@/assets/Logo.vue'
 import useKeycloak from '@/composables/useKeycloak'
+import useTheme from '@/composables/useTheme'
 import { logout } from '@/services/authService'
+import { useLayoutStore } from '@/store/Views/layoutStore'
 
 const { keycloak } = useKeycloak()
-
-const isDark = useDark({
-  selector: 'body',
-  attribute: 'class',
-  valueDark: 'open-dark',
-  valueLight: 'open-light'
-})
-
-const toggleDark = useToggle(isDark)
+const { toggleDark } = useTheme()
+const { triggerWidgetBar } = useLayoutStore()
 </script>
 
 <style lang="scss">
@@ -66,7 +69,7 @@ body {
   font-size: 24px;
   margin-top: 2px;
   margin-right: 15px;
-  &.logout {
+  &.widgets {
     margin-right: 45px;
   }
 }

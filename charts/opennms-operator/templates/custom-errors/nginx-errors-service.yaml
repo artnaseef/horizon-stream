@@ -4,11 +4,9 @@ metadata:
   name: opennms-nginx-errors
   labels:
     app.kubernetes.io/name: opennms-nginx-errors
-    app.kubernetes.io/part-of: {{ .Release.Namespace }}
 spec:
   selector:
     app.kubernetes.io/name: opennms-nginx-errors
-    app.kubernetes.io/part-of: {{ .Release.Namespace }}
   ports:
     - port: 80
       targetPort: 8080

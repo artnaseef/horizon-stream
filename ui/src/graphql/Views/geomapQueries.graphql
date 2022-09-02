@@ -1,0 +1,20 @@
+query ListDevicesForGeomap {
+  listDevices {
+    devices {
+      id
+      label
+      foreignSource
+      foreignId
+      labelSource
+      sysOid
+      sysName
+      sysDescription
+      sysContact
+      sysLocation
+      location {
+        latitude
+        longitude
+      }
+    }
+  }
+}

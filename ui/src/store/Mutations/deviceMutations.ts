@@ -2,16 +2,16 @@ import { defineStore } from 'pinia'
 import { useMutation } from 'villus'
 import useSpinner from '@/composables/useSpinner'
 
-import { SaveDeviceDocument } from '@/types/graphql-mocks'
+import { AddDeviceDocument } from '@/types/graphql'
 
 const { startSpinner, stopSpinner } = useSpinner()
 
 export const useDeviceMutations = defineStore('deviceMutations', () => {
   const {
-    execute: saveDevice,
+    execute: addDevice,
     isFetching,
     error
-  } = useMutation(SaveDeviceDocument)
+  } = useMutation(AddDeviceDocument)
 
   watchEffect(() => {
     if (isFetching.value) {
@@ -22,7 +22,7 @@ export const useDeviceMutations = defineStore('deviceMutations', () => {
   })
 
   return {
-    saveDevice,
+    addDevice,
     error
   }
 })

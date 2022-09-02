@@ -64,7 +64,7 @@
                     <skip>${skip-docker-image-build}</skip>
                     <images>
                         <image>
-                            <name>opennms/horizon-stream-core:local</name>
+                            <name>${docker.image}</name>
                             <build>
                                 <dockerFileDir>core</dockerFileDir>
                                 <filter>@</filter>
@@ -82,10 +82,7 @@
                                         </inline>
                                     </assembly>
                                 </assemblies>
-                                <tags>
-                                    <tag>${docker.image.tag}</tag>
-                                </tags>
-                                <skipPush>${docker.image.skipPush}</skipPush>
+                                <skipPush>${docker.skipPush}</skipPush>
                             </build>
                         </image>
                     </images>

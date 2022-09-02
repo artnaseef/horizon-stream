@@ -18,6 +18,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// +kubebuilder:object:generate=true
+
 // OpenNMSSpec defines the desired state of OpenNMS
 type OpenNMSSpec struct {
 	// Domain name used in ingress rule
@@ -29,6 +31,12 @@ type OpenNMSSpec struct {
 	// Deploy an instance in a nonoperative testing mode
 	TestDeploy bool `json:"testDeploy,omitempty"` //TODO I don't think this is needed anymore
 
+	// Only deploy the instance, do not run recurring updates on it
+	DeployOnly bool `json:"deployOnly,omitempty"`
+
+	// Set the default credentials for the instance
+	Credentials Credentials `json:"credentials,omitempty"`
+
 	// Defines service values for Core service
 	Core BaseServiceResources `json:"core,omitempty"`
 
@@ -37,6 +45,12 @@ type OpenNMSSpec struct {
 
 	// Defines service values for UI service
 	UI BaseServiceResources `json:"ui,omitempty"`
+
+	// Defines service values for the Minion
+	Minion BaseServiceResources `json:"minion,omitempty"`
+
+	// Defines service values for Notification service
+	Notification BaseServiceResources `json:"notification,omitempty"`
 
 	// Defines service values for Postgres
 	Postgres BaseServiceResources `json:"postgres,omitempty"`
@@ -56,11 +70,18 @@ type Timeseries struct {
 //BaseServiceResources - defines basic resource needs of a service
 type BaseServiceResources struct {
 	// Image tag version of OpenNMS.
-	Image   string   `json:"image,omitempty"`
-	MEM     string   `json:"mem,omitempty"`
-	Disk    string   `json:"disk,omitempty"`
-	CPU     string   `json:"cpu,omitempty"`
+	Image string `json:"image,omitempty"`
+	MEM   string `json:"mem,omitempty"`
+	Disk  string `json:"disk,omitempty"`
+	CPU   string `json:"cpu,omitempty"`
 }
+
+type Credentials struct {
+	AdminPassword string `json:"adminPassword"`
+	UserPassword  string `json:"userPassword"`
+}
+
+// +kubebuilder:object:generate=true
 
 // OpenNMSStatus - defines the observed state of OpenNMS
 type OpenNMSStatus struct {
@@ -75,6 +96,8 @@ type ImageUpdateConfig struct {
 	Update string `json:"update,omitempty"`
 }
 
+// +kubebuilder:object:generate=true
+
 // ImageStatus - defines current status of used image for OpenNMS container
 type ImageStatus struct {
 	// true if latest image used, false otherwise
@@ -84,6 +107,8 @@ type ImageStatus struct {
 	// list of services that have updates available
 	ServicesToUpdate string `json:"servicesToUpdate,omitempty"`
 }
+
+// +kubebuilder:object:generate=true
 
 //ReadinessStatus - the ready status of the ONMS instance
 type ReadinessStatus struct {

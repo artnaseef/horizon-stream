@@ -29,6 +29,7 @@
         <module>docker-it</module>
         <module>inventory</module>
         <module>minion</module>
+        <module>metrics</module>
     </modules>
 
     <properties>
@@ -46,8 +47,8 @@
         <cucumber.version>7.1.0</cucumber.version>
         <cxf.version>3.5.0</cxf.version>
         <dhcp4java.version>1.1.0</dhcp4java.version>
-        <docker.image.tag>local</docker.image.tag>
-        <docker.image.skipPush>false</docker.image.skipPush>
+        <docker.image>opennms/horizon-stream-core:local</docker.image>
+        <docker.skipPush>false</docker.skipPush>
         <drools.version>7.31.0.Final</drools.version>
         <geohash.version>1.4.0</geohash.version>
         <glassfish.jaxb.version>2.3.2</glassfish.jaxb.version>
@@ -95,6 +96,7 @@
         <osgi.version>7.0.0</osgi.version>
         <pax.jdbc.version>1.5.2</pax.jdbc.version>
         <postgresql.version>42.3.2</postgresql.version>
+        <prometheus.version>0.16.0</prometheus.version>
         <protobuf.version>3.16.1</protobuf.version>
         <rate.limitted.logger.version>2.0.2</rate.limitted.logger.version>
         <rest-assured.version>4.3.3</rest-assured.version>

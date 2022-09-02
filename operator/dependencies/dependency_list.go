@@ -16,28 +16,26 @@ package dependencies
 
 import (
 	"github.com/OpenNMS/opennms-operator/internal/handlers"
-	helmclient "github.com/mittwald/go-helm-client"
-	"helm.sh/helm/v3/pkg/repo"
 )
 
 // TODO - reevaluate this
-var repositories = []repo.Entry{
-	//{
-	//	Name: "mittwald",
-	//	URL:  "https://helm.mittwald.de",
-	//},
-	//{
-	//	Name: "opennms",
-	//	URL:  "https://opennms.github.io/horizon-stream/charts/packaged",
-	//},
-}
+//var repositories = []repo.Entry{
+//{
+//	Name: "mittwald",
+//	URL:  "https://helm.mittwald.de",
+//},
+//{
+//	Name: "opennms",
+//	URL:  "https://opennms.github.io/horizon-stream/charts/packaged",
+//},
+//}
 
-var charts = []helmclient.ChartSpec{
-	//{
-	//	ChartName:   "mittwald/kubernetes-replicator",
-	//	ReleaseName: "kubernetes-replicator",
-	//	Namespace:   "default",
-	//},
-}
+//var charts = []helmclient.ChartSpec{
+//{
+//	ChartName:   "mittwald/kubernetes-replicator",
+//	ReleaseName: "kubernetes-replicator",
+//	Namespace:   "default",
+//},
+//}
 
 var handlerslist []handlers.ServiceHandler

@@ -30,6 +30,7 @@ dependency-reduced-pom.xml
 
 # Editors
 .idea
+idea
 .settings
 .classpath
 .project

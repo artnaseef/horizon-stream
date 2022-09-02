@@ -1,5 +1,5 @@
 .PHONY: dependencies build alpine-build unit-test integration-test
-.PHONY: local-docker copy-charts
+.PHONY: local-docker copy-charts kubebuilder
 
 all: build
 
@@ -8,6 +8,9 @@ unit-test:
 
 integration-test:
 	echo "These are integration tests"
+
+kubebuilder:
+	controller-gen object paths=./api/v1alpha1/opennms_types.go
 
 dependencies:
 	go mod download

@@ -31,29 +31,88 @@ package org.opennms.horizon.inventory.device.service;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.Strings;
+import org.opennms.horizon.db.dao.api.IpInterfaceDao;
 import org.opennms.horizon.db.dao.api.MonitoringLocationDao;
+import org.opennms.horizon.db.model.OnmsIpInterface;
+import org.opennms.horizon.db.model.OnmsMonitoringLocation;
 import org.opennms.horizon.db.model.OnmsNode;
 import org.opennms.horizon.shared.dto.device.DeviceCollectionDTO;
+import org.opennms.horizon.shared.dto.device.DeviceCreateDTO;
 import org.opennms.horizon.shared.dto.device.DeviceDTO;
 
 public class DeviceService extends AbstractService<OnmsNode, DeviceDTO, Integer> {
-  private MonitoringLocationDao locationDao;
 
-  public void setLocationDao(MonitoringLocationDao locationDao) {
-    this.locationDao = locationDao;
-  }
+    private MonitoringLocationDao locationDao;
 
-  public DeviceCollectionDTO searchDevices() {
-    List<DeviceDTO> deviceDTOS = findAll();
-    return new DeviceCollectionDTO(deviceDTOS);
-  }
+    private IpInterfaceDao ipInterfaceDao;
 
-  public Integer createDevice(DeviceDTO newDevice) {
-    OnmsNode node = mapper.fromDto(newDevice);
-    if(node.getLocation() == null) {
-      node.setLocation(sessionUtils.withReadOnlyTransaction(() -> locationDao.getDefaultLocation()));
+    public DeviceCollectionDTO searchDevices() {
+        List<DeviceDTO> deviceDTOS = findAll();
+        deviceDTOS.forEach(this::setManagementIp);
+        return new DeviceCollectionDTO(deviceDTOS);
     }
-    node.setCreateTime(new Date());
-    return createEntity(node);
-  }
+
+    public DeviceDTO getDevice(Integer id) {
+        DeviceDTO deviceDTO = getById(id);
+        setManagementIp(deviceDTO);
+        return deviceDTO;
+    }
+
+    private void setManagementIp(DeviceDTO deviceDTO) {
+
+        String managementIp = sessionUtils.withReadOnlyTransaction(() -> {
+            List<OnmsIpInterface> ipInterfaces = ipInterfaceDao.findInterfacesByNodeId(deviceDTO.getId());
+            if (!ipInterfaces.isEmpty()) {
+                OnmsIpInterface onmsIpInterface = ipInterfaces.get(0);
+                return onmsIpInterface.getIpAddress().getHostAddress();
+            }
+            return null;
+        });
+        if (managementIp != null) {
+            deviceDTO.setManagementIp(managementIp);
+        }
+    }
+
+    public Integer createDevice(DeviceCreateDTO newDevice) {
+        // Retrieve existing location
+        var monitoringLocation = sessionUtils.withReadOnlyTransaction(() -> {
+            if (Strings.isNullOrEmpty(newDevice.getLocation())) {
+                return locationDao.getDefaultLocation();
+            } else {
+                return locationDao.get(newDevice.getLocation());
+            }
+        });
+        // If no existing location, create one.
+        if (monitoringLocation == null) {
+            monitoringLocation = new OnmsMonitoringLocation(newDevice.getLocation(), newDevice.getMonitoringArea());
+        }
+        if (newDevice.getLatitude() != null) {
+            monitoringLocation.setLatitude(newDevice.getLatitude().floatValue());
+        }
+        if (newDevice.getLongitude() != null) {
+            monitoringLocation.setLongitude(newDevice.getLongitude().floatValue());
+        }
+        // Persist location
+        final var updatedLocation = monitoringLocation;
+        sessionUtils.withTransaction(() -> locationDao.saveOrUpdate(updatedLocation));
+
+        // TODO: Derive existing node, for now always create new node.
+
+        OnmsNode onmsNode = new OnmsNode(updatedLocation, newDevice.getLabel());
+        if (newDevice.getManagementIp() != null) {
+            OnmsIpInterface onmsIpInterface = new OnmsIpInterface(newDevice.getManagementIp());
+            onmsNode.addIpInterface(onmsIpInterface);
+        }
+        onmsNode.setCreateTime(new Date());
+        return createEntity(onmsNode);
+    }
+
+    public void setLocationDao(MonitoringLocationDao locationDao) {
+        this.locationDao = locationDao;
+    }
+
+    public void setIpInterfaceDao(IpInterfaceDao ipInterfaceDao) {
+        this.ipInterfaceDao = ipInterfaceDao;
+    }
 }

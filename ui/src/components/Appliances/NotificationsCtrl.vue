@@ -4,14 +4,7 @@
     data-test="notifications-btn"
     @click="openModal"
   >
-    <template v-slot:icon>
-      <FeatherIcon 
-        :icon="Send" 
-        aria-hidden="true" 
-        focusable="false" 
-      />
-      Outbound Notification
-    </template>
+    Outbound Notification
   </FeatherButton>
 
   <PrimaryModal title="Outbound Notifications" :visible="isVisible">
@@ -28,25 +21,24 @@
 
     <template v-slot:footer>
       <FeatherButton 
+        data-test="cancel-btn" 
+        secondary 
+        @click="closeModal">
+          Cancel
+      </FeatherButton>
+      
+      <FeatherButton 
         data-test="save-btn" 
         primary
         :disabled="!routingKey"
         @click="save">
           Save
       </FeatherButton>
-
-      <FeatherButton 
-        data-test="cancel-btn" 
-        secondary 
-        @click="closeModal">
-          Cancel
-      </FeatherButton>
     </template>
   </PrimaryModal>
 </template>
 
 <script setup lang="ts">
-import Send from '@featherds/icon/action/Send'
 import { useNotificationMutations } from '@/store/Mutations/notificationMutations'
 import useModal from '@/composables/useModal'
 import useSnackbar from '@/composables/useSnackbar'

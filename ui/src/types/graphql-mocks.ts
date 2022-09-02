@@ -15,28 +15,40 @@ export type Scalars = {
 
 export type Device = {
   __typename?: 'Device';
+  createTime: Scalars['String'];
   icmp_latency: Scalars['String'];
   id: Scalars['String'];
-  name: Scalars['String'];
+  label: Scalars['String'];
   snmp_uptime: Scalars['String'];
   status: Scalars['String'];
 };
 
 export type DeviceInput = {
-  community_string?: InputMaybe<Scalars['String']>;
-  icmp_latency?: InputMaybe<Scalars['String']>;
-  management_ip?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  port?: InputMaybe<Scalars['Int']>;
-  snmp_uptime?: InputMaybe<Scalars['String']>;
+  createTime?: InputMaybe<Scalars['String']>;
+  domainName?: InputMaybe<Scalars['String']>;
+  foreignId?: InputMaybe<Scalars['String']>;
+  foreignSource?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
+  label?: InputMaybe<Scalars['String']>;
+  labelSource?: InputMaybe<Scalars['String']>;
+  lastEgressFlow?: InputMaybe<Scalars['String']>;
+  lastIngressFlow?: InputMaybe<Scalars['String']>;
+  lastPoll?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<LocationDtoInput>;
+  netBiosName?: InputMaybe<Scalars['String']>;
+  operatingSystem?: InputMaybe<Scalars['String']>;
+  parentId?: InputMaybe<Scalars['Int']>;
+  sysContact?: InputMaybe<Scalars['String']>;
+  sysDescription?: InputMaybe<Scalars['String']>;
+  sysLocation?: InputMaybe<Scalars['String']>;
+  sysName?: InputMaybe<Scalars['String']>;
+  sysOid?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type ListDevices = {
   __typename?: 'ListDevices';
-  count: Scalars['String'];
-  items: Array<Device>;
-  offset: Scalars['String'];
-  totalCount: Scalars['String'];
+  devices: Array<Device>;
 };
 
 export type ListMinions = {
@@ -44,25 +56,33 @@ export type ListMinions = {
   minions: Array<Minion>;
 };
 
+export type LocationDtoInput = {
+  geolocation?: InputMaybe<Scalars['String']>;
+  latitude?: InputMaybe<Scalars['Float']>;
+  locationName?: InputMaybe<Scalars['String']>;
+  longitude?: InputMaybe<Scalars['Float']>;
+  monitoringArea?: InputMaybe<Scalars['String']>;
+  priority?: InputMaybe<Scalars['Int']>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
 export type Minion = {
   __typename?: 'Minion';
-  icmp_latency: Scalars['String'];
   id: Scalars['String'];
   label: Scalars['String'];
   lastUpdated: Scalars['String'];
   location: Scalars['String'];
-  snmp_uptime: Scalars['String'];
   status: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  saveDevice?: Maybe<Scalars['String']>;
+  addDevice?: Maybe<Scalars['String']>;
   saveRoutingKey?: Maybe<Scalars['String']>;
 };
 
 
-export type MutationSaveDeviceArgs = {
+export type MutationAddDeviceArgs = {
   device: DeviceInput;
 };
 
@@ -79,12 +99,12 @@ export type Query = {
   minion: Minion;
 };
 
-export type SaveDeviceMutationVariables = Exact<{
+export type AddDeviceMutationVariables = Exact<{
   device: DeviceInput;
 }>;
 
 
-export type SaveDeviceMutation = { __typename?: 'Mutation', saveDevice?: string | null };
+export type AddDeviceMutation = { __typename?: 'Mutation', addDevice?: string | null };
 
 export type SaveRoutingKeyMutationVariables = Exact<{
   key: Scalars['String'];
@@ -96,15 +116,15 @@ export type SaveRoutingKeyMutation = { __typename?: 'Mutation', saveRoutingKey?:
 export type ListDevicesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListDevicesQuery = { __typename?: 'Query', listDevices: { __typename?: 'ListDevices', count: string, totalCount: string, offset: string, items: Array<{ __typename?: 'Device', id: string, name: string, status: string, icmp_latency: string, snmp_uptime: string }> } };
+export type ListDevicesQuery = { __typename?: 'Query', listDevices: { __typename?: 'ListDevices', devices: Array<{ __typename?: 'Device', id: string, label: string, status: string, icmp_latency: string, snmp_uptime: string, createTime: string }> } };
 
 export type ListMinionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListMinionsQuery = { __typename?: 'Query', listMinions: { __typename?: 'ListMinions', minions: Array<{ __typename?: 'Minion', id: string, label: string, status: string, location: string, lastUpdated: string, icmp_latency: string, snmp_uptime: string }> } };
+export type ListMinionsQuery = { __typename?: 'Query', listMinions: { __typename?: 'ListMinions', minions: Array<{ __typename?: 'Minion', id: string, label: string, status: string, location: string, lastUpdated: string }> } };
 
 
-export const SaveDeviceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SaveDevice"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"device"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeviceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"saveDevice"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"device"},"value":{"kind":"Variable","name":{"kind":"Name","value":"device"}}}]}]}}]} as unknown as DocumentNode<SaveDeviceMutation, SaveDeviceMutationVariables>;
+export const AddDeviceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddDevice"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"device"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeviceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addDevice"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"device"},"value":{"kind":"Variable","name":{"kind":"Name","value":"device"}}}]}]}}]} as unknown as DocumentNode<AddDeviceMutation, AddDeviceMutationVariables>;
 export const SaveRoutingKeyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SaveRoutingKey"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"saveRoutingKey"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}]}]}}]} as unknown as DocumentNode<SaveRoutingKeyMutation, SaveRoutingKeyMutationVariables>;
-export const ListDevicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ListDevices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"listDevices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"icmp_latency"}},{"kind":"Field","name":{"kind":"Name","value":"snmp_uptime"}}]}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"offset"}}]}}]}}]} as unknown as DocumentNode<ListDevicesQuery, ListDevicesQueryVariables>;
-export const ListMinionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ListMinions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"listMinions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"minions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"lastUpdated"}},{"kind":"Field","name":{"kind":"Name","value":"icmp_latency"}},{"kind":"Field","name":{"kind":"Name","value":"snmp_uptime"}}]}}]}}]}}]} as unknown as DocumentNode<ListMinionsQuery, ListMinionsQueryVariables>;
+export const ListDevicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ListDevices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"listDevices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"devices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"icmp_latency"}},{"kind":"Field","name":{"kind":"Name","value":"snmp_uptime"}},{"kind":"Field","name":{"kind":"Name","value":"createTime"}}]}}]}}]}}]} as unknown as DocumentNode<ListDevicesQuery, ListDevicesQueryVariables>;
+export const ListMinionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ListMinions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"listMinions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"minions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"lastUpdated"}}]}}]}}]}}]} as unknown as DocumentNode<ListMinionsQuery, ListMinionsQueryVariables>;

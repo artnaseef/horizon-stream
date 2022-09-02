@@ -1,14 +1,12 @@
 query ListDevices {
   listDevices {
-    items {
+    devices {
       id
-      name
+      label
       status
       icmp_latency
       snmp_uptime
+      createTime
     }
-    count
-    totalCount
-    offset
   }
 }

@@ -4,8 +4,11 @@
         https://docs.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
         ">
     <reference id="nodeDao" interface="org.opennms.horizon.db.dao.api.NodeDao" />
+    <reference id="ipInterfaceDao" interface="org.opennms.horizon.db.dao.api.IpInterfaceDao" />
+    <reference id="monitoringLocationDao" interface="org.opennms.horizon.db.dao.api.MonitoringLocationDao" />
     <reference id="sessionUtils" interface="org.opennms.horizon.db.dao.api.SessionUtils" />
     <reference id="locationDao" interface="org.opennms.horizon.db.dao.api.MonitoringLocationDao" />
+    <reference id="eventForwarder" interface="org.opennms.horizon.events.api.EventForwarder" availability="optional"/>
 
     <bean id="locationMapper" class="org.opennms.horizon.inventory.device.utils.LocationMapperImpl" />
 
@@ -20,13 +23,27 @@
         <property name="sessionUtils" ref="sessionUtils" />
         <property name="mapper" ref="deviceMapper" />
         <property name="locationDao" ref="locationDao" />
+        <property name="ipInterfaceDao" ref="ipInterfaceDao"/>
     </bean>
 
-    <bean id="deviceRestImpl" class="org.opennms.horizon.inventory.device.rest.impl.DeviceRestAPIImpl">
+    <bean id="deviceRestImpl" class="org.opennms.horizon.inventory.device.rest.impl.DeviceRestServiceImpl">
         <property name="service" ref="deviceService"/>
+        <property name="eventForwarder" ref="eventForwarder"/>
     </bean>
 
-    <service id="deviceRestAPIService" ref="deviceRestImpl" interface="org.opennms.horizon.inventory.device.rest.api.DeviceRestAPI">
+    <service id="deviceRestService" ref="deviceRestImpl" interface="org.opennms.horizon.inventory.device.rest.api.DeviceRestService">
+        <service-properties>
+            <entry key="osgi.jaxrs.resource" value="true"/>
+        </service-properties>
+    </service>
+
+    <bean id="locationRestService" class="org.opennms.horizon.inventory.device.rest.impl.LocationRestServiceImpl">
+        <argument ref="monitoringLocationDao"/>
+        <argument ref="locationMapper"/>
+        <argument ref="sessionUtils"/>
+    </bean>
+
+    <service ref="locationRestService" interface="org.opennms.horizon.inventory.device.rest.api.LocationRestService">
         <service-properties>
             <entry key="osgi.jaxrs.resource" value="true"/>
         </service-properties>

@@ -1,0 +1,84 @@
+fragment DeviceTableParts on Query {
+  listDevices {
+    devices {
+      id
+      label
+      createTime
+      managementIp
+    }
+  }
+}
+
+fragment MinionTableParts on Query {
+  listMinions {
+    minions {
+      id
+      status
+      location
+      lastUpdated
+    }
+  }
+}
+
+fragment MetricParts on TimeSeriesQueryResult {
+  data {
+    result {
+      metric
+      value
+    }
+  }
+}
+
+fragment LocationParts on Query {
+  listLocations {
+    locations {
+      locationName
+    }
+  }
+}
+
+fragment MinionUptimeParts on Query {
+  minionUptime: metric(name: "minion_uptime_sec") {
+    ...MetricParts
+  }
+}
+
+fragment MinionLatencyParts on Query {
+  minionLatency: metric(name: "minion_response_time_msec") {
+    ...MetricParts
+  }
+}
+
+fragment DeviceUptimeParts on Query {
+  deviceUptime: metric(name: "snmp_uptime_sec") {
+    ...MetricParts
+  }
+}
+
+fragment DeviceLatencyParts on Query {
+  deviceLatency: metric(name: "icmp_round_trip_time_msec") {
+    ...MetricParts
+  }
+}
+
+query ListDevicesForTable {
+  ...DeviceTableParts
+  ...DeviceUptimeParts
+  ...DeviceLatencyParts
+}
+
+query ListMinionsForTable {
+  ...MinionTableParts
+  ...MinionUptimeParts
+  ...MinionLatencyParts
+}
+
+query ListMinionsAndDevicesForTables {
+  ...DeviceTableParts
+  ...DeviceUptimeParts
+  ...DeviceLatencyParts
+  ...MinionTableParts
+  ...MinionUptimeParts
+  ...MinionLatencyParts
+  ...LocationParts
+}

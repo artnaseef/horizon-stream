@@ -28,7 +28,6 @@
 
 package org.opennms.horizon.shared.dto.device;
 
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,10 +36,6 @@ import lombok.Setter;
 @Setter
 public class LocationDTO {
   private String locationName;
-  private String monitoringArea;
-  private String geolocation;
   private Double latitude;
   private Double longitude;
-  private Integer priority;
-  private List<String> tags;
 }

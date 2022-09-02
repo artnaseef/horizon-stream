@@ -15,6 +15,23 @@ const router = createRouter({
       component: () => import('@/containers/Alarms.vue')
     },
     {
+      path: '/map',
+      name: 'Map',
+      component: () => import('@/containers/Map.vue'),
+      children: [
+        {
+          path: '',
+          name: 'MapAlarms',
+          component: () => import('@/components/Map/MapAlarmsGrid.vue')
+        },
+        {
+          path: 'nodes',
+          name: 'MapNodes',
+          component: () => import('@/components/Map/MapNodesGrid.vue')
+        }
+      ]
+    },
+    {
       path: '/:pathMatch(.*)*', // catch other paths and redirect
       redirect: '/'
     }

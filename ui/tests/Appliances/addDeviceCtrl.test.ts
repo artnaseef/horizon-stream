@@ -5,11 +5,14 @@ import { createClient, VILLUS_CLIENT } from 'villus'
 import { useDeviceMutations } from '@/store/Mutations/deviceMutations'
 
 const wrapper = mount(AddDeviceCtrl, { 
-  global: { 
+  global: {
+    stubs: {
+      teleport: true
+    },
     plugins: [createTestingPinia()],
     provide: {
       [VILLUS_CLIENT as unknown as string]: createClient({
-        url: 'http://test/graphql',
+        url: 'http://test/graphql'
       })
     }
   }
@@ -41,37 +44,29 @@ test('The cancel btn should close the modal', async () => {
   expect(modalInput.exists()).toBeFalsy()
 })
 
-test('The save btn should enable if name and IP are added', async () => {
+test('The save btn should enable if name is entered', async () => {
   await wrapper.get('[data-test="add-device-btn"]').trigger('click')
   
   const nameInput = wrapper.get('[data-test="name-input"] .feather-input')
-  const ipInput = wrapper.get('[data-test="ip-input"] .feather-input')
   const saveBtn = wrapper.get('[data-test="save-btn"]')
 
   // should be disabled
   expect(saveBtn.attributes('aria-disabled')).toBe('true')
   
   await nameInput.setValue('some name')
-  await ipInput.setValue('some IP')
   
   // should be enabled
   expect(saveBtn.attributes('aria-disabled')).toBeUndefined()
 })
 
-test('The save mutation is called', async () => {
+test('The add device mutation is called', async () => {
   const deviceMutations = useDeviceMutations()
-  const saveDevice = vi.spyOn(deviceMutations, 'saveDevice')
+  const addDevice = vi.spyOn(deviceMutations, 'addDevice')
 
   await wrapper.get('[data-test="add-device-btn"]').trigger('click')
-
-  const nameInput = wrapper.get('[data-test="name-input"] .feather-input')
-  const ipInput = wrapper.get('[data-test="ip-input"] .feather-input')
-  const saveBtn = wrapper.get('[data-test="save-btn"]')
-
-  await nameInput.setValue('name')
-  await ipInput.setValue('ip')
-  await saveBtn.trigger('click')
+  await wrapper.get('[data-test="name-input"] .feather-input').setValue('some name')
+  await wrapper.get('[data-test="save-btn"]').trigger('click')
 
   // expect save device query to be called
-  expect(saveDevice).toHaveBeenCalledTimes(1)
+  expect(addDevice).toHaveBeenCalledTimes(1)
 })

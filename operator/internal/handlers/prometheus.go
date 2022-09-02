@@ -13,6 +13,9 @@ type PrometheusHandler struct {
 }
 
 func (h *PrometheusHandler) ProvideConfig(values values.TemplateValues) []client.Object {
+	if values.Values.Prometheus.Enabled == false {
+		return []client.Object{}
+	}
 	var prometheusConfigMap corev1.ConfigMap
 	var prometheusService corev1.Service
 	var prometheusDeployment appsv1.Deployment

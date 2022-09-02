@@ -1,0 +1,10 @@
+query Alarms {
+  listAlarms {
+    alarms {
+      id
+      description
+      severity
+      lastEventTime
+    }
+  }
+}

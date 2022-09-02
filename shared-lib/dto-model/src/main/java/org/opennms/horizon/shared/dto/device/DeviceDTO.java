@@ -62,4 +62,6 @@ public class DeviceDTO {
   private Date lastIngressFlow;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
   private Date lastEgressFlow;
+  private String snmpCommunityString;
+  private String managementIp;
 }
