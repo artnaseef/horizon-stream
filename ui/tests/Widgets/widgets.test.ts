@@ -1,20 +1,23 @@
 import WidgetBar from '@/components/Layout/Widgetbar.vue'
-import { addWidget, removeWidget } from '@/components/Widgets/utils'
+import { useWidgets, Widgets } from '@/composables/useWidgets'
 import router from '@/router'
 import setup from '../setupWrapper'
+
+const { addWidget, removeWidget } = useWidgets()
 
 const wrapper = setup({ 
   component: WidgetBar,
   global: {
     plugins: [router]
-  }
+  },
+  attachTo: document.body
 })
 
 const widgets = [
-  ['Minion', '../Appliances/MinionsTable.vue'],
-  ['Device', '../Appliances/DeviceTable.vue'],
-  ['Map', '../Map/LeafletMap.vue'],
-  ['Tag', '../Tags/Tags.vue']
+  ['Minion', Widgets.MINIONS],
+  ['Device', Widgets.DEVICES],
+  ['Map', Widgets.GEOMAP],
+  ['Tag', Widgets.TAGS]
 ]
 
 test.each(widgets)('Mounts and unmounts the "%s" widget properly', (_, widget) => {

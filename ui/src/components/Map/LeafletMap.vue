@@ -1,5 +1,5 @@
 <template>
-  <div class="geo-map">
+  <div v-if="nodesReady" class="geo-map">
     <SeverityFilter v-if="!widgetProps?.isWidget" />
     <LMap
       ref="map"
@@ -28,26 +28,26 @@
           :options="{ showCoverageOnHover: false, chunkedLoading: true, iconCreateFunction }"
         >
           <LMarker
-            v-for="device of geomapQueries.devicesForGeomap"
-            :key="device?.label"
-            :lat-lng="[device?.location?.latitude, device?.location?.longitude]"
-            :name="device?.label"
-            :options="{ id: device?.id }"
+            v-for="node of nodes"
+            :key="node?.label"
+            :lat-lng="[node?.location?.latitude, node?.location?.longitude]"
+            :name="node?.label"
+            :options="{ id: node?.id }"
           >
             <LPopup>
               Node:
               <router-link
-                :to="`/node/${device?.id}`"
+                :to="`/node/${node?.id}`"
                 target="_blank"
-                >{{ device?.label }}</router-link
+                >{{ node?.label }}</router-link
               >
               <br />
-              Severity: {{ nodeLabelAlarmServerityMap[device?.label as string] || 'NORMAL' }}
+              Severity: {{ nodeLabelAlarmServerityMap[node?.label as string] || 'NORMAL' }}
               <br />
-              <!-- Category: {{ device?.categories?.length ? device?.categories[0].name : 'N/A' }} -->
+              <!-- Category: {{ node?.categories?.length ? node?.categories[0].name : 'N/A' }} -->
             </LPopup>
             <LIcon
-              :icon-url="setIcon(device as Partial<DeviceDto>)"
+              :icon-url="setIcon(node as Partial<DeviceDto>)"
               :icon-size="iconSize"
             />
           </LMarker>
@@ -83,24 +83,22 @@ import WarninglIcon from '@/assets/Warning-icon.png'
 import MinorIcon from '@/assets/Minor-icon.png'
 import MajorIcon from '@/assets/Major-icon.png'
 import CriticalIcon from '@/assets/Critical-icon.png'
-// @ts-ignore
-import { Map as LeafletMap, divIcon, MarkerCluster as Cluster } from 'leaflet'
 import { numericSeverityLevel } from './utils'
 import SeverityFilter from './SeverityFilter.vue'
 import { useTopologyStore } from '@/store/Views/topologyStore'
 import { useMapStore } from '@/store/Views/mapStore'
-import { useGeomapQueries } from '@/store/Queries/geomapQueries'
+import useSpinner from '@/composables/useSpinner'
 import { DeviceDto } from '@/types/graphql'
 import useTheme from '@/composables/useTheme'
+// @ts-ignore
+import { Map as LeafletMap, divIcon, MarkerCluster as Cluster } from 'leaflet'
 import { WidgetProps } from '@/types'
 
 defineProps<{widgetProps?: WidgetProps}>()
 
 const markerCluster = ref()
 const computedEdges = ref<number[][][]>()
-const mapStore = useMapStore()
 const topologyStore = useTopologyStore()
-const geomapQueries = useGeomapQueries()
 const { onThemeChange, isDark } = useTheme()
 const map = ref()
 const route = useRoute()
@@ -111,13 +109,17 @@ const iconWidth = 25
 const iconHeight = 42
 const iconSize = [iconWidth, iconHeight]
 const nodeClusterCoords = ref<Record<string, number[]>>({})
-
+    
+const { startSpinner, stopSpinner } = useSpinner()
+const mapStore = useMapStore()
+const nodesReady = ref()
+const nodes = computed(() => mapStore.devicesWithCoordinates)
 const center = computed<number[]>(() => ['latitude', 'longitude'].map(k => (mapStore.mapCenter as any)[k] ))
 const bounds = computed(() => {
   const coordinatedMap = getNodeCoordinateMap.value
-  return geomapQueries.devicesForGeomap.map((node) => coordinatedMap.get(node?.id))
+  return mapStore.devicesWithCoordinates.map((node: DeviceDto) => coordinatedMap.get(node?.id))
 })
-const nodeLabelAlarmServerityMap = computed(() => mapStore.getNodeAlarmSeverityMap)
+const nodeLabelAlarmServerityMap = computed(() => mapStore.getDeviceAlarmSeverityMap())
 
 // on light / dark mode change, switch the map layer
 onThemeChange(() => {
@@ -225,12 +227,12 @@ const computeEdges = () => {
 
 const getNodeCoordinateMap = computed(() => {
   const map = new Map()
-  geomapQueries.devicesForGeomap.forEach((device) => {
-    if (device) {
-      map.set(device.id, [device.location?.latitude, device.location?.longitude])
-      map.set(device.label, [device.location?.latitude, device.location?.longitude])
-    }
+
+  mapStore.devicesWithCoordinates.forEach((device: any) => {
+    map.set(device.id, [device.location.latitude, device.location.longitude])
+    map.set(device.label, [device.location.latitude, device.location.longitude])
   })
+  
   return map
 })
 
@@ -290,15 +292,13 @@ const invalidateSizeFn = () => {
 
 /*****Tile Layer*****/
 const defaultLightTileLayer = ref({
-    name: 'OpenStreetMap',
-    visible: true,
-    attribution:
-      '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  name: 'OpenStreetMap',
+  visible: true,
+  attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+  url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 })
 
 // TODO: Find new dark mode layer as this one has issues on prod
-
 // const defaultDarkTileLayer = ref({
 //     name: 'AlidadeSmoothDark',
 //     visible: isDark.value && true,
@@ -308,9 +308,16 @@ const defaultLightTileLayer = ref({
 // })
 
 const tileProviders = ref([
-  defaultLightTileLayer.value,
+  defaultLightTileLayer.value
   // defaultDarkTileLayer.value
 ])
+
+onMounted(() => {
+  nodesReady.value = computed(() => {
+    mapStore.devicesAreFetched ? stopSpinner() : startSpinner()
+    return mapStore.devicesAreFetched
+  })
+})
 
 defineExpose({ invalidateSizeFn, setBoundingBox, flyToNode })
 </script>

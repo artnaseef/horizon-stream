@@ -3,33 +3,12 @@
   <div id="widget-flex-container">
     <FeatherCheckboxGroup label="Available Widgets">
       <FeatherCheckbox 
-        v-if="route.path !== '/'" 
-        v-model="minions" 
-        @update:modelValue="triggerMinions">
-          Minions
+        v-for="widget of widgets"
+        v-model="widgetsRef[widget]" 
+        @update:modelValue="(val) => triggerWidget(val, widget)">
+          {{ getWidgetNameByIndex(widget) }}
       </FeatherCheckbox>
 
-      <FeatherCheckbox 
-        v-if="route.path !== '/'" 
-        v-model="devices" 
-        @update:modelValue="triggerDevices">
-          Devices
-      </FeatherCheckbox>
-
-      <FeatherCheckbox 
-        v-if="!route.path.includes('/map')" 
-        v-model="map" 
-        @update:modelValue="triggerMap">
-          Geomap
-      </FeatherCheckbox>
-
-      <!-- TODO: Add to device status page, when available -->
-      <FeatherCheckbox
-        v-if="false"
-        v-model="tags" 
-        @update:modelValue="triggerTags">
-          Tags
-      </FeatherCheckbox>
     </FeatherCheckboxGroup>
   </div>
 </div>
@@ -37,42 +16,41 @@
 
 <script setup lang="ts">
 import { AppContext } from 'vue';
-import { addWidget, removeWidget } from '../Widgets/utils'
+import { useWidgets, Widgets } from '@/composables/useWidgets'
 
-const route = useRoute()
-const minions = ref(false)
-const devices = ref(false)
-const map = ref(false)
-const tags = ref(false)
+const { widgets, addWidget, removeWidget, displayedWidgets } = useWidgets()
+const widgetsRef = ref<any>({})
 const widgetContainer = () => document.getElementById('widget-flex-container') as HTMLDivElement
 const instance = getCurrentInstance()?.appContext as AppContext
 
-const widgets = {
-  deviceWidget: '../Widgets/DeviceWidget.vue',
-  minionWidget: '../Widgets/MinionWidget.vue',
-  mapWidget: '../Widgets/MapWidget.vue',
-  tagWidget: '../Widgets/TagWidget.vue'
+const triggerWidget = (val: boolean | undefined, widget: string) => {
+  if (val) {
+    if (widget === Widgets.GEOMAP) {
+      addWidget(instance, widget, widgetContainer(), {}, { height: '400px' })
+    } else {
+      addWidget(instance, widget, widgetContainer())
+    }
+  }
+  else removeWidget(widget)
 }
 
-const triggerMinions = (val: boolean | undefined) => {
-  if (val) addWidget(instance, widgets.minionWidget, widgetContainer())
-  else removeWidget(widgets.minionWidget)
+// returns a name based on the widget enum key
+const getWidgetNameByIndex  = (widget: string) => {
+  const index = Object.values(Widgets).indexOf(widget as unknown as Widgets);
+  const name = Object.keys(Widgets)[index].toLocaleLowerCase()
+  return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-const triggerDevices = (val: boolean | undefined) => {
-  if (val) addWidget(instance, widgets.deviceWidget, widgetContainer())
-  else removeWidget(widgets.deviceWidget)
-}
-
-const triggerMap = (val: boolean | undefined) => {
-  if (val) addWidget(instance, widgets.mapWidget, widgetContainer(), {}, { height: '400px' })
-  else removeWidget(widgets.mapWidget)
-}
-
-const triggerTags = (val: boolean | undefined) => {
-  if (val) addWidget(instance, widgets.tagWidget, widgetContainer())
-  else removeWidget(widgets.tagWidget)
-}
+// when changing routes, rm displayed widgets
+// that are not available on that route
+watchEffect(() => {
+  for (const displayedWidget of displayedWidgets.value) {
+    if (!widgets.value.includes(displayedWidget)) {
+      removeWidget(displayedWidget)
+      widgetsRef.value[displayedWidget] = false
+    }
+  }
+})
 </script>
 
 <style scoped lang="scss">
