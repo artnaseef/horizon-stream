@@ -14,4 +14,4 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     name: cert-issuer
-{{ end }} 
+{{ end }}
