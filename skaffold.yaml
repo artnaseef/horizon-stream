@@ -3,7 +3,7 @@ kind: Config
 metadata:
   name: horizon-stream
 requires:
-  - configs: ["keycloak-operator"]
+  - configs: ["operator-dependencies"]
   - configs: ["shared-lib"]
     path: shared-lib/skaffold.yaml
   - configs: ["horizon-stream-ui"]
@@ -25,7 +25,7 @@ build:
     requires:
       - image: shared-lib
         alias: unused
-  - image: opennms/horizon-stream-api
+  - image: opennms/horizon-stream-rest-server
     context: rest-server
     jib: {}
     sync:
@@ -127,13 +127,12 @@ portForward:
     localPort: 59092 # default port for kafka broker
 deploy:
   kubectl:
-    #    defaultNamespace: skaffold-instance
     manifests:
       - operator/local-instance.yaml
   helm:
     releases:
       - name: opennms-operator
-        namespace: skaffold-operator
+        namespace: opennms
         createNamespace: true
         chartPath: charts/opennms-operator
         valuesFiles:
@@ -142,7 +141,7 @@ deploy:
           Operator.image: opennms/operator
 resourceSelector:
   allow:
-    - groupKind: "OpenNMS.opennms.k8s.opennms.com"
+    - groupKind: "OpenNMS.k8s.opennms.com"
       image: [ ".*" ]
       labels: [ ".*" ]
 
@@ -151,10 +150,12 @@ resourceSelector:
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
-  name: keycloak-operator
+  name: operator-dependencies
 deploy:
-  kubectl:
-    manifests:
-      - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/18.0.0/kubernetes/keycloaks.k8s.keycloak.org-v1.yml
-      - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/18.0.0/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
-      - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/18.0.0/kubernetes/kubernetes.yml
+  helm:
+    releases:
+      - name: opennms-operator-dependencies
+        chartPath: charts/opennms-operator-dependencies
+        wait: true
+        valuesFiles:
+          - operator/values.yaml

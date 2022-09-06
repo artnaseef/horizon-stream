@@ -1,6 +1,0 @@
-dependencies:
-- name: opennms-operator-dependencies
-  repository: file://../opennms-operator-dependencies
-  version: 0.1.2
-digest: sha256:36cb73fe2ba07776cef67980dde6f3f375c74626ba5fa9968c6c89bbbf13a81a
-generated: "2022-08-09T18:47:59.862785-04:00"
