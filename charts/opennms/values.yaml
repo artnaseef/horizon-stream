@@ -60,6 +60,7 @@ OpenNMS:
   Notification: 
     ServiceName: opennms-notifications
     Image: opennms/horizon-stream-notification
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Port: 8080
     Resources:
@@ -77,6 +78,7 @@ Postgres:
   OpenNMSPassword: notset
   KeycloakPassword: notset
   NotificationPassword: notset
+  GrafanaPassword: notset
   VolumeSize: 10Gi
 Keycloak:
   Path: /auth
@@ -95,7 +97,19 @@ Keycloak:
     BaseUserId: 00000000-0000-0000-0000-000000000000
     AdminUserId: 00000000-0000-0000-0000-000000000000
 Grafana:
-  Image: placeholder
+  Path: /grafana
+  Port: 3000
+  Replicas: 1
+  ServiceName: grafana
+  Image: opennms/horizon-stream-grafana
+  InitContainerImage: busybox
+  Resources:
+    Limits:
+      Cpu: 500m
+      Memory: 1Gi
+    Requests:
+      Cpu: 100m
+      Memory: 100Mi
 Prometheus:
   Enabled: true
   Server:

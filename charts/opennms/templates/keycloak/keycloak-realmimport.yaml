@@ -39,6 +39,29 @@ spec:
           - "phone"
           - "offline_access"
           - "microprofile-jwt"
+      - id: client-grafana
+        clientId: grafana
+        name: grafana
+        standardFlowEnabled: true
+        enabled: true
+        clientAuthenticatorType: client-secret
+        secret: grafana-client-secret
+        protocol: openid-connect
+        webOrigins:
+          - "*"
+        redirectUris:
+          - "*"
+        publicClient: false
+        directAccessGrantsEnabled: false
+        defaultClientScopes:
+          - "roles"
+          - "profile"
+          - "email"
+        optionalClientScopes:
+          - "address"
+          - "phone"
+          - "offline_access"
+          - "microprofile-jwt"
     roles:
       realm:
       - id: {{ .Values.Keycloak.UUID.AdminUserId }}
