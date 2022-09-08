@@ -35,7 +35,7 @@ import org.opennms.horizon.shared.dto.event.AlarmDTO;
 public interface PagerDutyAPI {
     void postNotification(AlarmDTO alarm) throws NotificationException;
 
-    void initConfig(PagerDutyConfigDTO config);
+    void saveConfig(PagerDutyConfigDTO config);
 
     void validateConfig(PagerDutyConfigDTO config) throws NotificationException;
 }

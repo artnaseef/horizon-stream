@@ -69,8 +69,8 @@ public class PagerDutyAPIImplTest {
     }
 
     @Test
-    public void initConfig() throws Exception {
-        pagerDutyAPI.initConfig(getConfigDTO());
+    public void saveConfig() throws Exception {
+        pagerDutyAPI.saveConfig(getConfigDTO());
     }
 
     @Test

@@ -59,11 +59,19 @@ public class PagerDutyDaoImplTest {
     JdbcTemplate jdbcTemplate;
 
     @Test
-    public void initConfig() throws Exception {
+    public void updateConfig() throws Exception {
+        Mockito.when(jdbcTemplate.queryForObject(anyString(), any(Class.class))).thenReturn(Integer.valueOf(1));
         PagerDutyConfigDTO config = getConfigDTO();
-        pagerDutyDao.initConfig(config);
+        pagerDutyDao.saveConfig(config);
 
-        Mockito.verify(jdbcTemplate, times(2)).execute(anyString());
+        Mockito.verify(jdbcTemplate, times(1)).update(anyString(), anyString(), anyString());
+    }
+    @Test
+    public void insertConfig() throws Exception {
+        Mockito.when(jdbcTemplate.queryForObject(anyString(), any(Class.class))).thenReturn(Integer.valueOf(0));
+        PagerDutyConfigDTO config = getConfigDTO();
+        pagerDutyDao.saveConfig(config);
+
         Mockito.verify(jdbcTemplate, times(1)).update(anyString(), anyString(), anyString());
     }
 

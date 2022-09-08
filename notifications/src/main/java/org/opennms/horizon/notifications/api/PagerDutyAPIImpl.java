@@ -98,8 +98,8 @@ public class PagerDutyAPIImpl implements PagerDutyAPI {
     }
 
     @Override
-    public void initConfig(PagerDutyConfigDTO config) {
-        pagerDutyDao.initConfig(config);
+    public void saveConfig(PagerDutyConfigDTO config) {
+        pagerDutyDao.saveConfig(config);
     }
 
     @Override

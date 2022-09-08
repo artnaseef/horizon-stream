@@ -26,30 +26,36 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.horizon.notifications.config;
+package org.opennms.horizon.db.kvstore.postgres;
+
+import org.opennms.horizon.db.kvstore.api.JsonStore;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
-
-@Configuration
-public class JpaConfig {
-    @Bean
-    public DataSource getDataSource()
-    {
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:postgresql://postgres:5432/notification");
-        dataSourceBuilder.username("notification");
-        dataSourceBuilder.password("passw0rd");
-        return dataSourceBuilder.build();
+public class PostgresJsonStore extends AbstractPostgresKeyValueStore<String, String> implements JsonStore {
+    public PostgresJsonStore(DataSource dataSource) {
+        super(dataSource);
     }
 
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
+    @Override
+    protected String getTableName() {
+        return "kvstore_jsonb";
+    }
+
+    @Override
+    protected String getValueStatementPlaceholder() {
+        return super.getValueStatementPlaceholder() + "::JSON";
+    }
+
+    @Override
+    protected String getValueTypeFromSQLType(ResultSet resultSet, String columnName) throws SQLException {
+        return resultSet.getString(columnName);
+    }
+
+    @Override
+    protected String getPkConstraintName() {
+        return "pk_kvstore_jsonb";
     }
 }

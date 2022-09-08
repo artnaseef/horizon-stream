@@ -82,6 +82,8 @@
         <bundle>mvn:org.opennms.horizon.db/schema-liquibase/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.db/model/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.shared/dto-model/${horizon.shared.lib.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.db/kvstore-api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.db/postgres-kvstore/${project.version}</bundle>
 
         <bundle dependency="true">mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
 
@@ -486,6 +488,15 @@
         <feature>horizon-metrics-api</feature>
         <feature>prometheus-push-gateway</feature>
         <bundle>mvn:org.opennms.horizon.metrics/impl/${project.version}</bundle>
+    </feature>
+
+    <feature name="horizon-core-config" version="${project.version}">
+        <feature>horizon-db</feature>
+        <feature>horizon-core-rest</feature>
+        <bundle>wrap:mvn:org.json/json/${json.version}$Export-Package=org.json</bundle>
+        <bundle>mvn:org.opennms.horizon.config/api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.config/service/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.config/rest/${project.version}</bundle>
     </feature>
 
 </features>
