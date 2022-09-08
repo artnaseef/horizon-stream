@@ -8,3 +8,5 @@ node_modules
 skaffold.yaml
 mock-graphql
 node_modules
+.env.development
+.env.*.local

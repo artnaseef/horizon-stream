@@ -24,11 +24,12 @@ build:
       dockerfile: Dockerfile
       target: development
       buildArgs:
-        VITE_BASE_URL: "http://localhost:48080"
-        VITE_KEYCLOAK_URL: "http://localhost:28080"
+        VITE_BASE_URL: "api"
+        VITE_KEYCLOAK_URL: "auth"
 portForward:
   - resourceType: deployment
-    resourceName: my-horizon-stream-ui
+    resourceName: opennms-ui
+    namespace: skaffold-instance
     port: 80 # nginx HTTP
     localPort: 3000
 profiles:
@@ -38,6 +39,3 @@ profiles:
       - image: opennms/horizon-stream-ui
         docker:
           dockerfile: Dockerfile
-          buildArgs:
-            VITE_BASE_URL: "http://localhost:48080"
-            VITE_KEYCLOAK_URL: "http://localhost:28080"

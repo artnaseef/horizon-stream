@@ -35,7 +35,7 @@ OpenNMS:
     ServiceName: opennms-ui
     Image: opennms/horizon-stream-ui
     Replicas: 1
-    Port: 3000
+    Port: 80
     Resources:
       Limits:
         Cpu: 1
@@ -82,14 +82,14 @@ Postgres:
   VolumeSize: 10Gi
 Keycloak:
   Path: /auth
-  Port: 8080
+  Port: 8443
   Replicas: 1
   ServiceName: onms-keycloak
   AdminUsername: admin
   AdminPassword: notset
   UserUsername: user001
   UserPassword: notset
-  Image: opennms/horizon-stream-keycloak:test
+  Image: opennms/horizon-stream-keycloak
   RealmName: opennms
   UUID:
     RealmId: 00000000-0000-0000-0000-000000000000

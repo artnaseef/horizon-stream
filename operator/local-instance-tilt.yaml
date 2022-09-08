@@ -1,4 +1,4 @@
-apiVersion: opennms.k8s.opennms.com/v1alpha1
+apiVersion: k8s.opennms.com/v1alpha1
 kind: OpenNMS
 metadata:
   name: local-instance
@@ -9,14 +9,14 @@ spec:
   core:
     image: opennms/horizon-stream-core
     cpu: "0"
-    mem: 4Gi # FIXME: find appropriate value
+    mem: "0"
   api:
     image: opennms/horizon-stream-rest-server
     cpu: "0"
-    mem: 2Gi # FIXME: find appropriate value
+    mem: "0"
   ui:
     image: opennms/horizon-stream-ui
     cpu: "0"
-    mem: 2Gi # FIXME: find appropriate value
+    mem: "0"
   postgres:
     image: postgres:13.3-alpine

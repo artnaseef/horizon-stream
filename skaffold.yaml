@@ -53,73 +53,89 @@ build:
     context: operator
     docker:
       dockerfile: Dockerfile
+    hooks:
+      before:
+        - command: [ "make", "copy-charts" ]
+          dir: operator
 
 portForward:
   - resourceType: deployment
-    resourceName: my-horizon-stream-api
+    resourceName: opennms-rest-server
+    namespace: skaffold-instance
     port: 9090 # HTTP
   - resourceType: deployment
-    resourceName: my-horizon-stream-notification
+    resourceName: opennms-notification
+    namespace: skaffold-instance
     port: 8080 # HTTP
     localPort: 38080
   - resourceType: deployment
-    resourceName: my-horizon-stream-notification
+    resourceName: opennms-notification
+    namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5007
   - resourceType: deployment
-    resourceName: my-horizon-stream-api
+    resourceName: opennms-rest-server
+    namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5006
   - resourceType: deployment
-    resourceName: my-horizon-stream-core
+    resourceName: opennms-core
+    namespace: skaffold-instance
     port: 8181 # HTTP
     localPort: 18181
   - resourceType: deployment
-    resourceName: my-horizon-stream-core
+    resourceName: opennms-core
+    namespace: skaffold-instance
     port: 8101 # SSH
     localPort: 18101
   - resourceType: deployment
-    resourceName: my-horizon-stream-core
+    resourceName: opennms-core
+    namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5005
-  - resourceType: deployment
-    resourceName: my-keycloak
+  - resourceType: statefulset
+    resourceName: onms-keycloak
+    namespace: skaffold-instance
     port: 8080 # HTTP
     localPort: 28080
   - resourceType: deployment
-    resourceName: my-minion
+    resourceName: opennms-minion
+    namespace: skaffold-instance
     port: 8201 # SSH
     localPort: 38101
   - resourceType: deployment
-    resourceName: api-gateway
-    port: 80 # HTTP
-    localPort: 48080
-  - resourceType: deployment
-    resourceName: horizon-mail-server
+    resourceName: mail-server
+    namespace: skaffold-instance
     port: 8025 # HTTP
     localPort: 8025
   - resourceType: deployment
-    resourceName: horizon-mail-server
+    resourceName: mail-server
+    namespace: skaffold-instance
     port: 1025 # SMTP
     localPort: 1025
   - resourceType: deployment
-    resourceName: my-postgres
+    resourceName: postgres
+    namespace: skaffold-instance
     port: 5432 # Postgres
     localPort: 5432
   - resourceType: deployment
     resourceName: prometheus
+    namespace: skaffold-instance
     port: 9090 # prometheus tcp
     localPort: 59090
   - resourceType: deployment
     resourceName: prometheus-pushgateway
+    namespace: skaffold-instance
     port: 9091 #prometheus-pushgateway tcp
     localPort: 59091
   - resourceType: deployment
     resourceName: grafana
+    namespace: skaffold-instance
     port: 3000 #grafana HTTP
     localPort: 53000
-  - resourceType: deployment
-    resourceName: my-kafka
+  - resourceType: pod
+    resourceName: opennms-kafka-0
+    namespace: skaffold-instance
     port: 59092 # kafka tcp local client port
     localPort: 59092 # default port for kafka broker
 deploy:
@@ -134,8 +150,12 @@ deploy:
         chartPath: charts/opennms-operator
         valuesFiles:
           - operator/values.yaml
+        setValues:
+          TLS.SelfSigned: true
         artifactOverrides:
           Operator.image: opennms/operator
+          Keycloak.image: opennms/horizon-stream-keycloak-dev
+          Grafana.image: opennms/grafana-dev
 resourceSelector:
   allow:
     - groupKind: "OpenNMS.k8s.opennms.com"
@@ -148,11 +168,9 @@ apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
   name: operator-dependencies
-deploy:
-  helm:
-    releases:
-      - name: opennms-operator-dependencies
-        chartPath: charts/opennms-operator-dependencies
-        wait: true
-        valuesFiles:
-          - operator/values.yaml
+#deploy:
+#  helm:
+#    releases:
+#      - name: opennms-operator-dependencies
+#        chartPath: charts/opennms-operator-dependencies
+#        wait: true

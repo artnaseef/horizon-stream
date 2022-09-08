@@ -2,10 +2,9 @@ apiVersion: k8s.opennms.com/v1alpha1
 kind: OpenNMS
 metadata:
   name: local-instance
-#  namespace: skaffold-instance
 spec:
   allowedUsers: []
-  host: ignore-for-now-onmshs
+  host: onmshs
   namespace: skaffold-instance
   core:
     image: opennms/horizon-stream-core
@@ -17,6 +16,10 @@ spec:
     mem: "0"
   ui:
     image: opennms/horizon-stream-ui
+    cpu: "0"
+    mem: "0"
+  notification:
+    image: opennms/horizon-stream-notification
     cpu: "0"
     mem: "0"
   postgres:
