@@ -136,14 +136,7 @@
         <feature>java-native-access</feature>
         <feature>guava</feature>
         <feature>horizon-grpc</feature>
-        <feature version="${jackson.version}">jackson</feature>
-
-        <bundle>mvn:org.opennms.horizon.3rdparty/json-patch-osgi/${project.version}</bundle>
-        <bundle>mvn:org.opennms.horizon.3rdparty/jackson-coreutils-osgi/${project.version}</bundle>
-        <bundle>mvn:com.github.fge/msg-simple/${fgeMsgSimple.version}</bundle>
-        <bundle>mvn:com.github.fge/btf/${fgeBtf.version}</bundle>
-        <bundle>mvn:com.google.code.findbugs/jsr305/${jsr305.version}</bundle>
-
+        <feature>horizon-ipc-twin-grpc</feature>
         <bundle>mvn:org.opennms.horizon.core/lib/${project.version}</bundle>
         <bundle>mvn:org.opennms.lib/org.opennms.lib.tracker/${opennms.tracker.version}</bundle>
         <bundle>mvn:org.opennms/jicmp-api/${jicmp.version}</bundle>
@@ -159,7 +152,16 @@
         <bundle>mvn:org.opennms.horizon.icmp/rpc-common/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.icmp/rpc-module-impl/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.icmp/rpc-impl/${project.version}</bundle>
+    </feature>
 
+    <feature name="horizon-ipc-twin-grpc" version="${project.version}">
+        <feature version="${jackson.version}">jackson</feature>
+
+        <bundle>mvn:org.opennms.horizon.3rdparty/json-patch-osgi/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.3rdparty/jackson-coreutils-osgi/${project.version}</bundle>
+        <bundle>mvn:com.github.fge/msg-simple/${fgeMsgSimple.version}</bundle>
+        <bundle>mvn:com.github.fge/btf/${fgeBtf.version}</bundle>
+        <bundle>mvn:com.google.code.findbugs/jsr305/${jsr305.version}</bundle>
         <bundle>mvn:org.opennms.core.ipc.twin/api/${project.version}</bundle>
         <bundle>mvn:org.opennms.core.ipc.twin/common/${project.version}</bundle>
         <bundle>mvn:org.opennms.core.ipc.twin.grpc/common/${project.version}</bundle>
@@ -499,4 +501,16 @@
         <bundle>mvn:org.opennms.horizon.config/rest/${project.version}</bundle>
     </feature>
 
+
+    <feature name="horizon-core-traps" version="${project.version}">
+        <feature>horizon-db</feature>
+        <feature>horizon-ipc-api</feature>
+        <feature>horizon-snmp</feature>
+        <feature>horizon-ipc-twin-grpc</feature>
+        <bundle>wrap:mvn:org.json/json/${json.version}$Export-Package=org.json</bundle>
+        <bundle>mvn:org.opennms.core.ipc.twin/api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.config/api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.config/service/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon/traps/${project.version}</bundle>
+    </feature>
 </features>

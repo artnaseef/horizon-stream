@@ -52,8 +52,8 @@ OpenNMS:
     SyslogPort: 1514
     Resources:
       Limits:
-        Cpu: 2
-        Memory: 1Gi
+        Cpu: 1
+        Memory: 2050M
       Requests:
         Cpu: 1
         Memory: 512Mi

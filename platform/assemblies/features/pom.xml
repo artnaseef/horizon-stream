@@ -105,6 +105,7 @@
                                 <feature>horizon-metrics-prometheus</feature>
                                 <feature>horizon-core-monitor</feature>
                                 <feature>horizon-core-config</feature>
+                                <feature>horizon-core-traps</feature>
                             </features>
                         </configuration>
                     </execution>
@@ -431,6 +432,11 @@
         <dependency>
             <groupId>org.opennms.horizon.config</groupId>
             <artifactId>rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opennms.horizon</groupId>
+            <artifactId>traps</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

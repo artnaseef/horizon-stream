@@ -126,6 +126,7 @@
                         <feature>horizon-metrics-prometheus</feature>
                         <feature>horizon-core-monitor</feature>
                         <feature>horizon-core-config</feature>
+                        <feature>horizon-core-traps</feature>
                     </bootFeatures>
                     <libraries>
                     </libraries>

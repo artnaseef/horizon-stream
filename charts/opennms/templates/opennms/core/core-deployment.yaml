@@ -45,7 +45,7 @@ spec:
             - name: JAVA_TOOL_OPTIONS
               #value: "-agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=n,quiet=y"
             - name: EXTRA_JAVA_OPTS
-              value: "-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Djavax.net.ssl.trustStore=/opt/horizon-stream/truststore.jks -Djavax.net.ssl.trustStorePassword=password123 -Djavax.net.ssl.trustStoreType=JKS"
+              value: "-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Djavax.net.ssl.trustStore=/opt/horizon-stream/truststore.jks -Djavax.net.ssl.trustStorePassword=password123 -Djavax.net.ssl.trustStoreType=JKS -Xms164M -Xmx364M"
             - name: PGSQL_SERVICE_NAME
               value: {{ .Values.Postgres.ServiceName }}
             - name: PGSQL_ADMIN_USERNAME

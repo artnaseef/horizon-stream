@@ -8,7 +8,6 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    
     <artifactId>postgres-kvstore</artifactId>
     <name>OpenNMS Horizon :: Postgres :: KV Store </name>
     <packaging>bundle</packaging>

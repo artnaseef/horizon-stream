@@ -31,6 +31,7 @@
         <module>minion</module>
         <module>metrics</module>
         <module>config</module>
+        <module>traps</module>
     </modules>
 
     <properties>

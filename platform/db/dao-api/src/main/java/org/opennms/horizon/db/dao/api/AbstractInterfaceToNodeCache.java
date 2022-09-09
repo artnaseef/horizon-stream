@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2021 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2021 The OpenNMS Group, Inc.
+ * Copyright (C) 2022 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,24 +26,22 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.horizon.ipc.twin.api;
+package org.opennms.horizon.db.dao.api;
 
-import java.io.Closeable;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * TwinSubscriber lives on Minion that handles all the Object subscriptions on Minion.
- * At boot up, a module that lives on Minion issues an RPC from Minion to OpenNMS to get an object.
- * Subsequent updates of the object will come as reverse sink messages from OpenNMS to Minion
- */
-public interface TwinSubscriber extends Closeable {
+public abstract class AbstractInterfaceToNodeCache implements InterfaceToNodeCache {
+
+    private static final AtomicReference<InterfaceToNodeCache> s_instance = new AtomicReference<>();
+
+    public static void setInstance(InterfaceToNodeCache cache) {
+        s_instance.set(cache);
+    }
 
     /**
-     * @param key      Unique key for the object.
-     * @param clazz    Specific bean class of T to marshal/unmarshal.
-     * @param consumer Consumer of T for subsequent updates to T.
-     * @param <T>      T is an object type that needs to be replicated from OpenNMS to Minion.
-     * @return Closeable to close the subscription of T.
+     * @deprecated Inject this value instead of using singleton access.
      */
-    <T> Closeable subscribe(String key, Class<T> clazz, Consumer<T> consumer);
+    public static InterfaceToNodeCache getInstance() {
+        return s_instance.get();
+    }
 }
