@@ -3,7 +3,7 @@ kind: Config
 metadata:
   name: horizon-stream
 requires:
-  - configs: ["operator-dependencies"]
+  - configs: ["operator"]
   - configs: ["shared-lib"]
     path: shared-lib/skaffold.yaml
   - configs: ["horizon-stream-ui"]
@@ -45,18 +45,10 @@ build:
         - "themes/**"
     docker:
       dockerfile: Dockerfile
-  - image: opennms/grafana-dev
+  - image: opennms/horizon-stream-grafana-dev
     context: grafana
     docker:
       dockerfile: Dockerfile
-  - image: opennms/operator
-    context: operator
-    docker:
-      dockerfile: Dockerfile
-    hooks:
-      before:
-        - command: [ "make", "copy-charts" ]
-          dir: operator
 
 portForward:
   - resourceType: deployment
@@ -142,20 +134,6 @@ deploy:
   kubectl:
     manifests:
       - operator/local-instance.yaml
-  helm:
-    releases:
-      - name: opennms-operator
-        namespace: opennms
-        createNamespace: true
-        chartPath: charts/opennms-operator
-        valuesFiles:
-          - operator/values.yaml
-        setValues:
-          TLS.SelfSigned: true
-        artifactOverrides:
-          Operator.image: opennms/operator
-          Keycloak.image: opennms/horizon-stream-keycloak-dev
-          Grafana.image: opennms/grafana-dev
 resourceSelector:
   allow:
     - groupKind: "OpenNMS.k8s.opennms.com"
@@ -167,10 +145,43 @@ resourceSelector:
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
+  name: operator
+requires:
+  - configs: ["operator-dependencies"]
+build:
+  artifacts:
+    - image: opennms/operator
+      context: operator
+      docker:
+        dockerfile: Dockerfile
+      hooks:
+        before:
+          - command: [ "make", "copy-charts" ]
+            dir: operator
+deploy:
+  helm:
+    releases:
+      - name: opennms-operator
+        namespace: opennms
+        createNamespace: true
+        wait: true
+        chartPath: charts/opennms-operator
+        valuesFiles:
+          - operator/values.yaml
+        setValues:
+          TLS.SelfSigned: true
+        artifactOverrides:
+          Operator.image: opennms/operator
+
+---
+
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
   name: operator-dependencies
-#deploy:
-#  helm:
-#    releases:
-#      - name: opennms-operator-dependencies
-#        chartPath: charts/opennms-operator-dependencies
-#        wait: true
+deploy:
+  helm:
+    releases:
+      - name: opennms-operator-dependencies
+        chartPath: charts/opennms-operator-dependencies
+        wait: true
