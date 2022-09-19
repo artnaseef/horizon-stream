@@ -6,6 +6,7 @@ spec:
   allowedUsers: []
   host: onmshs
   namespace: skaffold-instance
+  deployOnly: true
   core:
     image: opennms/horizon-stream-core
     cpu: "0"

@@ -15,8 +15,6 @@ Operator:
 customErrors:
   image: quay.io/kubernetes-ingress-controller/custom-error-pages-amd64:0.4
   debug: true
-ServiceImages:
-  Grafana: placeholder
 TLS:
   Enabled: true
   Issuer:

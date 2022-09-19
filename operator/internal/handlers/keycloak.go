@@ -43,7 +43,7 @@ func (h *KeycloakHandler) ProvideConfig(values values.TemplateValues) []client.O
 	yaml.LoadYaml(filepath("keycloak/keycloak-operator-sub.yaml"), values, &opSub)
 	yaml.LoadYaml(filepath("keycloak/keycloak-cred-secret.yaml"), values, &credSecret)
 	yaml.LoadYaml(filepath("keycloak/keycloak.yaml"), values, &keycloak)
-	yaml.LoadYaml(filepath("keycloak/keycloak-realmimport.yaml"), values, &realmImport)
+	yaml.LoadYaml(filepath("keycloak/keycloak-realm-import.yaml"), values, &realmImport)
 	yaml.LoadYaml(filepath("keycloak/keycloak-service.yaml"), values, &service)
 	yaml.LoadYaml(filepath("keycloak/keycloak-internal-service.yaml"), values, &internalService)
 
