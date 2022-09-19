@@ -2,9 +2,9 @@ import { AppContext, createVNode, render } from "vue"
 
 enum Widgets {
   DEVICES = '../Components/Widgets/DeviceWidget.vue',
-  MINIONS = '../Components//Widgets/MinionWidget.vue',
-  GEOMAP = '../Components//Widgets/MapWidget.vue',
-  TAGS = '../Components//Widgets/TagWidget.vue'
+  MINIONS = '../Components/Widgets/MinionWidget.vue',
+  GEOMAP = '../Components/Widgets/MapWidget.vue',
+  TAGS = '../Components/Widgets/TagWidget.vue'
 }
 
 type Widget = typeof Widgets[keyof typeof Widgets]

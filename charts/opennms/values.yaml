@@ -89,7 +89,7 @@ Keycloak:
   AdminPassword: notset
   UserUsername: user001
   UserPassword: notset
-  Image: opennms/horizon-stream-keycloak
+  Image: opennms/horizon-stream-keycloak:latest
   RealmName: opennms
   UUID:
     RealmId: 00000000-0000-0000-0000-000000000000
