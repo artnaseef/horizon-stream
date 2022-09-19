@@ -53,92 +53,81 @@ build:
 portForward:
   - resourceType: deployment
     resourceName: opennms-rest-server
-    namespace: skaffold-instance
     port: 9090 # HTTP
   - resourceType: deployment
     resourceName: opennms-notification
-    namespace: skaffold-instance
     port: 8080 # HTTP
     localPort: 38080
   - resourceType: deployment
     resourceName: opennms-notification
-    namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5007
   - resourceType: deployment
     resourceName: opennms-rest-server
-    namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5006
   - resourceType: deployment
     resourceName: opennms-core
-    namespace: skaffold-instance
     port: 8181 # HTTP
     localPort: 18181
   - resourceType: deployment
     resourceName: opennms-core
-    namespace: skaffold-instance
     port: 8101 # SSH
     localPort: 18101
   - resourceType: deployment
     resourceName: opennms-core
-    namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5005
   - resourceType: statefulset
     resourceName: onms-keycloak
-    namespace: skaffold-instance
     port: 8080 # HTTP
     localPort: 28080
   - resourceType: deployment
     resourceName: opennms-minion
-    namespace: skaffold-instance
     port: 8201 # SSH
     localPort: 38101
   - resourceType: deployment
     resourceName: mail-server
-    namespace: skaffold-instance
     port: 8025 # HTTP
     localPort: 8025
   - resourceType: deployment
     resourceName: mail-server
-    namespace: skaffold-instance
     port: 1025 # SMTP
     localPort: 1025
   - resourceType: deployment
     resourceName: postgres
-    namespace: skaffold-instance
     port: 5432 # Postgres
     localPort: 5432
   - resourceType: deployment
     resourceName: prometheus
-    namespace: skaffold-instance
     port: 9090 # prometheus tcp
     localPort: 59090
   - resourceType: deployment
     resourceName: prometheus-pushgateway
-    namespace: skaffold-instance
     port: 9091 #prometheus-pushgateway tcp
     localPort: 59091
   - resourceType: deployment
     resourceName: grafana
-    namespace: skaffold-instance
     port: 3000 #grafana HTTP
     localPort: 53000
   - resourceType: pod
     resourceName: opennms-kafka-0
-    namespace: skaffold-instance
     port: 59092 # kafka tcp local client port
     localPort: 59092 # default port for kafka broker
 deploy:
-  kubectl:
-    manifests:
-      - operator/local-instance.yaml
-resourceSelector:
-  allow:
-    - groupKind: "OpenNMS.k8s.opennms.com"
-      image: [ ".*" ]
-      labels: [ ".*" ]
+  helm:
+    releases:
+      - name: opennms
+        chartPath: charts/opennms
+        valuesFiles:
+          - operator/values.yaml
+        artifactOverrides:
+          OpenNMS.Core.Image: opennms/horizon-stream-core
+          OpenNMS.API.Image: opennms/horizon-stream-rest-server
+          OpenNMS.UI.Image: opennms/horizon-stream-ui
+          OpenNMS.Notification.Image: opennms/horizon-stream-notification
+#          Keycloak.Image: opennms/horizon-stream-keycloak-dev ## TODO: Reenable when keycloak operator is removed
+          Grafana.Image: opennms/horizon-stream-grafana-dev
 
 ---
 
@@ -164,12 +153,9 @@ deploy:
       - name: opennms-operator
         namespace: opennms
         createNamespace: true
-        wait: true
         chartPath: charts/opennms-operator
         valuesFiles:
           - operator/values.yaml
-        setValues:
-          TLS.SelfSigned: true
         artifactOverrides:
           Operator.image: opennms/operator
 
@@ -184,4 +170,3 @@ deploy:
     releases:
       - name: opennms-operator-dependencies
         chartPath: charts/opennms-operator-dependencies
-        wait: true
