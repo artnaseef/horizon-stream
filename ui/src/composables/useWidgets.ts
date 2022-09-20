@@ -1,10 +1,10 @@
 import { AppContext, createVNode, render } from "vue"
 
 enum Widgets {
-  DEVICES = '../Components/Widgets/DeviceWidget.vue',
-  MINIONS = '../Components/Widgets/MinionWidget.vue',
-  GEOMAP = '../Components/Widgets/MapWidget.vue',
-  TAGS = '../Components/Widgets/TagWidget.vue'
+  DEVICES = 'DeviceWidget',
+  MINIONS = 'MinionWidget',
+  GEOMAP = 'MapWidget',
+  TAGS = 'TagWidget'
 }
 
 type Widget = typeof Widgets[keyof typeof Widgets]
@@ -14,7 +14,7 @@ const displayedWidgets = ref<Widget[]>([])
 
 const useWidgets = () => {
 
-  const addWidget = (
+  const addWidget = async (
     appContext: AppContext,
     widget: string,
     element: HTMLElement,
@@ -23,7 +23,7 @@ const useWidgets = () => {
     ) => {
     
     // async import a component from a given path
-    const component = defineAsyncComponent(() => import( /* @vite-ignore */ widget))
+    const component = (await import(`../Components/Widgets/${widget}.vue`)).default
     const div = document.createElement('div')
     div.id = widget
   

@@ -3,9 +3,10 @@
   <div id="widget-flex-container">
     <FeatherCheckboxGroup label="Available Widgets">
       <FeatherCheckbox 
-        v-for="widget of widgets"
+        v-for="(widget, index) in widgets"
+        :key="index"
         v-model="widgetsRef[widget]" 
-        @update:modelValue="(val) => triggerWidget(val, widget)">
+        @update:modelValue="(val: boolean | undefined) => triggerWidget(val, widget)">
           {{ getWidgetNameByIndex(widget) }}
       </FeatherCheckbox>
 
@@ -15,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppContext } from 'vue';
+import { AppContext } from 'vue'
 import { useWidgets, Widgets } from '@/composables/useWidgets'
 
 const { widgets, addWidget, removeWidget, displayedWidgets } = useWidgets()
@@ -36,7 +37,7 @@ const triggerWidget = (val: boolean | undefined, widget: string) => {
 
 // returns a name based on the widget enum key
 const getWidgetNameByIndex  = (widget: string) => {
-  const index = Object.values(Widgets).indexOf(widget as unknown as Widgets);
+  const index = Object.values(Widgets).indexOf(widget as unknown as Widgets)
   const name = Object.keys(Widgets)[index].toLocaleLowerCase()
   return name.charAt(0).toUpperCase() + name.slice(1)
 }

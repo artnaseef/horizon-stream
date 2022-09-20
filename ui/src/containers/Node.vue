@@ -1,10 +1,10 @@
 <template>
-<h1>Node (id: {{route.params.id}})</h1>
+  <EventsTable />
 </template>
-
+  
 <script setup lang="ts">
-const route = useRoute()
+import EventsTable from '@/components/Events/EventsTable.vue'
 </script>
-
-<style lang="scss">
+  
+<style lang="scss" scoped>
 </style>

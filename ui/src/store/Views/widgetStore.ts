@@ -8,6 +8,7 @@ export const useWidgetStore = defineStore('widgetStore', {
   state: () => ({
     deviceWidgetProps: baseWidgetProps,
     minionWidgetProps: baseWidgetProps,
-    mapWidgetProps: baseWidgetProps
+    mapWidgetProps: baseWidgetProps,
+    deviceStatusWidgetProps: baseWidgetProps
   })
 })

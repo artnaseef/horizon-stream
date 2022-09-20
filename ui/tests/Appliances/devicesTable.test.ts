@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
-import DeviceTable from '@/components/Appliances/DeviceTable.vue'
+import DevicesTable from '@/components/Appliances/DevicesTable.vue'
 import applianceQueriesStore from '../store/applianceQueries'
 
-describe('DeviceTable.vue', () => {
+describe('DevicesTable.vue', () => {
   describe('Required columns', () => {
     beforeAll(() => {
       const deviceItems = [
@@ -25,7 +25,7 @@ describe('DeviceTable.vue', () => {
     ]
 
     it.each(requiredColumns)('should have "%s" column', (_, dataTest) => {
-      const wrapper = mount(DeviceTable)
+      const wrapper = mount(DevicesTable)
        
       const elem = wrapper.find(`[data-test="${dataTest}"]`)
       expect(elem.exists()).toBe(true)
@@ -35,7 +35,7 @@ describe('DeviceTable.vue', () => {
   describe('Device list', () => {
     it('should have an empty table when there\'s no device', () =>{
       applianceQueriesStore(computed(() => [])) 
-      const wrapper = mount(DeviceTable)
+      const wrapper = mount(DevicesTable)
          
       const deviceItem = wrapper.find('[data-test="device-item"]')
       expect(deviceItem.exists()).toBe(false)
@@ -52,7 +52,7 @@ describe('DeviceTable.vue', () => {
         }
       ]
       applianceQueriesStore(computed(() => deviceItems)) 
-      const wrapper = mount(DeviceTable)
+      const wrapper = mount(DevicesTable)
 
       const deviceItem = wrapper.find('[data-test="device-item"]')
       expect(deviceItem.exists()).toBe(true)
@@ -108,7 +108,7 @@ describe('DeviceTable.vue', () => {
       })
 
       test('Latency OK/FAILED/UNKNOWN should have the corresponding background color', () => {
-        const wrapper = mount(DeviceTable)
+        const wrapper = mount(DevicesTable)
         const latencies = formatValueBackground(wrapper.findAll('[data-test="col-latency"] > .value'))
         const expectedValueBackground = [
           [undefined, 'bg-unknown'],
@@ -122,7 +122,7 @@ describe('DeviceTable.vue', () => {
       })
         
       test('Uptime OK/FAILED/UNKNOWN should have the corresponding background color', () => {
-        const wrapper = mount(DeviceTable)
+        const wrapper = mount(DevicesTable)
         const uptimes = formatValueBackground(wrapper.findAll('[data-test="col-uptime"] > .value'))
         const expectedValueBackground = [
           [undefined, 'bg-unknown'],
@@ -169,7 +169,7 @@ describe('DeviceTable.vue', () => {
       })
 
       test('Status UP/DOWN should have the corresponding background color', () => {
-        const wrapper = mount(DeviceTable)
+        const wrapper = mount(DevicesTable)
 
         const statuses = formatValueBackground(wrapper.findAll('[data-test="col-status"] > .value'))
         const expectedValueBackground = [
