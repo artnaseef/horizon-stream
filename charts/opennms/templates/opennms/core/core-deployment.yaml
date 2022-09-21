@@ -67,7 +67,7 @@ spec:
             - name: ACTIVEMQ_BROKER_URL
               value: "tcp://localhost:61616"
             - name: KEYCLOAK_BASE_URL
-              value: "https://{{ .Values.Keycloak.ServiceName }}-service:{{ .Values.Keycloak.Port }}{{ .Values.Keycloak.Path }}/"
+              value: "{{ if .Values.TLS.Enabled }}https://{{ else }}http://{{ end }}{{ .Values.Keycloak.ServiceName }}:{{ .Values.Keycloak.Port }}{{ .Values.Keycloak.Path }}/"
             - name: KEYCLOAK_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:

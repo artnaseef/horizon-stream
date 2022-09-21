@@ -42,7 +42,9 @@ spec:
                 name: {{ .Values.Grafana.ServiceName }}
                 port:
                   number: {{ .Values.Grafana.Port }}
+  {{ if .Values.TLS.Enabled }}
   tls:
     - hosts:
         -  {{.Values.Host }}
       secretName: {{ .Values.TLS.Cert.Name }}
+  {{ end }}

@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Values.Namespace }}
 data:
   restCfg: |
-    keycloak.base-url=https://{{ .Values.Keycloak.ServiceName }}-service:{{ .Values.Keycloak.Port }}{{ .Values.Keycloak.Path }}/
+    keycloak.base-url={{ if .Values.TLS.Enabled }}https://{{ else }}http://{{ end }}{{ .Values.Keycloak.ServiceName }}:{{ .Values.Keycloak.Port }}{{ .Values.Keycloak.Path }}/
     keycloak.admin-username={{ .Values.Keycloak.AdminUsername }}
     keycloak.admin-password={{ .Values.Keycloak.AdminPassword }}
   useKafka: |

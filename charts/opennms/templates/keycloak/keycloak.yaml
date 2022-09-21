@@ -8,7 +8,7 @@ metadata:
 spec:
   instances: {{ .Values.Keycloak.Replicas }}
   hostname: {{ .Values.Host }}
-  tlsSecret: {{ .Values.TLS.Cert.Name }}
+  tlsSecret: {{ if .Values.TLS.Enabled }}{{ .Values.TLS.Cert.Name }}{{ else }}INSECURE-DISABLE{{ end }}
   image: {{ .Values.Keycloak.Image }}
   disableDefaultIngress: true
   serverConfiguration:
