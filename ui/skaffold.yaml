@@ -24,8 +24,8 @@ build:
       dockerfile: Dockerfile
       target: development
       buildArgs:
-        VITE_BASE_URL: "api"
-        VITE_KEYCLOAK_URL: "auth"
+        VITE_BASE_URL: "/api"
+        VITE_KEYCLOAK_URL: "/auth"
 portForward:
   - resourceType: deployment
     resourceName: opennms-ui
