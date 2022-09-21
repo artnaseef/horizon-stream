@@ -25,9 +25,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Values.Keycloak.ServiceName }}-service
+                name: {{ .Values.Keycloak.ServiceName }}
                 port:
-                  number: 8443
+                  number: {{ .Values.Keycloak.Port }}
           - path: {{ .Values.OpenNMS.API.Path }}
             pathType: Prefix
             backend:
