@@ -29,6 +29,7 @@ build:
 portForward:
   - resourceType: deployment
     resourceName: opennms-ui
+    namespace: skaffold-instance
     port: 80 # nginx HTTP
     localPort: 3000
 profiles:

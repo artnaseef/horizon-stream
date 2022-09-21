@@ -90,8 +90,8 @@ spec:
           timeoutSeconds: 1
         name: controller
         ports:
-        - containerPort: 80
-          hostPort: 80
+        - containerPort: {{ or .Values.Port "80" }}
+          hostPort: {{ or .Values.Port "80" }}
           name: http
           protocol: TCP
         - containerPort: 443

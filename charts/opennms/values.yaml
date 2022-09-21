@@ -1,5 +1,6 @@
 Namespace: opennms-instance
 Host: onmshs
+Port: ~
 TestDeploy: false
 OpenNMS:
   Core:
@@ -82,7 +83,7 @@ Postgres:
   VolumeSize: 10Gi
 Keycloak:
   Path: /auth
-  Port: 8443
+  Port: 8080
   Replicas: 1
   ServiceName: onms-keycloak
   AdminUsername: admin

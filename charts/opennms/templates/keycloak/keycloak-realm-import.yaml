@@ -17,7 +17,8 @@ spec:
     rememberMe: true
     resetPasswordAllowed: true
     attributes:
-      frontendUrl: "https://{{ .Values.Host }}{{ .Values.Keycloak.Path }}"
+      frontendUrl: "{{ if .Values.TLS.Enabled }}https://{{ else }}http://{{ end }}{{ .Values.Host }}{{ if .Values.Port }}:{{ .Values.Port }}{{ end }}{{ .Values.Keycloak.Path }}"
+      adminUrl: "{{ if .Values.TLS.Enabled }}https://{{ else }}http://{{ end }}{{ .Values.Host }}{{ if .Values.Port }}:{{ .Values.Port }}{{ end }}{{ .Values.Keycloak.Path }}"
     clients:
       - id: {{ .Values.Keycloak.UUID.ClientId }}
         clientId: horizon-stream

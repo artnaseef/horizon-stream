@@ -1,0 +1,78 @@
+Namespace: skaffold-instance
+Host: localhost
+Port: 8123
+TLS:
+  Enabled: False
+Keycloak:
+  UUID:
+    RealmId: 05d37096-e897-4ffb-9ab3-e549ebf85628
+    ClientId: 83080b22-9815-4c69-89f4-f8229d394535
+    BaseUserId: 289d1ec0-d742-4c6f-ae1b-2e0dcc291a5f
+    AdminUserId: 92bf6e72-b712-4a8f-bade-e769a5883077
+
+OpenNMS:
+  API:
+    Resources:
+      Limits:
+        Cpu: '0'
+        Memory: '0'
+      Requests:
+        Cpu: '0'
+        Memory: '0'
+  UI:
+    Resources:
+      Limits:
+        Cpu: '0'
+        Memory: '0'
+      Requests:
+        Cpu: '0'
+        Memory: '0'
+  Minion:
+    Resources:
+      Limits:
+        Cpu: '0'
+        Memory: '0'
+      Requests:
+        Cpu: '0'
+        Memory: '0'
+  Notification:
+    Resources:
+      Limits:
+        Cpu: '0'
+        Memory: '0'
+      Requests:
+        Cpu: '0'
+        Memory: '0'
+  Core:
+    Resources:
+      Limits:
+        Cpu: '0'
+        Memory: '0'
+      Requests:
+        Cpu: '0'
+        Memory: '0'
+Grafana:
+  Resources:
+    Limits:
+      Cpu: 500m
+      Memory: 1Gi
+    Requests:
+      Cpu: 100m
+      Memory: 100Mi
+Prometheus:
+  Server:
+    Resources:
+      Limits:
+        Cpu: "1"
+        Memory: 512Mi
+      Requests:
+        Cpu: 100m
+        Memory: 100Mi
+  PushGateway:
+    Resources:
+      Limits:
+        Cpu: "1"
+        Memory: 512Mi
+      Requests:
+        Cpu: 100m
+        Memory: 100Mi

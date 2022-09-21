@@ -14,6 +14,10 @@ spec:
   serverConfiguration:
     - name: hostname
       value: {{ .Values.Host }}
+    {{ if .Values.Port }}
+    - name: hostname-port
+      value: "{{ .Values.Port }}"
+    {{ end }}
     - name: db
       value: postgres
     - name: db-url-host

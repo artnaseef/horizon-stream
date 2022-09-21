@@ -14,7 +14,7 @@ spec:
   ports:
     - appProtocol: http
       name: http
-      port: 80
+      port: {{ or .Values.Port "80" }}
       protocol: TCP
       targetPort: http
     - appProtocol: https
