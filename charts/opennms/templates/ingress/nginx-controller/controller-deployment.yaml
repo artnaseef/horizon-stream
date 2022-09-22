@@ -56,10 +56,8 @@ spec:
         - --watch-ingress-without-class=true
         - --publish-status-address=localhost
         - --validating-webhook=:8443
-        {{ if .Values.TLS.Enabled }}
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
-        {{ end }}
         env:
         - name: POD_NAME
           valueFrom:
@@ -123,18 +121,13 @@ spec:
             drop:
             - ALL
           runAsUser: 101
-        {{ if .Values.TLS.Enabled }}
         volumeMounts:
         - mountPath: /usr/local/certificates/
           name: webhook-cert
           readOnly: true
-        {{ end }}
-      dnsPolicy: ClusterFirst
       serviceAccountName: ingress-nginx
       terminationGracePeriodSeconds: 0
-      {{ if .Values.TLS.Enabled }}
       volumes:
       - name: webhook-cert
         secret:
           secretName: ingress-nginx-admission
-      {{ end }}
