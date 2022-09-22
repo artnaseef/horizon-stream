@@ -55,6 +55,8 @@ spec:
         - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller
         - --watch-ingress-without-class=true
         - --publish-status-address=localhost
+        - --http-port={{ .Values.Ingress.NginxController.HttpPort }}
+        - --https-port={{ .Values.Ingress.NginxController.HttpsPort }}
         - --validating-webhook=:8443
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
@@ -88,12 +90,12 @@ spec:
           timeoutSeconds: 1
         name: controller
         ports:
-        - containerPort: {{ or .Values.Port "80" }}
-          hostPort: {{ or .Values.Port "80" }}
+        - containerPort: {{ .Values.Ingress.NginxController.HttpPort }}
+          hostPort: {{ .Values.Ingress.NginxController.HttpPort }}
           name: http
           protocol: TCP
-        - containerPort: 443
-          hostPort: 443
+        - containerPort: {{ .Values.Ingress.NginxController.HttpsPort }}
+          hostPort: {{ .Values.Ingress.NginxController.HttpsPort }}
           name: https
           protocol: TCP
         - containerPort: 8443

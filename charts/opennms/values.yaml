@@ -1,6 +1,6 @@
 Namespace: opennms-instance
 Host: onmshs
-Port: ~
+Port: 80
 TestDeploy: false
 OpenNMS:
   Core:

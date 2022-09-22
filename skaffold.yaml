@@ -133,7 +133,7 @@ portForward:
   - resourceType: deployment
     resourceName: ingress-nginx-controller
     namespace: skaffold-instance
-    port: 8123 # HTTP
+    port: 80 # HTTP
     localPort: 8123
   - resourceType: deployment
     resourceName: ingress-nginx-controller
