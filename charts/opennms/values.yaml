@@ -99,11 +99,6 @@ Keycloak:
   UserUsername: user001
   UserPassword: notset
   RealmName: opennms
-  UUID:
-    RealmId: 00000000-0000-0000-0000-000000000000
-    ClientId: 00000000-0000-0000-0000-000000000000
-    BaseUserId: 00000000-0000-0000-0000-000000000000
-    AdminUserId: 00000000-0000-0000-0000-000000000000
 Grafana:
   Path: /grafana
   Port: 3000
