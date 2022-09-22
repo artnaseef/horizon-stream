@@ -157,7 +157,7 @@ deploy:
           OpenNMS.API.Image: opennms/horizon-stream-rest-server
           OpenNMS.UI.Image: opennms/horizon-stream-ui
           OpenNMS.Notification.Image: opennms/horizon-stream-notification
-#          Keycloak.Image: opennms/horizon-stream-keycloak-dev ## TODO: Reenable when keycloak operator is removed
+          Keycloak.Image: opennms/horizon-stream-keycloak-dev
           Grafana.Image: opennms/horizon-stream-grafana-dev
 
 ---
