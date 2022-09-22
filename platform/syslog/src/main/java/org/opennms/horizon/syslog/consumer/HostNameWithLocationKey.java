@@ -26,12 +26,39 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.horizon.config.service.api;
+package org.opennms.horizon.syslog.consumer;
 
-public class ConfigConstants {
+import java.util.Objects;
 
-    public static final String CONFIG = "config";
-    public static final String CONFIG_NAMES = "config-names";
-    public static final String SNMP_TRAPS_CONFIG = "snmp-traps";
-    public static final String SYSLOG_CONFIG = "syslog-config";
+public class HostNameWithLocationKey {
+
+    private final String hostName;
+
+    private final String location;
+
+    public HostNameWithLocationKey(String hostName, String location) {
+        this.hostName = hostName;
+        this.location = location;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HostNameWithLocationKey that = (HostNameWithLocationKey) o;
+        return Objects.equals(hostName, that.hostName) && Objects.equals(location, that.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hostName, location);
+    }
 }

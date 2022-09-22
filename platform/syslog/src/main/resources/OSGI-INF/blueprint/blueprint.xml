@@ -1,0 +1,40 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <reference id="configService" interface="org.opennms.horizon.config.service.api.ConfigService"/>
+    <reference id="eventConfDao" interface="org.opennms.horizon.events.api.EventConfDao"/>
+    <reference id="messageConsumerManager" interface="org.opennms.horizon.ipc.sink.api.MessageConsumerManager"/>
+    <reference id="eventForwarder" interface="org.opennms.horizon.events.api.EventForwarder" />
+    <reference id="distPollerDao" interface="org.opennms.horizon.db.dao.api.DistPollerDao" />
+    <reference id="interfaceToNodeCache" interface="org.opennms.horizon.db.dao.api.InterfaceToNodeCache" />
+    <reference id="sessionUtils" interface="org.opennms.horizon.db.dao.api.SessionUtils" />
+    <reference id="eventSubscriptionService" interface="org.opennms.horizon.events.api.EventSubscriptionService" />
+
+    <bean id="syslogSinkConsumer" class="org.opennms.horizon.syslog.consumer.SyslogSinkConsumer"
+          init-method="init">
+        <argument ref="syslogdMetricRegistry"/>
+        <property name="messageConsumerManager" ref="messageConsumerManager"/>
+        <property name="eventForwarder" ref="eventForwarder"/>
+        <property name="distPollerDao" ref="distPollerDao"/>
+        <property name="interfaceToNodeCache" ref="interfaceToNodeCache"/>
+        <property name="configService" ref="configService"/>
+        <property name="sessionUtils" ref="sessionUtils"/>
+        <property name="eventSubscriptionService" ref="eventSubscriptionService"/>
+    </bean>
+
+    <bean id="syslogdMetricRegistry" class="com.codahale.metrics.MetricRegistry" />
+
+    <bean id="syslogdMetricRegistryJmxReporterBuilder" class="com.codahale.metrics.JmxReporter" factory-method="forRegistry">
+        <argument ref="syslogdMetricRegistry"/>
+    </bean>
+
+    <bean id="syslogdMetricRegistryDomainedJmxReporterBuilder" factory-ref="syslogdMetricRegistryJmxReporterBuilder" factory-method="inDomain">
+        <argument value="org.opennms.netmgt.syslogd"/>
+    </bean>
+
+    <bean id="syslogdMetricRegistryJmxReporter"
+          factory-ref="syslogdMetricRegistryDomainedJmxReporterBuilder"
+          factory-method="build"
+          init-method="start"
+          destroy-method="stop" />
+
+</blueprint>

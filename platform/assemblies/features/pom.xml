@@ -106,6 +106,7 @@
                                 <feature>horizon-core-monitor</feature>
                                 <feature>horizon-core-config-rest</feature>
                                 <feature>horizon-core-traps</feature>
+                                <feature>horizon-core-syslog</feature>
                             </features>
                         </configuration>
                     </execution>
@@ -437,6 +438,11 @@
         <dependency>
             <groupId>org.opennms.horizon</groupId>
             <artifactId>traps</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opennms.horizon</groupId>
+            <artifactId>syslog</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

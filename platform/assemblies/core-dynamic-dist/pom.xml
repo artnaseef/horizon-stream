@@ -127,6 +127,7 @@
                         <feature>horizon-core-monitor</feature>
                         <feature>horizon-core-config-rest</feature>
                         <feature>horizon-core-traps</feature>
+                        <feature>horizon-core-syslog</feature>
                     </bootFeatures>
                     <libraries>
                     </libraries>

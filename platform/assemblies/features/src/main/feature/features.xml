@@ -515,4 +515,14 @@
         <feature>horizon-ipc-twin-grpc</feature>
         <bundle>mvn:org.opennms.horizon/traps/${project.version}</bundle>
     </feature>
+
+    <feature name="horizon-core-syslog" version="${project.version}">
+        <feature>horizon-db</feature>
+        <feature>horizon-ipc-api</feature>
+        <feature>horizon-snmp</feature>
+        <feature>horizon-core-config-service</feature>
+        <bundle>mvn:org.opennms.horizon.common/common-concurrency/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.provision/api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon/syslog/${project.version}</bundle>
+    </feature>
 </features>
