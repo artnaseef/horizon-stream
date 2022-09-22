@@ -123,10 +123,10 @@ func setCorePasswords(tv values.TemplateValues, creds v1alpha1.Credentials) valu
 
 //setCorePasswords - sets randomly generated password for Postgres if not already set
 func setPostgresPassword(tv values.TemplateValues) values.TemplateValues {
-	tv.Values.Postgres.AdminPassword = security.GeneratePassword(false)
-	tv.Values.Postgres.OpenNMSPassword = security.GeneratePassword(false)
-	tv.Values.Postgres.KeycloakPassword = security.GeneratePassword(false)
-	tv.Values.Postgres.NotificationPassword = security.GeneratePassword(false)
-	tv.Values.Postgres.GrafanaPassword = security.GeneratePassword(false)
+	tv.Values.Postgres.AdminPassword = security.GeneratePassword(true)
+	tv.Values.Postgres.OpenNMSPassword = security.GeneratePassword(true)
+	tv.Values.Postgres.KeycloakPassword = security.GeneratePassword(true)
+	tv.Values.Postgres.NotificationPassword = security.GeneratePassword(true)
+	tv.Values.Postgres.GrafanaPassword = security.GeneratePassword(true)
 	return tv
 }

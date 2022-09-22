@@ -1,11 +1,11 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Secret # Currently stores passwords!
 metadata:
   name: {{ .Values.Grafana.ServiceName }}
   labels:
     app: {{ .Values.Grafana.ServiceName }}
   namespace: {{ .Values.Namespace }}
-data:
+stringData:
   grafana.ini: |
     [database]
     type = postgres
@@ -365,3 +365,4 @@ data:
       "timezone": "brower",
       "title": "Horizon Stream"
     }
+type: Opaque
