@@ -24,7 +24,7 @@ spec:
             authz_exception: false
       podTemplate:
         spec:
-          {{ if .Values.NodeRestrictions.Enabled }}
+          {{- if .Values.NodeRestrictions.Enabled }}
           tolerations:
             - effect: "NoSchedule"
               key: "{{ .Values.NodeRestrictions.Key }}"
@@ -40,7 +40,7 @@ spec:
                         operator: In
                         values:
                           - {{ .Values.NodeRestrictions.Value }}
-          {{ end }}
+          {{- end }}
           initContainers:
             - name: install-plugins
               command:

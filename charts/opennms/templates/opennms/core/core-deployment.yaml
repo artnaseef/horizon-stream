@@ -18,7 +18,7 @@ spec:
       labels:
         app: {{ .Values.OpenNMS.Core.ServiceName }}
     spec:
-      {{ if .Values.NodeRestrictions.Enabled }}
+      {{- if .Values.NodeRestrictions.Enabled }}
       tolerations:
         - effect: "NoSchedule"
           key: "{{ .Values.NodeRestrictions.Key }}"
@@ -34,7 +34,7 @@ spec:
                 operator: In
                 values:
                 - {{ .Values.NodeRestrictions.Value }}
-      {{ end }}
+      {{- end }}
       terminationGracePeriodSeconds: 120
       containers:
         - name: {{ .Values.OpenNMS.Core.ServiceName }}
@@ -104,11 +104,11 @@ spec:
               containerPort: {{ .Values.OpenNMS.Core.HttpPort }}
             - name: grpc
               containerPort: {{ .Values.OpenNMS.Core.GrpcPort }}
-          {{ if not .Values.TestDeploy }}
+          {{- if not .Values.TestDeploy }}
 {{/*    TODO  livenessProbe:*/}}
 {{/*          readinessProbe:*/}}
 {{/*          startupProbe:*/}}
-          {{ end }}
+          {{- end }}
           resources:
             limits:
               cpu: "{{ .Values.OpenNMS.Core.Resources.Limits.Cpu }}"

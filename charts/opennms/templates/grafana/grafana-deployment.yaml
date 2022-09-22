@@ -14,7 +14,7 @@ spec:
       labels:
         app: {{ .Values.Grafana.ServiceName }}
     spec:
-      {{ if .Values.NodeRestrictions.Enabled }}
+      {{- if .Values.NodeRestrictions.Enabled }}
       tolerations:
         - effect: "NoSchedule"
           key: "{{ .Values.NodeRestrictions.Key }}"
@@ -30,7 +30,7 @@ spec:
                 operator: In
                 values:
                 - {{ .Values.NodeRestrictions.Value }}
-      {{ end }}
+      {{- end }}
       volumes:
         - name: grafana-config
           configMap:
@@ -75,5 +75,3 @@ spec:
             requests:
               cpu: "{{ .Values.Grafana.Resources.Requests.Cpu }}"
               memory: "{{ .Values.Grafana.Resources.Requests.Memory }}"
-
-          

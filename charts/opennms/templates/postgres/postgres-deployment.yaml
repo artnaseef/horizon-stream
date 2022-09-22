@@ -16,7 +16,7 @@ spec:
         app: {{ .Values.Postgres.ServiceName }}
         role: master
     spec:
-      {{ if .Values.NodeRestrictions.Enabled }}
+      {{- if .Values.NodeRestrictions.Enabled }}
       tolerations:
         - effect: "NoSchedule"
           key: "{{ .Values.NodeRestrictions.Key }}"
@@ -32,7 +32,7 @@ spec:
                 operator: In
                 values:
                 - {{ .Values.NodeRestrictions.Value }}
-      {{ end }}
+      {{- end }}
       volumes:
         - name: postgres-volume
         - name: postgres-initial-script
@@ -57,7 +57,7 @@ spec:
               value: "trust"
           ports:
             - containerPort: 5432
-          {{ if not .Values.TestDeploy }}
+          {{- if not .Values.TestDeploy }}
           livenessProbe:
             exec:
               command:
@@ -79,7 +79,7 @@ spec:
                 - postgres
             initialDelaySeconds: 10
             periodSeconds: 10
-          {{ end }}
+          {{- end }}
           resources:
             limits:
               cpu: "2"
