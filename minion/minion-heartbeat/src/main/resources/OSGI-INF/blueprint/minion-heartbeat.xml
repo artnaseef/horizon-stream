@@ -1,18 +1,27 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.3.0"
-           xsi:schemaLocation="
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.3.0"
+    xsi:schemaLocation="
 		http://www.osgi.org/xmlns/blueprint/v1.0.0
 		https://osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
 		http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.3.0
 		http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.3.0.xsd">
 
-  <reference id="identity" interface="org.opennms.horizon.shared.ipc.rpc.IpcIdentity"/>
-  <reference id="messageDispatcherFactory" interface="org.opennms.horizon.shared.ipc.sink.api.MessageDispatcherFactory"/>
+    <reference id="identity" interface="org.opennms.horizon.shared.ipc.rpc.IpcIdentity"/>
+    <reference id="messageDispatcherFactory"
+        interface="org.opennms.horizon.shared.ipc.sink.api.MessageDispatcherFactory"/>
 
-  <bean id="heartbeatProducer" class="org.opennms.horizon.minion.heartbeat.HeartbeatProducer" init-method="init">
-    <argument ref="identity"/>
-    <argument ref="messageDispatcherFactory"/>
-  </bean>
+<!--    If you need a new instance each type, then as 'scope = "prototype"' here. -->
+<!--    Or if you put the bean anonymous inline with the dispatcher def, then it will default to that-->
+    <bean id="module" class="org.opennms.horizon.minion.heartbeat.HeartbeatModule"/>
+
+    <bean id="dispatcher" factory-method="createSyncDispatcher" factory-ref="messageDispatcherFactory">
+        <argument ref="module"/>
+    </bean>
+
+    <bean id="heartbeatProducer" class="org.opennms.horizon.minion.heartbeat.HeartbeatProducer" init-method="init">
+        <argument ref="identity"/>
+        <argument ref="dispatcher"/>
+    </bean>
 
 </blueprint>

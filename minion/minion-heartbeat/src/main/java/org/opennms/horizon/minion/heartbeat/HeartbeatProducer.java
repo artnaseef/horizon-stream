@@ -28,17 +28,14 @@
 
 package org.opennms.horizon.minion.heartbeat;
 
-
 import com.google.protobuf.Timestamp;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.opennms.cloud.grpc.minion.Identity;
 import org.opennms.horizon.grpc.heartbeat.contract.HeartbeatMessage;
 import org.opennms.horizon.shared.ipc.rpc.IpcIdentity;
-import org.opennms.horizon.shared.ipc.sink.api.MessageDispatcherFactory;
 import org.opennms.horizon.shared.ipc.sink.api.SyncDispatcher;
 
 @Slf4j
@@ -48,25 +45,27 @@ public class HeartbeatProducer {
     private static final int PERIOD_MS = 30 * 1000;
 
     private final IpcIdentity identity;
-    private final MessageDispatcherFactory messageDispatcherFactory;
 
-    private SyncDispatcher<HeartbeatMessage> dispatcher;
+    private final SyncDispatcher<HeartbeatMessage> dispatcher;
     private Timer timer = new Timer();
 
     public void init() {
 
-        dispatcher = messageDispatcherFactory.createSyncDispatcher(new HeartbeatModule());
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
                     log.info("Sending heartbeat to Minion with id: {} at location: {}",
-                            identity.getId(), identity.getLocation());
+                        identity.getId(), identity.getLocation());
 
                     long millis = System.currentTimeMillis();
                     HeartbeatMessage heartbeatMessage = HeartbeatMessage.newBuilder().
-                        setIdentity(Identity.newBuilder().setLocation(identity.getLocation()).setSystemId(identity.getId()).build()).
-                        setTimestamp(Timestamp.newBuilder().setSeconds(millis / 1000).setNanos((int) ((millis % 1000) * 1000000)).build()).
+                        setIdentity(
+                            Identity.newBuilder().setLocation(identity.getLocation()).setSystemId(identity.getId())
+                                .build()).
+                        setTimestamp(
+                            Timestamp.newBuilder().setSeconds(millis / 1000).setNanos((int) ((millis % 1000) * 1000000))
+                                .build()).
                         build();
                     dispatcher.send(heartbeatMessage);
                 } catch (Throwable t) {
