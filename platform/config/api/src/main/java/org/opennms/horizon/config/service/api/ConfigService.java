@@ -33,9 +33,9 @@ import java.util.Optional;
 
 public interface ConfigService {
 
-    void addConfig(String configName, String jsonConfig);
+    void addConfig(String configName, String jsonConfig, String source);
 
-    void updateConfig(String configName, String jsonConfig);
+    void updateConfig(String configName, String jsonConfig, String source);
 
     Optional<String> getConfig(String configName);
 

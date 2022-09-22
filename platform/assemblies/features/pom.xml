@@ -84,6 +84,7 @@
                                 <feature>horizon-events</feature>
                                 <feature>horizon-grpc</feature>
                                 <feature>horizon-icmp</feature>
+                                <feature>horizon-datachoices</feature>
                                 <feature>horizon-inventory</feature>
                                 <feature>horizon-ipc-api</feature>
                                 <feature>horizon-provision</feature>
@@ -104,7 +105,7 @@
                                 <feature>camel-activemq</feature>
                                 <feature>horizon-metrics-prometheus</feature>
                                 <feature>horizon-core-monitor</feature>
-                                <feature>horizon-core-config</feature>
+                                <feature>horizon-core-config-rest</feature>
                                 <feature>horizon-core-traps</feature>
                             </features>
                         </configuration>
@@ -432,6 +433,11 @@
         <dependency>
             <groupId>org.opennms.horizon.config</groupId>
             <artifactId>rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opennms.horizon</groupId>
+            <artifactId>datachoices</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

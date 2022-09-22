@@ -23,7 +23,9 @@ const useWidgets = () => {
     ) => {
     
     // async import a component from a given path
-    const component = (await import(`../Components/Widgets/${widget}.vue`)).default
+    const comps = import.meta.glob('../Components/Widgets/*.vue')
+    const match: () => Promise<any> = comps[`../Components/Widgets/${widget}.vue`]
+    const component = (await match()).default
     const div = document.createElement('div')
     div.id = widget
   

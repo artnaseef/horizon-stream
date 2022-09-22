@@ -46,5 +46,10 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.opennms.horizon.events</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

@@ -168,6 +168,13 @@
         <bundle>mvn:org.opennms.core.ipc.twin.grpc/publisher/${project.version}</bundle>
     </feature>
 
+    <feature name="horizon-datachoices" version="${project.version}" description="Horizon :: Data Choices">
+        <feature>horizon-db</feature>
+        <feature>onms-httpclient</feature>
+        <bundle>mvn:org.opennms.horizon.common/common-web/${project.version}</bundle>
+        <bundle start-level="80">mvn:org.opennms.horizon/datachoices/${project.version}</bundle>
+    </feature>
+
     <feature name="horizon-core-monitor" version="${project.version}">
         <feature>horizon-metrics-prometheus</feature>
         <feature>horizon-events-api</feature>
@@ -492,13 +499,18 @@
         <bundle>mvn:org.opennms.horizon.metrics/impl/${project.version}</bundle>
     </feature>
 
-    <feature name="horizon-core-config" version="${project.version}">
-        <feature>horizon-db</feature>
+    <feature name="horizon-core-config-rest" version="${project.version}">
+        <feature>horizon-core-config-service</feature>
         <feature>horizon-core-rest</feature>
+        <bundle>mvn:org.opennms.horizon.config/rest/${project.version}</bundle>
+    </feature>
+
+    <feature name="horizon-core-config-service" version="${project.version}">
+        <feature>horizon-db</feature>
+        <feature>horizon-events</feature>
         <bundle>wrap:mvn:org.json/json/${json.version}$Export-Package=org.json</bundle>
         <bundle>mvn:org.opennms.horizon.config/api/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.config/service/${project.version}</bundle>
-        <bundle>mvn:org.opennms.horizon.config/rest/${project.version}</bundle>
     </feature>
 
 
@@ -506,11 +518,8 @@
         <feature>horizon-db</feature>
         <feature>horizon-ipc-api</feature>
         <feature>horizon-snmp</feature>
+        <feature>horizon-core-config-service</feature>
         <feature>horizon-ipc-twin-grpc</feature>
-        <bundle>wrap:mvn:org.json/json/${json.version}$Export-Package=org.json</bundle>
-        <bundle>mvn:org.opennms.core.ipc.twin/api/${project.version}</bundle>
-        <bundle>mvn:org.opennms.horizon.config/api/${project.version}</bundle>
-        <bundle>mvn:org.opennms.horizon.config/service/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon/traps/${project.version}</bundle>
     </feature>
 </features>

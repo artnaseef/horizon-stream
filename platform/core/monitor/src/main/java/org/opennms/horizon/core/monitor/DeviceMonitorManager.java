@@ -33,9 +33,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Gauge;
 import org.opennms.horizon.db.dao.api.IpInterfaceDao;
+import org.opennms.horizon.db.dao.api.MonitoringLocationDao;
 import org.opennms.horizon.db.dao.api.NodeDao;
 import org.opennms.horizon.db.dao.api.SessionUtils;
 import org.opennms.horizon.db.model.OnmsIpInterface;
+import org.opennms.horizon.db.model.OnmsMonitoringLocation;
 import org.opennms.horizon.db.model.OnmsNode;
 import org.opennms.horizon.events.api.EventConstants;
 import org.opennms.horizon.events.api.EventListener;
@@ -51,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,6 +80,7 @@ public class DeviceMonitorManager implements EventListener {
     private final IpInterfaceDao ipInterfaceDao;
     private final SessionUtils sessionUtils;
     private final OnmsMetricsAdapter metricsAdapter;
+    private final MonitoringLocationDao monitoringLocationDao;
     private final List<OnmsNode> nodeCache = new ArrayList<>();
     private final ThreadFactory monitorThreadFactory = new ThreadFactoryBuilder()
         .setNameFormat("device-monitor-runner-%d")
@@ -98,7 +102,7 @@ public class DeviceMonitorManager implements EventListener {
                                 SessionUtils sessionUtils,
                                 LocationAwarePingClient locationAwarePingClient,
                                 LocationAwareSnmpClient locationAwareSnmpClient,
-                                OnmsMetricsAdapter metricsAdapter) {
+                                OnmsMetricsAdapter metricsAdapter, MonitoringLocationDao locationDao) {
         this.eventSubscriptionService = eventSubscriptionService;
         this.nodeDao = nodeDao;
         this.ipInterfaceDao = ipInterfaceDao;
@@ -106,6 +110,7 @@ public class DeviceMonitorManager implements EventListener {
         this.locationAwarePingClient = locationAwarePingClient;
         this.locationAwareSnmpClient = locationAwareSnmpClient;
         this.metricsAdapter = metricsAdapter;
+        this.monitoringLocationDao = locationDao;
     }
 
     public void init() {
@@ -231,11 +236,32 @@ public class DeviceMonitorManager implements EventListener {
                 scheduledThreadPoolExecutor.scheduleAtFixedRate(() -> runMonitors(node), DEVICE_INITIAL_DELAY, DEVICE_INTERVAL, TimeUnit.SECONDS);
             }
         }
+        if (event.getUei().equals(EventConstants.NEW_SUSPECT_INTERFACE_EVENT_UEI)) {
+            String ipInterface = event.getInterface();
+            String location = event.getParm(EventConstants.PARM_LOCATION).isValid() ?
+                event.getParm(EventConstants.PARM_LOCATION).getValue().getContent() : MonitoringLocationDao.DEFAULT_MONITORING_LOCATION_ID;
+            createNodeFromDiscovery(ipInterface, location);
+        }
     }
 
     public void shutdown() {
         eventSubscriptionService.removeEventListener(this);
         scheduledThreadPoolExecutor.shutdown();
+    }
+
+    public void createNodeFromDiscovery(String ipInterface, String location) {
+        OnmsMonitoringLocation monitoringLocation = sessionUtils.withReadOnlyTransaction(() -> monitoringLocationDao.get(location));
+        OnmsNode onmsNode = new OnmsNode(monitoringLocation, ipInterface);
+        OnmsIpInterface onmsIpInterface = new OnmsIpInterface(ipInterface);
+        onmsNode.addIpInterface(onmsIpInterface);
+        onmsNode.setCreateTime(new Date());
+        sessionUtils.withTransaction(() -> nodeDao.saveOrUpdate(onmsNode));
+        LOG.info("Node created from discovery with IpAddress {}", ipInterface);
+        List<OnmsNode> nodes = sessionUtils.withReadOnlyTransaction(() -> nodeDao.findByLabel(ipInterface));
+        if (!nodes.isEmpty()) {
+            OnmsNode node = nodes.get(0);
+            runMonitors(node);
+        }
     }
 
 }

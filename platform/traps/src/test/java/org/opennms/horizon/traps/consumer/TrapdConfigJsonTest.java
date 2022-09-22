@@ -36,6 +36,7 @@ import org.opennms.core.ipc.twin.api.TwinPublisher;
 import org.opennms.horizon.config.service.api.ConfigConstants;
 import org.opennms.horizon.config.service.api.ConfigService;
 import org.opennms.horizon.traps.config.TrapdConfigBean;
+import org.opennms.netmgt.snmp.TrapListenerConfig;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -52,9 +53,19 @@ public class TrapdConfigJsonTest {
         TwinPublisher twinPublisher = Mockito.mock(TwinPublisher.class);
         trapSinkConsumer.setTwinPublisher(twinPublisher);
         trapSinkConsumer.setConfigService(configService);
+        trapSinkConsumer.setTwinSession(new TwinPublisher.Session<TrapListenerConfig>() {
+            @Override
+            public void publish(TrapListenerConfig obj) throws IOException {
+                //Ignore
+            }
 
+            @Override
+            public void close() throws IOException {
+
+            }
+        });
         trapSinkConsumer.initializeConfig();
-        Optional<String> optionalConfig = configService.getConfig(ConfigConstants.TRAPD_CONFIG);
+        Optional<String> optionalConfig = configService.getConfig(ConfigConstants.SNMP_TRAPS_CONFIG);
         Assert.assertTrue("Config must be present", optionalConfig.isPresent());
         ObjectMapper objectMapper = new ObjectMapper();
         TrapdConfigBean configBean = objectMapper.readValue(optionalConfig.get(), TrapdConfigBean.class);
@@ -70,12 +81,12 @@ public class TrapdConfigJsonTest {
         Map<String, String> configs = new HashMap<>();
 
         @Override
-        public void addConfig(String configName, String jsonConfig) {
+        public void addConfig(String configName, String jsonConfig, String source) {
             configs.put(configName, jsonConfig);
         }
 
         @Override
-        public void updateConfig(String configName, String jsonConfig) {
+        public void updateConfig(String configName, String jsonConfig, String source) {
 
         }
 

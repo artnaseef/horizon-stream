@@ -119,13 +119,14 @@
                         <feature>scr</feature>
                         <feature>horizon-alarms</feature>
                         <feature>horizon-icmp</feature>
+                        <feature>horizon-datachoices</feature>
                         <feature>horizon-provision</feature>
                         <feature>horizon-inventory</feature>
                         <feature>horizon-minion-heartbeat</feature>
                         <feature>horizon-minion-rest</feature>
                         <feature>horizon-metrics-prometheus</feature>
                         <feature>horizon-core-monitor</feature>
-                        <feature>horizon-core-config</feature>
+                        <feature>horizon-core-config-rest</feature>
                         <feature>horizon-core-traps</feature>
                     </bootFeatures>
                     <libraries>

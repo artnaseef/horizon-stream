@@ -33,6 +33,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.opennms.horizon.config.service.api.ConfigService;
 import org.opennms.horizon.db.kvstore.api.JsonStore;
+import org.opennms.horizon.events.api.EventBuilder;
+import org.opennms.horizon.events.api.EventConstants;
+import org.opennms.horizon.events.api.EventForwarder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,34 +49,38 @@ import static org.opennms.horizon.config.service.api.ConfigConstants.CONFIG_NAME
 
 public class DefaultConfigService implements ConfigService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultConfigService.class);
     private final JsonStore jsonStore;
+    private final EventForwarder eventForwarder;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public DefaultConfigService(JsonStore jsonStore) {
+    public DefaultConfigService(JsonStore jsonStore, EventForwarder eventForwarder) {
         this.jsonStore = jsonStore;
+        this.eventForwarder = eventForwarder;
     }
 
 
     @Override
-    public void addConfig(String configName, String jsonConfig) {
+    public void addConfig(String configName, String jsonConfig, String source) {
         addConfigNameToJsonStore(configName);
         try {
+            Optional<String> existingConfig = getConfig(configName);
+            if (existingConfig.isPresent() && existingConfig.get().equals(jsonConfig)) {
+                LOG.info("Given config matches with existing config for {}, no update made", configName);
+            }
             objectMapper.readTree(jsonConfig);
         } catch (JsonProcessingException e) {
+            LOG.error("Exception while parsing config for {}", configName, e);
             throw new IllegalArgumentException("Invalid json " + jsonConfig);
         }
         jsonStore.put(configName, jsonConfig, CONFIG);
+        sendConfigUpdatedEvent(configName, source);
     }
 
     @Override
-    public void updateConfig(String configName, String jsonConfig) {
-        addConfigNameToJsonStore(configName);
-        try {
-            objectMapper.readTree(jsonConfig);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid json " + jsonConfig);
-        }
-        jsonStore.put(configName, jsonConfig, CONFIG);
+    public void updateConfig(String configName, String jsonConfig, String source) {
+        // May change later, currently this is identical to addConfig
+         addConfig(configName, jsonConfig, source);
     }
 
     @Override
@@ -91,11 +100,17 @@ public class DefaultConfigService implements ConfigService {
         return new ArrayList<>();
     }
 
-    private void addConfigNameToJsonStore(String configName)  {
+    private void addConfigNameToJsonStore(String configName) {
         List<String> configNameList = getConfigNames();
         if (!configNameList.contains(configName)) {
             configNameList.add(configName);
             jsonStore.put(CONFIG_NAMES, new JSONArray(configNameList).toString(), CONFIG);
         }
+    }
+
+    private void sendConfigUpdatedEvent(String configName, String source) {
+        EventBuilder eventBuilder = new EventBuilder(EventConstants.CONFIG_UPDATED_UEI, source);
+        eventBuilder.addParam(EventConstants.PARM_CONFIG_NAME, configName);
+        eventForwarder.sendNowSync(eventBuilder.getEvent());
     }
 }

@@ -15,6 +15,7 @@
     <reference id="minionDao" interface="org.opennms.horizon.db.dao.api.MinionDao"/>
     <reference id="locationAwarePingClient" interface="org.opennms.netmgt.icmp.proxy.LocationAwarePingClient"/>
     <reference id="locationAwareSnmpClient" interface="org.opennms.netmgt.snmp.proxy.LocationAwareSnmpClient"/>
+    <reference id="monitoringLocationDao" interface="org.opennms.horizon.db.dao.api.MonitoringLocationDao" />
 
     <bean id="minionRpcMonitorManager" class="org.opennms.horizon.core.monitor.MinionRpcMonitorManager"
           init-method="init" destroy-method="shutdown">
@@ -34,5 +35,6 @@
         <argument ref="locationAwarePingClient"/>
         <argument ref="locationAwareSnmpClient"/>
         <argument ref="metricsAdapter"/>
+        <argument ref="monitoringLocationDao"/>
     </bean>
 </blueprint>

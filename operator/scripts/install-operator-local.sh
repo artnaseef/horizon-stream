@@ -12,16 +12,9 @@ make local-docker
 if [ $? -ne 0 ]; then exit; fi
 
 echo
-echo ______________Building Service Images______________
-echo
-mvn install -f ../shared-lib 2> /dev/null
-mvn package jib:dockerBuild -Dimage=opennms/horizon-stream-notification -Djib.from.platforms=linux/arm64 -f ../notifications 2> /dev/null
-
-echo
 echo ______Pushing Docker Images into Kind Cluster______
 echo
 kind load docker-image opennms/operator:local-build
-kind load docker-image opennms/horizon-stream-notification
 
 echo
 echo ___________Installing Helm Dependencies____________

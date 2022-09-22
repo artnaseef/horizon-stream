@@ -8,6 +8,7 @@
     <reference id="interfaceToNodeCache" interface="org.opennms.horizon.db.dao.api.InterfaceToNodeCache" />
     <reference id="twinPublisher" interface="org.opennms.core.ipc.twin.api.TwinPublisher" availability="mandatory"/>
     <reference id="sessionUtils" interface="org.opennms.horizon.db.dao.api.SessionUtils" />
+    <reference id="eventSubscriptionService" interface="org.opennms.horizon.events.api.EventSubscriptionService" availability="mandatory"/>
 
     <bean id="trapSinkConsumer" class="org.opennms.horizon.traps.consumer.TrapSinkConsumer"
           init-method="init">
@@ -19,6 +20,7 @@
         <property name="configService" ref="configService"/>
         <property name="twinPublisher" ref="twinPublisher"/>
         <property name="sessionUtils" ref="sessionUtils"/>
+        <property name="eventSubscriptionService" ref="eventSubscriptionService"/>
     </bean>
 
 </blueprint>

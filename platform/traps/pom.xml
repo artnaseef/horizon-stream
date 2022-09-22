@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>traps</artifactId>
-    <name>OpenNMS Horizon :: Config </name>
+    <name>OpenNMS Horizon :: Traps :: Consumer </name>
     <packaging>bundle</packaging>
 
     <dependencyManagement>

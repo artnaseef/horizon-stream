@@ -28,17 +28,17 @@
 
 package org.opennms.horizon.events.api;
 
+import org.opennms.horizon.core.lib.Base64;
+import org.opennms.horizon.events.xml.Value;
+import org.opennms.netmgt.snmp.SnmpObjId;
+import org.opennms.netmgt.snmp.SnmpValue;
+
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
-import org.opennms.horizon.core.lib.Base64;
-import org.opennms.horizon.events.xml.Value;
-import org.opennms.netmgt.snmp.SnmpObjId;
-import org.opennms.netmgt.snmp.SnmpValue;
 
 /**
  * This class holds all OpenNMS events related constants - the UEIs, parm
@@ -437,6 +437,11 @@ public abstract class EventConstants {
     public static final String PARM_DAEMON_NAME = "daemonName";
     /** Constant <code>PARM_CONFIG_FILE_NAME="configFile"</code> */
     public static final String PARM_CONFIG_FILE_NAME = "configFile";
+
+
+    public static final String CONFIG_UPDATED_UEI  = "uei.opennms.org/internal/configUpdated";
+    public static final String PARM_CONFIG_NAME = "configName";
+
 
     /*
      * Reportd UEIs.

@@ -37,6 +37,7 @@ import java.util.Optional;
 
 public class DefaultConfigRestService implements ConfigRestService {
 
+    private static final String CONFIG_SOURCE_REST = "core-rest";
     private final ConfigService configService;
 
     public DefaultConfigRestService(ConfigService configService) {
@@ -65,7 +66,7 @@ public class DefaultConfigRestService implements ConfigRestService {
     @Override
     public Response updateConfig(String configName, String jsonConfig) {
         try {
-            configService.updateConfig(configName, jsonConfig);
+            configService.updateConfig(configName, jsonConfig, CONFIG_SOURCE_REST);
         } catch (Exception e) {
             Response.status(Response.Status.BAD_REQUEST.getStatusCode(), e.getMessage()).build();
         }
@@ -75,7 +76,7 @@ public class DefaultConfigRestService implements ConfigRestService {
     @Override
     public Response addConfig(String configName, String jsonConfig) {
         try {
-            configService.addConfig(configName, jsonConfig);
+            configService.addConfig(configName, jsonConfig, CONFIG_SOURCE_REST);
         } catch (Exception e) {
             Response.status(Response.Status.BAD_REQUEST.getStatusCode(), e.getMessage()).build();
         }
