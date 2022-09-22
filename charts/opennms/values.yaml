@@ -7,39 +7,42 @@ OpenNMS:
     Path: /core
     ServiceName: opennms-core
     Image: opennms/horizon-stream-core
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     HttpPort: 8181
     SshPort: 8101
     GrpcPort: 8990
     Resources:
       Limits:
-        Cpu: 2
+        Cpu: "2"
         Memory: 4Gi
       Requests:
-        Cpu: 2
+        Cpu: "2"
         Memory: 2Gi
   API:
     Path: /api
     ServiceName: opennms-rest-server
     Image: opennms/horizon-stream-rest-server
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Port: 9090
     Resources:
       Limits:
-        Cpu: 2
+        Cpu: "2"
         Memory: 2Gi
       Requests:
-        Cpu: 1
+        Cpu: "1"
         Memory: 1Gi
   UI:
     Path: /
     ServiceName: opennms-ui
     Image: opennms/horizon-stream-ui
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Port: 80
     Resources:
       Limits:
-        Cpu: 1
+        Cpu: "1"
         Memory: 500Mi
       Requests:
         Cpu: 100m
@@ -47,25 +50,27 @@ OpenNMS:
   Minion:
     ServiceName: opennms-minion
     Image: opennms/minion:29.0.10
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     SshPort: 8201
     SnmpPort: 1162
     SyslogPort: 1514
     Resources:
       Limits:
-        Cpu: 1
+        Cpu: "1"
         Memory: 2050M
       Requests:
-        Cpu: 1
+        Cpu: "1"
         Memory: 512Mi
   Notification: 
     ServiceName: opennms-notifications
     Image: opennms/horizon-stream-notification
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Port: 8080
     Resources:
       Limits:
-        Cpu: 1
+        Cpu: "1"
         Memory: 500Mi
       Requests:
         Cpu: 100m
@@ -73,6 +78,7 @@ OpenNMS:
 Postgres:
   ServiceName: postgres
   Image: postgres
+  ImagePullPolicy: IfNotPresent
   Replicas: 1
   AdminPassword: notset
   OpenNMSPassword: notset
@@ -83,13 +89,14 @@ Postgres:
 Keycloak:
   Path: /auth
   Image: opennms/horizon-stream-keycloak:latest
+  ImagePullPolicy: IfNotPresent
   Port: 8080
   HttpsPort: 8443
   Replicas: 1
   ServiceName: onms-keycloak
   Resources:
     Limits:
-      Cpu: 1
+      Cpu: "1"
       Memory: 1000Mi
     Requests:
       Cpu: 100m
@@ -105,6 +112,7 @@ Grafana:
   Replicas: 1
   ServiceName: grafana
   Image: opennms/horizon-stream-grafana
+  ImagePullPolicy: IfNotPresent
   InitContainerImage: busybox
   Resources:
     Limits:
@@ -119,6 +127,7 @@ Prometheus:
     ServiceName: prometheus
     Port: 9090
     Image: prom/prometheus
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Resources:
       Limits:
@@ -131,6 +140,7 @@ Prometheus:
     ServiceName: prometheus-pushgateway
     Port: 9091
     Image: prom/pushgateway
+    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Resources:
       Limits:
@@ -142,6 +152,7 @@ Prometheus:
 MailServer:
   ServiceName: mail-server
   Image: mailhog/mailhog:latest
+  ImagePullPolicy: IfNotPresent
   Replicas: 1 
   Port: 8025
   SmtpPort: 1025
@@ -176,3 +187,7 @@ TLS:
       serviceAccountSecretRef:
         name: prod-clouddns-svc-acct-secret
         key: service-account.json
+Ingress:
+  NginxController:
+    HttpPort: 80
+    HttpsPort: 443
