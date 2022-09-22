@@ -23,7 +23,7 @@
         </dependencies>
     </dependencyManagement>
 
-  <build>
+  <!--<build>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -38,7 +38,7 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </build>-->
   <dependencies>
     <dependency>
       <groupId>org.opennms.horizon.jmx</groupId>

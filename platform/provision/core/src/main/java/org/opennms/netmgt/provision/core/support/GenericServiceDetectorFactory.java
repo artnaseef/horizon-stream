@@ -28,6 +28,7 @@
 
 package org.opennms.netmgt.provision.core.support;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.util.Map;
 import java.util.Objects;
@@ -50,10 +51,14 @@ public class GenericServiceDetectorFactory<T extends ServiceDetector> implements
     @Override
     public T createDetector(Map<String, String> properties) {
         try {
-            T detector = clazz.newInstance();
+            T detector = clazz.getDeclaredConstructor().newInstance();
             setBeanProperties(detector, properties);
             return detector;
         } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }

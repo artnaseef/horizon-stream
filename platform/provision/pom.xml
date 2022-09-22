@@ -33,6 +33,7 @@
     <module>service</module>
     <module>ssh</module>
     <module>persistence</module>
+    <module>jmx</module>
   </modules>
 
 </project>

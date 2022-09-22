@@ -251,7 +251,7 @@
         <feature>horizon-grpc</feature>
         <feature>horizon-configvar-scopes</feature>
         <feature>3rdparty-bsf</feature>
-
+        <feature>horizon-stream-jmx</feature>
         <feature>opennms-activemq-client-fix</feature>
 
         <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
@@ -280,6 +280,7 @@
         <bundle>mvn:com.helger/dhcp4java/${dhcp4java.version}</bundle>
         <bundle>mvn:org.opennms.horizon/dhcpd/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.provision/detector-dhcp/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.provision/detector-jmx/${project.version}</bundle>
 
         <!-- TODO: which JCIFS dependency should be used?  The classic pom uses a shaded jar, but the feature has the un-shaded jar + bouncycastle? -->
         <!-- https://issues.opennms.org/browse/NMS-13111 -->

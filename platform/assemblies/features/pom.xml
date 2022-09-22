@@ -455,6 +455,11 @@
             <artifactId>impl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.opennms.horizon.provision</groupId>
+            <artifactId>detector-jmx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
