@@ -40,6 +40,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.opennms.horizon.jmx.connection.JMXConnectionFactory;
 import org.opennms.horizon.jmx.connection.JmxConnectionConfigBuilder;
 import org.opennms.horizon.jmx.connection.JmxServerConnectionWrapper;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class creates a connection to the remote server.
  */
-public abstract class Jsr160ConnectionFactory {
+public class Jsr160ConnectionFactory implements JMXConnectionFactory {
     
     private static final Logger LOG = LoggerFactory.getLogger(Jsr160ConnectionFactory.class);
 
@@ -56,7 +57,8 @@ public abstract class Jsr160ConnectionFactory {
 
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
-    public static JmxServerConnectionWrapper getMBeanServerConnection(Map<String,String> propertiesMap, InetAddress address) throws IOException {
+    @Override
+    public JmxServerConnectionWrapper getMBeanServerConnection(Map<String,String> propertiesMap, InetAddress address) throws IOException {
         final long timeout = DEFAULT_TIMEOUT;
 
         propertiesMap.putIfAbsent("factory", "STANDARD");
@@ -65,16 +67,11 @@ public abstract class Jsr160ConnectionFactory {
         propertiesMap.putIfAbsent("urlPath",  "/jmxrmi");
         propertiesMap.putIfAbsent("timeout", Long.toString(timeout));
 
-        final Callable<JmxServerConnectionWrapper> task = new Callable<JmxServerConnectionWrapper>() {
-            @Override
-            public JmxServerConnectionWrapper call() throws Exception {
-                return new DefaultJmxConnector().createConnection(address, propertiesMap);
-            }
-        };
+        final Callable<JmxServerConnectionWrapper> task = () -> new DefaultJmxConnector().createConnection(address, propertiesMap);
         final Future<JmxServerConnectionWrapper> future = executor.submit(task);
         try {
-            final JmxServerConnectionWrapper connectionWrapper = future.get(timeout, TimeUnit.MILLISECONDS);
-            return connectionWrapper;
+            return future.get(timeout, TimeUnit.MILLISECONDS);
+
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             final String url = JmxConnectionConfigBuilder.buildFrom(address, propertiesMap).build().getUrl();
             LOG.info("Exception connecting JMXConnectorFactory url {} , Error: {}", url, e.getMessage());

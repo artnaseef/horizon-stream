@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2016 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2016 The OpenNMS Group, Inc.
+ * Copyright (C) 2022 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -21,21 +21,17 @@
  *      http://www.gnu.org/licenses/
  *
  * For more information contact:
- * OpenNMS(R) Licensing <license@opennms.org>
- *      http://www.opennms.org/
- *      http://www.opennms.com/
+ *     OpenNMS(R) Licensing <license@opennms.org>
+ *     http://www.opennms.org/
+ *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.horizon.provision.detector.jmx;
+package org.opennms.horizon.jmx.connection;
 
-import org.opennms.horizon.jmx.connection.JMXConnectionFactory;
-import org.opennms.horizon.jmx.dao.JmxConfigDao;
-import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Map;
 
-@Component
-public class Jsr160DetectorFactory extends GenericJMXDetectorFactory<Jsr160Detector> {
-
-    public Jsr160DetectorFactory(JmxConfigDao configDao, JMXConnectionFactory connectionFactory) {
-        super(Jsr160Detector.class, configDao, connectionFactory);
-    }
+public interface JMXConnectionFactory {
+    JmxServerConnectionWrapper getMBeanServerConnection(Map<String,String> propertiesMap, InetAddress address) throws IOException;
 }

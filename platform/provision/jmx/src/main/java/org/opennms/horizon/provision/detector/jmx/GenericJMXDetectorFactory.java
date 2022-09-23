@@ -36,6 +36,7 @@ import java.util.Map;
 import javax.management.remote.JMXServiceURL;
 
 import org.opennms.horizon.jmx.config.MBeanServer;
+import org.opennms.horizon.jmx.connection.JMXConnectionFactory;
 import org.opennms.horizon.jmx.connection.JmxConnectionConfig;
 import org.opennms.horizon.jmx.connection.JmxConnectionConfigBuilder;
 import org.opennms.horizon.jmx.dao.JmxConfigDao;
@@ -45,16 +46,25 @@ import org.opennms.netmgt.provision.core.support.GenericServiceDetectorFactory;
 
 public class GenericJMXDetectorFactory<T extends JMXDetector> extends GenericServiceDetectorFactory<JMXDetector> {
     protected JmxConfigDao jmxConfigDao;
+    private JMXConnectionFactory connectionFactory;
+
+    public GenericJMXDetectorFactory(Class<? extends JMXDetector> clazz, JmxConfigDao jmxConfigDao, JMXConnectionFactory connectionFactory) {
+        super((Class<JMXDetector>) clazz);
+        this.jmxConfigDao = jmxConfigDao;
+        this.connectionFactory = connectionFactory;
+    }
 
     @SuppressWarnings("unchecked")
-    public GenericJMXDetectorFactory(Class<T> clazz) {
+    public GenericJMXDetectorFactory(Class<? extends JMXDetector> clazz) {
         super((Class<JMXDetector>) clazz);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public T createDetector(Map<String, String> properties) {
-        return (T)super.createDetector(properties);
+        T detector = (T)super.createDetector(properties);
+        detector.setConnectionFactory(connectionFactory);
+        return detector;
     }
 
     @Override

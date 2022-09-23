@@ -4,4 +4,8 @@
         <argument ref="configService" />
     </bean>
     <service ref="jmxConfigDao" interface="org.opennms.horizon.jmx.dao.JmxConfigDao"/>
+
+    <service id="jmxConnectionFactory" interface="org.opennms.horizon.jmx.connection.JMXConnectionFactory">
+        <bean class="org.opennms.horizon.jmx.impl.connection.connectors.Jsr160ConnectionFactory"/>
+    </service>
 </blueprint>

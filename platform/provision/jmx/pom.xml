@@ -9,7 +9,7 @@
     </parent>
 
   <artifactId>detector-jmx</artifactId>
-  <name>OpenNMS Horizon :: Provisioning :: JMX</name>
+  <name>OpenNMS Horizon :: Provision :: JMX</name>
   <description>Implementation of JMX detector for provisioning.</description>
   <packaging>bundle</packaging>
     <dependencyManagement>

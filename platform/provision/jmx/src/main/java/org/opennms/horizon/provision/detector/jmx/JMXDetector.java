@@ -43,8 +43,8 @@ import javax.management.ObjectName;
 import javax.naming.NameNotFoundException;
 
 import org.opennms.horizon.core.lib.InetAddressUtils;
+import org.opennms.horizon.jmx.connection.JMXConnectionFactory;
 import org.opennms.horizon.jmx.connection.JmxServerConnectionWrapper;
-import org.opennms.horizon.jmx.impl.connection.connectors.Jsr160ConnectionFactory;
 import org.opennms.netmgt.provision.DetectRequest;
 import org.opennms.netmgt.provision.DetectResults;
 import org.opennms.netmgt.provision.core.support.DetectResultsImpl;
@@ -72,6 +72,7 @@ public class JMXDetector extends SyncAbstractDetector {
     private String m_username = "opennms";
     private String m_password = "OPENNMS";
     private String m_url;
+    private JMXConnectionFactory connectionFactory;
 
     /**
      * <p>Constructor for JMXDetector.</p>
@@ -346,6 +347,10 @@ public class JMXDetector extends SyncAbstractDetector {
         // Do nothing by default
     }
 
+    public void setConnectionFactory(JMXConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
     protected JmxServerConnectionWrapper connect(final InetAddress address, final int port, final int timeout, final Map<String, String> runtimeAttributes) throws IOException {
 
         Map<String, String> props = Maps.newHashMap();
@@ -362,6 +367,6 @@ public class JMXDetector extends SyncAbstractDetector {
         // The runtime attributes contain the agent details pull from the JmxConfigDao
         props.putAll(runtimeAttributes);
 
-        return Jsr160ConnectionFactory.getMBeanServerConnection(props, address);
+        return connectionFactory.getMBeanServerConnection(props, address);
     }
 }

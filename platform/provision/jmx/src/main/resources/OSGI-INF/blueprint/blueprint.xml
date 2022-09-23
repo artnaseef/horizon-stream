@@ -4,7 +4,12 @@
 		http://www.osgi.org/xmlns/blueprint/v1.0.0 
 		https://osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
 ">
-	<service interface="org.opennms.horizon.provision.ServiceDetectorFactory">
-		<bean class="org.opennms.horizon.provision.detector.jmx.Jsr160DetectorFactory" />
+    <reference id="jmxConfigDao" interface="org.opennms.horizon.jmx.dao.JmxConfigDao" />
+    <reference id="jmxConnectionFactory" interface="org.opennms.horizon.jmx.connection.JMXConnectionFactory"/>
+	<service interface="org.opennms.netmgt.provision.ServiceDetectorFactory">
+        <bean class="org.opennms.horizon.provision.detector.jmx.Jsr160DetectorFactory" >
+            <argument ref="jmxConfigDao" />
+            <argument ref="jmxConnectionFactory" />
+        </bean>
 	</service>
 </blueprint>
