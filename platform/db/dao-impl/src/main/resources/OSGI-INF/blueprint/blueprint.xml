@@ -95,4 +95,10 @@
 
     <service ref="interfaceToNodeCache" interface="org.opennms.horizon.db.dao.api.InterfaceToNodeCache"/>
 
+    <service interface="org.opennms.horizon.db.dao.api.DataChoicesDao">
+        <bean class="org.opennms.horizon.db.dao.impl.DataChoicesDaoHibernate">
+            <argument ref="entityManagerHolder"/>
+        </bean>
+    </service>
+
 </blueprint>

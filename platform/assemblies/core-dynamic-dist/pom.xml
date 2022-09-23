@@ -119,6 +119,7 @@
                         <feature>scr</feature>
                         <feature>horizon-alarms</feature>
                         <feature>horizon-icmp</feature>
+                        <feature>horizon-datachoices</feature>
                         <feature>horizon-provision</feature>
                         <feature>horizon-inventory</feature>
                         <feature>horizon-minion-heartbeat</feature>
