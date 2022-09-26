@@ -3,14 +3,12 @@ kind: Config
 metadata:
   name: horizon-stream
 requires:
-#  - configs: ["operator"]
-#  path: shared-lib/skaffold.yaml
+  - configs: ["operator"]
+    path: operator/skaffold.yaml
   - configs: ["shared-lib"]
     path: shared-lib/skaffold.yaml
   - configs: ["horizon-stream-ui"]
     path: ui/skaffold.yaml
-profiles:
-  - name: prod
 build:
   local:
     useBuildkit: true
@@ -164,3 +162,15 @@ deploy:
           OpenNMS.Notification.Image: opennms/horizon-stream-notification
           Keycloak.Image: opennms/horizon-stream-keycloak-dev
           Grafana.Image: opennms/horizon-stream-grafana-dev
+profiles:
+  - name: prod
+  - name: use-operator
+    deploy:
+      kubectl:
+        manifests:
+          - operator/local-instance.yaml
+    resourceSelector:
+      allow:
+        - groupKind: "OpenNMS.k8s.opennms.com"
+          image: [ ".*" ]
+          labels: [ ".*" ]
