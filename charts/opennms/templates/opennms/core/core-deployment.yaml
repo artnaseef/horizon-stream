@@ -45,7 +45,7 @@ spec:
             - name: JAVA_TOOL_OPTIONS
               #value: "-agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=n,quiet=y"
             - name: EXTRA_JAVA_OPTS
-              value: "-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Djavax.net.ssl.trustStore=/opt/horizon-stream/truststore.jks -Djavax.net.ssl.trustStorePassword=password123 -Djavax.net.ssl.trustStoreType=JKS -Xms164M -Xmx364M"
+              value: "-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
             - name: PGSQL_SERVICE_NAME
               value: {{ .Values.Postgres.ServiceName }}
             - name: PGSQL_ADMIN_USERNAME
@@ -77,7 +77,7 @@ spec:
             - name: ACTIVEMQ_BROKER_URL
               value: "tcp://localhost:61616"
             - name: KEYCLOAK_BASE_URL
-              value: "{{ if .Values.TLS.Enabled }}https://{{ else }}http://{{ end }}{{ .Values.Keycloak.ServiceName }}:{{ .Values.Keycloak.Port }}{{ .Values.Keycloak.Path }}/"
+              value: "http://{{ .Values.Keycloak.ServiceName }}:{{ .Values.Keycloak.Port }}{{ .Values.Keycloak.Path }}/"
             - name: KEYCLOAK_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -101,12 +101,6 @@ spec:
               mountPath: "/opt/horizon-stream/etc/users.properties"
               subPath: "karafUsers"
               readOnly: true
-            - name: config-volume
-              mountPath: /opt/horizon-stream/etc/org.opennms.core.rest.cfg
-              subPath: restCfg
-            - name: config-volume #todo remove
-              mountPath: /opt/horizon-stream/truststore.jks
-              subPath: truststore.jks
           ports:
             - name: ssh
               containerPort: {{ .Values.OpenNMS.Core.SshPort }}
@@ -130,9 +124,3 @@ spec:
         - name: config-volume
           configMap:
             name: opennms-config
-        - name: truststore #todo remove
-          configMap:
-            name: core.truststore
-            defaultMode: 420
-
-
