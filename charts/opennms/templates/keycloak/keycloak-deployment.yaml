@@ -26,7 +26,7 @@ spec:
             requests:
               cpu: "{{ .Values.Keycloak.Resources.Requests.Cpu }}"
               memory: "{{ .Values.Keycloak.Resources.Requests.Memory }}"
-          args: ['start', '--optimized', '--import-realm']
+          args: ['--import-realm']
           env:
             - name: KC_CACHE_STACK
               value: kubernetes
@@ -62,8 +62,6 @@ spec:
                 secretKeyRef:
                   key: password
                   name: {{ .Values.Keycloak.ServiceName }}-initial-admin
-            - name: KC_HOSTNAME_STRICT
-              value: "false"
             - name: KC_HOSTNAME_STRICT_BACKCHANNEL
               value: "false"
             - name: KC_HTTP_ENABLED
@@ -92,29 +90,43 @@ spec:
             {{- end }}
             - mountPath: /opt/keycloak/data/import
               name: realm-config
+          startupProbe:
+            httpGet:
+              {{- if .Values.TLS.Enabled }}
+              scheme: HTTPS
+              port: https
+              {{- else }}
+              scheme: HTTP
+              port: http
+              {{- end }}
+              path: {{ .Values.Keycloak.Path }}/health/live
+            failureThreshold: 30
+            periodSeconds: 5
           livenessProbe:
-            exec:
-              command:
-              - curl
-              - --head
-              - --fail
-              - --silent
-              - --insecure
-              - https://127.0.0.1:{{ .Values.Keycloak.HttpsPort }}{{ .Values.Keycloak.Path }}/health/live
+            httpGet:
+              {{- if .Values.TLS.Enabled }}
+              scheme: HTTPS
+              port: https
+              {{- else }}
+              scheme: HTTP
+              port: http
+              {{- end }}
+              path: {{ .Values.Keycloak.Path }}/health/live
             failureThreshold: 150
             initialDelaySeconds: 20
             periodSeconds: 2
             successThreshold: 1
             timeoutSeconds: 1
           readinessProbe:
-            exec:
-              command:
-              - curl
-              - --head
-              - --fail
-              - --silent
-              - --insecure
-              - https://127.0.0.1:{{ .Values.Keycloak.HttpsPort }}{{ .Values.Keycloak.Path }}/health/ready
+            httpGet:
+              {{- if .Values.TLS.Enabled }}
+              scheme: HTTPS
+              port: https
+              {{- else }}
+              scheme: HTTP
+              port: http
+              {{- end }}
+              path: {{ .Values.Keycloak.Path }}/health/ready
             failureThreshold: 250
             initialDelaySeconds: 20
             periodSeconds: 2
