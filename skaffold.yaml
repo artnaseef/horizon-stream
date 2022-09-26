@@ -3,7 +3,8 @@ kind: Config
 metadata:
   name: horizon-stream
 requires:
-  - configs: ["operator"]
+#  - configs: ["operator"]
+#  path: shared-lib/skaffold.yaml
   - configs: ["shared-lib"]
     path: shared-lib/skaffold.yaml
   - configs: ["horizon-stream-ui"]
@@ -163,45 +164,3 @@ deploy:
           OpenNMS.Notification.Image: opennms/horizon-stream-notification
           Keycloak.Image: opennms/horizon-stream-keycloak-dev
           Grafana.Image: opennms/horizon-stream-grafana-dev
-
----
-
-apiVersion: skaffold/v2beta28
-kind: Config
-metadata:
-  name: operator
-requires:
-  - configs: ["operator-dependencies"]
-build:
-  artifacts:
-    - image: opennms/operator
-      context: operator
-      docker:
-        dockerfile: Dockerfile
-      hooks:
-        before:
-          - command: [ "make", "copy-charts" ]
-            dir: operator
-deploy:
-  helm:
-    releases:
-      - name: opennms-operator
-        namespace: opennms
-        createNamespace: true
-        chartPath: charts/opennms-operator
-        valuesFiles:
-          - operator/values.yaml
-        artifactOverrides:
-          Operator.image: opennms/operator
-
----
-
-apiVersion: skaffold/v2beta28
-kind: Config
-metadata:
-  name: operator-dependencies
-deploy:
-  helm:
-    releases:
-      - name: opennms-operator-dependencies
-        chartPath: charts/opennms-operator-dependencies
