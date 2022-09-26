@@ -16,6 +16,10 @@ build:
           dest: .
         - src: 'tests/**'
           dest: .
+        - src: '.env'
+          dest: .
+        - src: '.env.*'
+          dest: .
         - src: 'index.html'
           dest: .
         - src: '*.ts'
@@ -23,9 +27,6 @@ build:
     docker:
       dockerfile: Dockerfile
       target: development
-      buildArgs:
-        VITE_BASE_URL: "/api"
-        VITE_KEYCLOAK_URL: "/auth"
 portForward:
   - resourceType: deployment
     resourceName: opennms-ui
