@@ -130,24 +130,14 @@ portForward:
     localPort: 53000
   - resourceType: pod
     resourceName: opennms-kafka-0
-    namespace: skaffold-instance
+    namespace: kafka
     port: 59092 # kafka tcp local client port
     localPort: 59092 # default port for kafka broker
-  - resourceType: deployment
+  - resourceType: service
     resourceName: ingress-nginx-controller
     namespace: skaffold-instance
     port: 80 # HTTP
     localPort: 8123
-  - resourceType: deployment
-    resourceName: ingress-nginx-controller
-    namespace: skaffold-instance
-    port: 443 # HTTPS
-    localPort: 8124
-  - resourceType: deployment
-    resourceName: ingress-nginx-controller
-    namespace: skaffold-instance
-    port: 8443 # Webhook
-    localPort: 8443
 deploy:
   helm:
     releases:

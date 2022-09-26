@@ -2,7 +2,7 @@ Namespace: skaffold-instance
 Host: localhost
 Port: 8123
 TLS:
-  Enabled: True
+  Enabled: False
 
 OpenNMS:
   API:
