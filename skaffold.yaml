@@ -11,6 +11,8 @@ requires:
 profiles:
   - name: prod
 build:
+  local:
+    useBuildkit: true
   artifacts:
   - image: opennms/horizon-stream-core
     context: platform
@@ -41,10 +43,12 @@ build:
   - image: opennms/horizon-stream-keycloak-dev
     context: keycloak-ui
     sync:
-      infer:
-        - "themes/**"
+      manual: # Inferred file sync is limited for multi-stage builds, use manual sync.
+        - src: 'themes/**'
+          dest: .
     docker:
       dockerfile: Dockerfile
+      target: development
   - image: opennms/horizon-stream-grafana-dev
     context: grafana
     docker:
@@ -85,7 +89,7 @@ portForward:
     namespace: skaffold-instance
     port: 5005 # Debug
     localPort: 5005
-  - resourceType: statefulset
+  - resourceType: deployment
     resourceName: onms-keycloak
     namespace: skaffold-instance
     port: 8080 # HTTP
