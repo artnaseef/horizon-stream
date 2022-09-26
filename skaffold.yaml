@@ -155,7 +155,7 @@ deploy:
       - name: opennms
         chartPath: charts/opennms
         valuesFiles:
-          - operator/local-instance-values.yaml
+          - skaffold-helm-values.yaml
         artifactOverrides:
           OpenNMS.Core.Image: opennms/horizon-stream-core
           OpenNMS.API.Image: opennms/horizon-stream-rest-server

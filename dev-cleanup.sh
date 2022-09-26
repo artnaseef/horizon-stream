@@ -9,4 +9,3 @@ kubectl delete namespace tilt-instance --grace-period=0
 kubectl delete namespace skaffold-instance --grace-period=0
 kubectl delete namespace local-instance --grace-period=0
 kubectl delete namespace skaffold-operator --grace-period=0
-kubectl delete namespace keycloak-operator --grace-period=0

@@ -41,10 +41,10 @@ OpenNMS:
     Resources:
       Limits:
         Cpu: '0'
-        Memory: '0'
+        Memory: 4Gi
       Requests:
         Cpu: '0'
-        Memory: '0'
+        Memory: 2Gi
 Grafana:
   Resources:
     Limits:
