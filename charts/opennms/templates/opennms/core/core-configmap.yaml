@@ -15,37 +15,6 @@ data:
   karafUsers: |
     admin=admin,_g_:admingroup
     _g_\:admingroup=group,admin,manager,viewer,systembundles,ssh
-  application.yml: |
-    server:
-      port: 9090
-      ssl:
-        enabled: true
-        key-alias: onms
-        key-store: "/app/onms.keystore"
-        key-store-type: jks
-        key-store-password: opennmspw
-        key-password: opennmspw
-
-    spring:
-      cache:
-        caffeine:
-          spec: maximumSize=10000,expireAfterWrite=600s
-
-    # graphql
-    graphql:
-      spqr:
-        gui:
-          enabled: true
-        base-packages:
-          - org.opennms.horizon.shared.dto
-
-    # keycloak admin client properties
-    horizon-stream:
-      core:
-        url: http://localhost:{{ .Values.OpenNMS.Core.HttpPort }}
-
-    logging:
-      file.path: /var/log/restServer
 binaryData: 
   # Just for backend SSL, can add dynamically at some point. This one is set
   # for a 1000 years roughly with CN as opennms-rest-server. Remove eventually
