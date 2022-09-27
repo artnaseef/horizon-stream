@@ -10,8 +10,7 @@ require (
 	github.com/go-co-op/gocron v1.11.0
 	github.com/go-logr/logr v1.2.2
 	github.com/google/uuid v1.3.0
-	//github.com/mittwald/go-helm-client v0.8.4
-	github.com/operator-framework/api v0.15.0
+	github.com/mittwald/go-helm-client v0.11.3
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.2
 	go.uber.org/zap v1.20.0

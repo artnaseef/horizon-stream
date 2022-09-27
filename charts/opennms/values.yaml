@@ -60,7 +60,6 @@ OpenNMS:
   Notification: 
     ServiceName: opennms-notifications
     Image: opennms/horizon-stream-notification
-    ImagePullPolicy: IfNotPresent
     Replicas: 1
     Port: 8080
     Resources:
@@ -82,14 +81,22 @@ Postgres:
   VolumeSize: 10Gi
 Keycloak:
   Path: /auth
+  Image: opennms/horizon-stream-keycloak:latest
   Port: 8080
+  HttpsPort: 8443
   Replicas: 1
   ServiceName: onms-keycloak
+  Resources:
+    Limits:
+      Cpu: 1
+      Memory: 1000Mi
+    Requests:
+      Cpu: 100m
+      Memory: 500Mi
   AdminUsername: admin
   AdminPassword: notset
   UserUsername: user001
   UserPassword: notset
-  Image: opennms/horizon-stream-keycloak:latest
   RealmName: opennms
   UUID:
     RealmId: 00000000-0000-0000-0000-000000000000
@@ -136,6 +143,19 @@ Prometheus:
       Requests:
         Cpu: 100m
         Memory: 100Mi
+Kafka:
+  ServiceName: onms-kafka
+  Image: quay.io/strimzi/kafka:latest-kafka-2.8.1-amd64
+  Replicas: 1 
+  Port: 9092
+  Resources:
+    Limits:
+      Cpu: 500m
+      Memory: 512Mi
+    Requests:
+      Cpu: 100m
+      Memory: 256Mi
+  VolumeSize: 10Gi
 MailServer:
   ServiceName: mail-server
   Image: mailhog/mailhog:latest
@@ -149,3 +169,7 @@ MailServer:
     Requests:
       Cpu: 100m
       Memory: 100Mi
+Ingress:
+  NginxController:
+    HttpPort: 80
+    HttpsPort: 443

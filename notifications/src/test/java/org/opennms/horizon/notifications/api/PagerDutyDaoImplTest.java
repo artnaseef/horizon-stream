@@ -34,7 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.opennms.horizon.notifications.api.dto.PagerDutyConfigDTO;
+import org.opennms.horizon.shared.dto.notifications.PagerDutyConfigDTO;
 import org.opennms.horizon.notifications.exceptions.NotificationConfigUninitializedException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -64,7 +64,7 @@ public class PagerDutyDaoImplTest {
         PagerDutyConfigDTO config = getConfigDTO();
         pagerDutyDao.saveConfig(config);
 
-        Mockito.verify(jdbcTemplate, times(1)).update(anyString(), anyString(), anyString());
+        Mockito.verify(jdbcTemplate, times(1)).update(anyString(), anyString());
     }
     @Test
     public void insertConfig() throws Exception {
@@ -72,7 +72,7 @@ public class PagerDutyDaoImplTest {
         PagerDutyConfigDTO config = getConfigDTO();
         pagerDutyDao.saveConfig(config);
 
-        Mockito.verify(jdbcTemplate, times(1)).update(anyString(), anyString(), anyString());
+        Mockito.verify(jdbcTemplate, times(1)).update(anyString(), anyString());
     }
 
     @Test
@@ -90,7 +90,6 @@ public class PagerDutyDaoImplTest {
         Mockito.when(jdbcTemplate.query(any(String.class), any(RowMapper.class))).thenReturn(configs);
         PagerDutyConfigDTO config = pagerDutyDao.getConfig();
 
-        assertEquals("token", config.getToken());
         assertEquals("integration_key", config.getIntegrationkey());
     }
 
@@ -111,6 +110,6 @@ public class PagerDutyDaoImplTest {
     }
 
     private PagerDutyConfigDTO getConfigDTO() {
-        return new PagerDutyConfigDTO("token", "integration_key");
+        return new PagerDutyConfigDTO("integration_key");
     }
 }

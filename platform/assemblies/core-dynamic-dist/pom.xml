@@ -119,6 +119,7 @@
                         <feature>scr</feature>
                         <feature>horizon-alarms</feature>
                         <feature>horizon-icmp</feature>
+                        <feature>horizon-datachoices</feature>
                         <feature>horizon-provision</feature>
                         <feature>horizon-inventory</feature>
                         <feature>horizon-minion-heartbeat</feature>
@@ -128,6 +129,7 @@
                         <feature>horizon-core-config-rest</feature>
                         <feature>horizon-core-traps</feature>
                         <feature>horizon-core-syslog</feature>
+                        <feature>horizon-stream-jmx</feature>
                     </bootFeatures>
                     <libraries>
                     </libraries>

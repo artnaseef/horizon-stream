@@ -168,6 +168,13 @@
         <bundle>mvn:org.opennms.core.ipc.twin.grpc/publisher/${project.version}</bundle>
     </feature>
 
+    <feature name="horizon-datachoices" version="${project.version}" description="Horizon :: Data Choices">
+        <feature>horizon-db</feature>
+        <feature>onms-httpclient</feature>
+        <bundle>mvn:org.opennms.horizon.common/common-web/${project.version}</bundle>
+        <bundle start-level="80">mvn:org.opennms.horizon/datachoices/${project.version}</bundle>
+    </feature>
+
     <feature name="horizon-core-monitor" version="${project.version}">
         <feature>horizon-metrics-prometheus</feature>
         <feature>horizon-events-api</feature>
@@ -524,5 +531,13 @@
         <bundle>mvn:org.opennms.horizon.common/common-concurrency/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.provision/api/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon/syslog/${project.version}</bundle>
+    </feature>
+
+    <feature name="horizon-stream-jmx" version="${project.version}">
+        <feature>horizon-core-config-service</feature>
+        <bundle>mvn:org.opennms.horizon.common/common-net/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.common/common-collection/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.jmx/api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.jmx/impl/${project.version}</bundle>
     </feature>
 </features>

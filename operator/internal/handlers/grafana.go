@@ -31,7 +31,7 @@ func (h *GrafanaHandler) ProvideConfig(values values.TemplateValues) []client.Ob
 	var service corev1.Service
 	var deployment appsv1.Deployment
 
-	yaml.LoadYaml(filepath("grafana/grafana-configmap.yaml"), values, &configMap)
+	yaml.LoadYaml(filepath("grafana/grafana-secret.yaml"), values, &configMap)
 	yaml.LoadYaml(filepath("grafana/grafana-service.yaml"), values, &service)
 	yaml.LoadYaml(filepath("grafana/grafana-deployment.yaml"), values, &deployment)
 
