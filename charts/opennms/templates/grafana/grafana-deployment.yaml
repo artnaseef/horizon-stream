@@ -33,8 +33,8 @@ spec:
       {{ end }}
       volumes:
         - name: grafana-config
-          configMap:
-            name: {{ .Values.Grafana.ServiceName }}
+          secret:
+            secretName: {{ .Values.Grafana.ServiceName }}
             defaultMode: 420
       containers:
         - name: {{ .Values.Grafana.ServiceName }}
