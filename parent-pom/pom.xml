@@ -73,7 +73,7 @@
         <org.osgi.service.jdbc.version>1.0.0</org.osgi.service.jdbc.version>
         <osgi.version>7.0.0</osgi.version>
         <pax.jdbc.version>1.5.2</pax.jdbc.version>
-        <postgresql.version>42.3.2</postgresql.version>
+        <postgresql.version>42.3.7</postgresql.version>
         <prometheus.version>0.16.0</prometheus.version>
         <protobuf.version>3.16.1</protobuf.version>   <!-- WARNING: this also controls the version of the protobuf compiler, change at your risk!-->
         <rate.limitted.logger.version>2.0.2</rate.limitted.logger.version>
