@@ -52,7 +52,8 @@ public class GrpcLocalDispatcherFactory extends AbstractMessageDispatcherFactory
 
     @Override
     public <S extends Message, T extends Message> void dispatch(SinkModule<S, T> module, Void metadata, T message) {
-        onmsGrpcServer.dispatch(module, message);
+        // TODO verify if this code is being used
+        // onmsGrpcServer.dispatch(module, message);
     }
 
     @Override

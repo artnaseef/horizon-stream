@@ -28,11 +28,10 @@
 
 package org.opennms.horizon.shared.ipc.grpc.server;
 
-import com.google.common.base.Strings;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.BindableService;
+import io.grpc.Server;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.Collections;
@@ -42,16 +41,14 @@ import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
+import org.opennms.cloud.grpc.minion.CloudServiceGrpc.CloudServiceImplBase;
 import org.opennms.cloud.grpc.minion.CloudToMinionMessage;
 import org.opennms.cloud.grpc.minion.Identity;
-import org.opennms.cloud.grpc.minion.MinionToCloudMessage;
 import org.opennms.cloud.grpc.minion.RpcRequestProto;
 import org.opennms.cloud.grpc.minion.RpcResponseProto;
-import org.opennms.cloud.grpc.minion.SinkMessage;
 import org.opennms.horizon.shared.grpc.common.GrpcIpcServer;
 import org.opennms.horizon.shared.grpc.interceptor.InterceptorFactory;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.LocationIndependentRpcClientFactory;
@@ -60,12 +57,9 @@ import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcConnectionTracker;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcRequestDispatcher;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcRequestTimeoutManager;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcRequestTracker;
-import org.opennms.horizon.shared.ipc.grpc.server.manager.adapter.MinionRSTransportAdapter;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.rpcstreaming.MinionRpcStreamConnectionManager;
-import org.opennms.horizon.shared.ipc.rpc.api.RemoteExecutionException;
 import org.opennms.horizon.shared.ipc.rpc.api.RpcClientFactory;
 import org.opennms.horizon.shared.ipc.sink.api.SinkModule;
-import org.opennms.horizon.shared.ipc.sink.common.AbstractMessageConsumerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -90,7 +84,7 @@ import org.slf4j.MDC.MDCCloseable;
  */
 
 @SuppressWarnings("rawtypes")
-public class OpennmsGrpcServer extends AbstractMessageConsumerManager implements RpcRequestDispatcher {
+public class OpennmsGrpcServer implements RpcRequestDispatcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpennmsGrpcServer.class);
     private final GrpcIpcServer grpcIpcServer;
@@ -115,6 +109,7 @@ public class OpennmsGrpcServer extends AbstractMessageConsumerManager implements
     private final Map<String, ExecutorService> sinkConsumersByModuleId = new ConcurrentHashMap<>();
     private BiConsumer<RpcRequestProto, StreamObserver<RpcResponseProto>> incomingRpcHandler;
     private BiConsumer<Identity, StreamObserver<CloudToMinionMessage>> outgoingMessageHandler;
+    private CloudServiceImplBase transportAdapter;
 
 //========================================
 // Constructor
@@ -129,37 +124,32 @@ public class OpennmsGrpcServer extends AbstractMessageConsumerManager implements
         this.interceptors = interceptors;
     }
 
+    public void setTransportAdapter(CloudServiceImplBase transportAdapter) {
+        this.transportAdapter = transportAdapter;
+    }
+
 //========================================
 // Lifecycle
 //----------------------------------------
 
-    public void start() throws IOException {
+    public CompletableFuture<Server> start() throws IOException {
         try (MDCCloseable mdc = MDC.putCloseable("prefix", RpcClientFactory.LOG_PREFIX)) {
-
-            MinionRSTransportAdapter adapter = new MinionRSTransportAdapter(
-                minionRpcStreamConnectionManager::startRpcStreaming,
-                this.outgoingMessageHandler,
-                this.incomingRpcHandler,
-                this::processSinkStreamingCall
-            );
-
-            BindableService service = adapter;
+            BindableService service = transportAdapter;
             if (!interceptors.isEmpty()) {
                 for (InterceptorFactory interceptorFactory : interceptors) {
                     service = interceptorFactory.create(service);
                 }
             }
-            grpcIpcServer.startServer(service);
             LOG.info("Added RPC/Sink Service to OpenNMS IPC Grpc Server");
+            return grpcIpcServer.startServer(service);
         }
     }
 
     public void shutdown() {
         closed.set(true);
-        rpcConnectionTracker.clear();
+        //rpcConnectionTracker.clear();
 
-        rpcRequestTracker.clear();
-        sinkModulesById.clear();
+        //rpcRequestTracker.clear();
         grpcIpcServer.stopServer();
         LOG.info("OpenNMS gRPC server stopped");
     }
@@ -224,78 +214,9 @@ public class OpennmsGrpcServer extends AbstractMessageConsumerManager implements
         this.rpcRequestTimeoutManager = rpcRequestTimeoutManager;
     }
 
-
-//========================================
-// Operations
-//----------------------------------------
-
-//========================================
-// Message Consumer Manager
-//----------------------------------------
-
-    @Override
-    protected void startConsumingForModule(SinkModule<?, Message> module) throws Exception {
-        if (sinkConsumersByModuleId.get(module.getId()) == null) {
-            int numOfThreads = getNumConsumerThreads(module);
-            ExecutorService executor = Executors.newFixedThreadPool(numOfThreads, sinkConsumerThreadFactory);
-            sinkConsumersByModuleId.put(module.getId(), executor);
-            LOG.info("Adding {} consumers for module: {}", numOfThreads, module.getId());
-        }
-        sinkModulesById.putIfAbsent(module.getId(), module);
-    }
-
-    @Override
-    protected void stopConsumingForModule(SinkModule<?, Message> module) throws Exception {
-
-        ExecutorService executor = sinkConsumersByModuleId.get(module.getId());
-        if (executor != null) {
-            executor.shutdownNow();
-        }
-        LOG.info("Stopped consumers for module: {}", module.getId());
-        sinkModulesById.remove(module.getId());
-    }
-
 //========================================
 // Internals
 //----------------------------------------
-
-    private StreamObserver<MinionToCloudMessage> processSinkStreamingCall(StreamObserver<Empty> responseObserver) {
-        return new StreamObserver<>() {
-
-            @Override
-            public void onNext(MinionToCloudMessage message) {
-                if (message.hasSinkMessage()) {
-                    SinkMessage sinkMessage = message.getSinkMessage();
-                    if (!Strings.isNullOrEmpty(sinkMessage.getModuleId())) {
-                        ExecutorService sinkModuleExecutor = sinkConsumersByModuleId.get(sinkMessage.getModuleId());
-                        if (sinkModuleExecutor != null) {
-                            sinkModuleExecutor.execute(() -> dispatchSinkMessage(sinkMessage));
-                        }
-                    }
-                } else {
-                    LOG.error("Unsupported message {}", message);
-                }
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                LOG.error("Error in sink streaming", throwable);
-            }
-
-            @Override
-            public void onCompleted() {
-
-            }
-        };
-    }
-
-    private void dispatchSinkMessage(SinkMessage sinkMessage) {
-        SinkModule<?, Message> sinkModule = sinkModulesById.get(sinkMessage.getModuleId());
-        if (sinkModule != null && sinkMessage.getContent() != null) {
-            Message message = sinkModule.unmarshal(sinkMessage.getContent().toByteArray());
-            dispatch(sinkModule, message);
-        }
-    }
 
     public void setIncomingRpcHandler(BiConsumer<RpcRequestProto, StreamObserver<RpcResponseProto>> handler) {
         this.incomingRpcHandler = handler;

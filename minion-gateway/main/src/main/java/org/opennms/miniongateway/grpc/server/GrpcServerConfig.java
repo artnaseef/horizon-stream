@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.BiConsumer;
+import org.opennms.cloud.grpc.minion.CloudServiceGrpc.CloudServiceImplBase;
 import org.opennms.cloud.grpc.minion.CloudToMinionMessage;
 import org.opennms.cloud.grpc.minion.Identity;
 import org.opennms.horizon.shared.grpc.common.GrpcIpcServer;
@@ -20,6 +21,8 @@ import org.opennms.horizon.shared.ipc.grpc.server.manager.MinionManager;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcConnectionTracker;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcRequestTimeoutManager;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.RpcRequestTracker;
+import org.opennms.horizon.shared.ipc.grpc.server.manager.adapter.MinionRSTransportAdapter;
+import org.opennms.horizon.shared.ipc.grpc.server.manager.adapter.SinkAdapter;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.impl.RpcRequestTimeoutManagerImpl;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.impl.RpcRequestTrackerImpl;
 import org.opennms.horizon.shared.ipc.grpc.server.manager.rpc.LocationIndependentRpcClientFactoryImpl;
@@ -100,17 +103,40 @@ public class GrpcServerConfig {
     }
 
     @Bean
+    public SinkAdapter sinkAdapter(
+        @Autowired TaskResultsKafkaForwarder taskResultsKafkaForwarder,
+        @Autowired HeartbeatKafkaForwarder heartbeatKafkaForwarder
+    ) throws Exception {
+        SinkAdapter sinkAdapter = new SinkAdapter();
+        sinkAdapter.registerConsumer(taskResultsKafkaForwarder);
+        sinkAdapter.registerConsumer(heartbeatKafkaForwarder);
+        return sinkAdapter;
+    }
+
+    @Bean
+    public CloudServiceImplBase transportAdapter(
+        @Autowired MinionRpcStreamConnectionManager minionRpcStreamConnectionManager,
+        @Autowired @Qualifier("minionToCloudRPCProcessor") IncomingRpcHandlerAdapter incomingRpcHandlerAdapter,
+        @Autowired @Qualifier("cloudToMinionMessageProcessor") BiConsumer<Identity, StreamObserver<CloudToMinionMessage>> cloudToMinionMessageProcessor,
+        @Autowired SinkAdapter sinkAdapter
+    ) {
+        MinionRSTransportAdapter adapter = new MinionRSTransportAdapter(
+            minionRpcStreamConnectionManager::startRpcStreaming,
+            cloudToMinionMessageProcessor,
+            incomingRpcHandlerAdapter,
+            (emptyStream) -> sinkAdapter
+        );
+        return adapter;
+    }
+
+    @Bean
     public OpennmsGrpcServer opennmsServer(
         @Autowired GrpcIpcServer serverBuilder,
+        @Autowired CloudServiceImplBase transportAdapter,
         @Autowired MinionManager minionManager,
         @Autowired RpcConnectionTracker rpcConnectionTracker,
         @Autowired RpcRequestTracker rpcRequestTracker,
         @Autowired LocationIndependentRpcClientFactory locationIndependentRpcClientFactory,
-        @Autowired MinionRpcStreamConnectionManager minionRpcStreamConnectionManager,
-        @Autowired @Qualifier("minionToCloudRPCProcessor") IncomingRpcHandlerAdapter incomingRpcHandlerAdapter,
-        @Autowired @Qualifier("cloudToMinionMessageProcessor") BiConsumer<Identity, StreamObserver<CloudToMinionMessage>> cloudToMinionMessageProcessor,
-        @Autowired TaskResultsKafkaForwarder taskResultsKafkaForwarder,
-        @Autowired HeartbeatKafkaForwarder heartbeatKafkaForwarder,
         @Autowired RpcRequestTimeoutManager rpcRequestTimeoutManager
     ) throws Exception {
 
@@ -118,16 +144,12 @@ public class GrpcServerConfig {
             new MeteringInterceptorFactory(metricRegistry)
         ));
 
+        server.setTransportAdapter(transportAdapter);
         server.setRpcConnectionTracker(rpcConnectionTracker);
         server.setRpcRequestTracker(rpcRequestTracker);
         server.setRpcRequestTimeoutManager(rpcRequestTimeoutManager);
         server.setMinionManager(minionManager);
         server.setLocationIndependentRpcClientFactory(locationIndependentRpcClientFactory);
-        server.setMinionRpcStreamConnectionManager(minionRpcStreamConnectionManager);
-        server.setIncomingRpcHandler(incomingRpcHandlerAdapter);
-        server.setOutgoingMessageHandler(cloudToMinionMessageProcessor);
-        server.registerConsumer(taskResultsKafkaForwarder);
-        server.registerConsumer(heartbeatKafkaForwarder);
 
         server.start();
         return server;

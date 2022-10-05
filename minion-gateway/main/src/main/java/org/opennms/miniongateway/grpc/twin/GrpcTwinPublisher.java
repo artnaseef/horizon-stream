@@ -78,11 +78,13 @@ public class GrpcTwinPublisher extends AbstractTwinPublisher {
                 LOG.debug("Sending sink update for key {} at all locations", twinResponseProto.getConsumerKey());
                 sinkStreamsByLocation.values().forEach(stream -> {
                     stream.onNext(twinResponseProto);
+                    stream.onCompleted();
                 });
             } else {
                 String location = twinResponseProto.getLocation();
                 sinkStreamsByLocation.get(location).forEach(stream -> {
                     stream.onNext(twinResponseProto);
+                    stream.onCompleted();
                     LOG.debug("Sending sink update for key {} at location {}", twinResponseProto.getConsumerKey(), twinResponseProto.getLocation());
                 });
             }

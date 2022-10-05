@@ -29,8 +29,10 @@
 package org.opennms.horizon.shared.grpc.common;
 
 import io.grpc.BindableService;
+import io.grpc.Server;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *  This Interface allows us to have a common Grpc Server for all IPC Services.
@@ -41,7 +43,7 @@ public interface GrpcIpcServer {
      * Starts server, this will not immediately start server but schedules server start after certain delay.
      *
      * @param bindableService The service that needs to be added */
-    void startServer(BindableService bindableService) throws IOException;
+    CompletableFuture<Server> startServer(BindableService bindableService) throws IOException;
 
     /**
      * Stops the Server.

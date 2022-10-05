@@ -30,6 +30,7 @@ package org.opennms.horizon.shared.grpc.common;
 
 import io.grpc.BindableService;
 import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
@@ -41,8 +42,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import org.opennms.horizon.shared.grpc.interceptor.DelegatingInterceptor;
@@ -56,7 +60,7 @@ public class GrpcIpcServerBuilder implements GrpcIpcServer {
 
     private Properties properties;
     private final List<ServerInterceptor> interceptors;
-    private NettyServerBuilder serverBuilder;
+    private ServerBuilder<?> serverBuilder;
     private Server server;
     private final int port;
     private final Duration delay;
@@ -80,9 +84,13 @@ public class GrpcIpcServerBuilder implements GrpcIpcServer {
         this.interceptors = interceptors;
     }
 
+    public void setServerBuilder(ServerBuilder<?> serverBuilder) {
+        this.serverBuilder = serverBuilder;
+    }
 
     @Override
-    public synchronized void startServer(BindableService bindableService) throws IOException {
+    public synchronized CompletableFuture<Server> startServer(BindableService bindableService) throws IOException {
+        CompletableFuture<Server> future = new CompletableFuture<>();
         initializeServerFromConfig();
 
         if (!services.contains(bindableService)) {
@@ -90,9 +98,10 @@ public class GrpcIpcServerBuilder implements GrpcIpcServer {
             services.add(bindableService);
         }
         if (!serverStartScheduled) {
-            startServerWithDelay(delay.toMillis());
+            startServerWithDelay(delay.toMillis(), future);
             serverStartScheduled = true;
         }
+        return future;
     }
 
     @Override
@@ -110,20 +119,21 @@ public class GrpcIpcServerBuilder implements GrpcIpcServer {
             boolean tlsEnabled = PropertiesUtils.getProperty(properties, GrpcIpcUtils.TLS_ENABLED, false);
 
             // Use DelegatingInterceptor below to allow the list of interceptors to change at runtime (consider, for example, OSGi-based plugins)
-            serverBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(this.port))
+            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(this.port))
                 .maxInboundMessageSize(maxInboundMessageSize)
                 .intercept(new DelegatingInterceptor(interceptors));
             if (tlsEnabled) {
                 SslContextBuilder sslContextBuilder = GrpcIpcUtils.getSslContextBuilder(properties);
                 if (sslContextBuilder != null) {
                     try {
-                        serverBuilder.sslContext(sslContextBuilder.build());
+                        nettyServerBuilder.sslContext(sslContextBuilder.build());
                         LOG.info("TLS enabled for Grpc IPC Server");
                     } catch (SSLException e) {
                         LOG.error("Couldn't initialize ssl context from {}", properties, e);
                     }
                 }
             }
+            serverBuilder = nettyServerBuilder;
         }
     }
 
@@ -132,11 +142,24 @@ public class GrpcIpcServerBuilder implements GrpcIpcServer {
         return properties;
     }
 
-    private void startServerWithDelay(long delay) {
-        executor.schedule(this::startServerNow, delay, TimeUnit.MILLISECONDS);
+    private void startServerWithDelay(long delay, CompletableFuture<Server> future) {
+        ScheduledFuture<Server> serverScheduledFuture = executor.schedule(this::startServerNow, delay, TimeUnit.MILLISECONDS);
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                return serverScheduledFuture.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).whenComplete((r, e) -> {
+            if (e != null) {
+                future.completeExceptionally(e);
+                return;
+            }
+            future.complete(r);
+        });
     }
 
-    private void startServerNow() {
+    private Server startServerNow() {
         server = serverBuilder.build();
         try {
             server.start();
@@ -144,5 +167,6 @@ public class GrpcIpcServerBuilder implements GrpcIpcServer {
         } catch (IOException e) {
             LOG.error("Exception while starting IPC Grpc Server", e);
         }
+        return server;
     }
 }
