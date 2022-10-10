@@ -128,21 +128,6 @@ public abstract class AbstractTwinPublisher implements TwinPublisher, TwinProvid
         return builder.build();
     }
 
-    protected TwinRequest mapTwinRequestProto(byte[] twinRequestBytes) {
-        TwinRequest twinRequest = new TwinRequest();
-        try {
-            TwinRequestProto twinRequestProto = TwinRequestProto.parseFrom(twinRequestBytes);
-            twinRequest.setKey(twinRequestProto.getConsumerKey());
-            if (!Strings.isNullOrEmpty(twinRequestProto.getLocation())) {
-                twinRequest.setLocation(twinRequestProto.getLocation());
-            }
-        } catch (InvalidProtocolBufferException e) {
-            LOG.warn("Failed to parse protobuf for the request", e);
-            throw new RuntimeException(e);
-        }
-        return twinRequest;
-    }
-
     public static String generateTracingOperationKey(String location, String key) {
         return location != null ? key + "@" + location : key;
     }
