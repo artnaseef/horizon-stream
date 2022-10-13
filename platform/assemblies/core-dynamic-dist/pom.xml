@@ -28,6 +28,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.opennms.horizon.shared</groupId>
+            <artifactId>osgi-config-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.karaf.features</groupId>
             <artifactId>framework</artifactId>
             <type>kar</type>
@@ -98,6 +104,9 @@
                     <startupFeatures>
                         <feature>eventadmin</feature>
                     </startupFeatures>
+                    <startupBundles>
+                        <bundle>mvn:org.opennms.horizon.shared/osgi-config-plugin/${project.version}</bundle>
+                    </startupBundles>
                     <bootFeatures>
                         <feature>wrap</feature>
                         <feature>shell</feature>
