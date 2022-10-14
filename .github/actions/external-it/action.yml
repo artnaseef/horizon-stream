@@ -19,9 +19,9 @@ runs:
         #kubectl -h
 
         # Install dependencies
-        brew install operator-sdk
-        operator-sdk
-        which operator-sdk
+        #brew install operator-sdk
+        #operator-sdk
+        #which operator-sdk
 
       shell: bash
 
