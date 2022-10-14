@@ -7,6 +7,7 @@ cat dev/kubernetes.kafka.yaml | \
 	    -e 's|image: opennms/horizon-stream-core\s*$|image: opennms/horizon-stream-core:local-basic|' \
 	    -e 's|image: opennms/horizon-stream-minion\s*$|image: opennms/horizon-stream-minion:local-basic|' \
 	    -e 's|image: opennms/horizon-stream-api\s*$|image: opennms/horizon-stream-api:local-basic|' \
+	    -e 's|image: opennms/horizon-stream-inventory\s*$|image: opennms/horizon-stream-inventory:local-basic|' \
 	    -e 's|image: opennms/horizon-stream-notification\s*$|image: opennms/horizon-stream-notification:local-basic|' \
 	    -e 's|image: opennms/horizon-stream-minion-gateway\s*$|image: opennms/horizon-stream-minion-gateway:local-basic|' \
 	    -e 's|image: opennms/horizon-stream-ui\s*$|image: opennms/horizon-stream-ui:local-basic|' \

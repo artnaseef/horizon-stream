@@ -17,6 +17,8 @@ kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace de
 kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-api 13050:5005 &
 kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-api 13080:9090 &
 kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/api-gateway 14080:80 &
+kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-notification 28050:5005 &
+kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-notification 28080:8080 &
 kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-notification 15050:5005 &
 kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-notification 15080:8080 &
 kubectl --context kind-kind port-forward --pod-running-timeout 1s --namespace default deployment/my-horizon-stream-ui 17080:80 &

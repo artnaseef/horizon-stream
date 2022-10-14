@@ -28,5 +28,6 @@ mvn clean install -f shared-lib
 mvn clean install -f minion-gateway
 mvn clean install -f minion
 mvn clean install -f rest-server
+mvn clean install -f inventory
 mvn clean install -f notifications
 mvn clean install -f platform
