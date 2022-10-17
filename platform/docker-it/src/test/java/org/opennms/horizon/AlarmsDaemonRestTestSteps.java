@@ -225,6 +225,7 @@ public class AlarmsDaemonRestTestSteps {
     public void textAcceptEncoding() throws Throwable {
         this.acceptEncoding = "text/plain";
     }
+    }
 
     @Given("^JSON content type$")
     public void jsonContentType() throws Throwable {
