@@ -28,6 +28,8 @@
         <module>minion-features</module>
         <module>docker-assembly</module>
         <module>assembly</module>
+
+        <module>docker-it</module>
     </modules>
 
     <properties>
