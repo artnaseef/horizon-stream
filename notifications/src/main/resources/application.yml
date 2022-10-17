@@ -21,6 +21,16 @@ spring:
   liquibase:
     change-log: db/changelog/changelog.xml
 
+keycloak:
+  realm: opennms
+  auth-server-url: http://onms-keycloak:8080/auth
+  ssl-required: none
+  resource: admin-cli
+  use-resource-role-mappings: true
+  bearer-only: true
+  cors: true
+  principal-attribute: preferred_username
+
 horizon:
   kafka:
     alarms:

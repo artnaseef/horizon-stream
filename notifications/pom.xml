@@ -17,7 +17,7 @@
 	<properties>
 		<java.version>11</java.version>
         <horizon.shared.lib.version>0.1.0-SNAPSHOT</horizon.shared.lib.version>
-        <keycloak.version>18.0.0</keycloak.version>
+        <keycloak.version>18.0.2</keycloak.version>
 	</properties>
 	<dependencies>
         <dependency>
@@ -92,8 +92,28 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.13.2.Final</version>
+        </dependency>
+        <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-security-adapter</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-adapter</artifactId>
             <version>${keycloak.version}</version>
         </dependency>
         <dependency>

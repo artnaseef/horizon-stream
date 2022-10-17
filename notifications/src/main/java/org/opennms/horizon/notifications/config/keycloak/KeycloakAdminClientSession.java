@@ -22,7 +22,6 @@ import org.opennms.horizon.notifications.config.keycloak.exception.KeycloakBaseE
 import org.opennms.horizon.notifications.config.keycloak.exception.KeycloakOperationException;
 import org.opennms.horizon.notifications.config.keycloak.refresh.RefreshTokenResponse;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

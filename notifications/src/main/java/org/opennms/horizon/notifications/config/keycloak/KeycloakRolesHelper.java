@@ -1,5 +1,11 @@
 package org.opennms.horizon.notifications.config.keycloak;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.RoleMappingResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.MappingsRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -26,12 +32,39 @@ public class KeycloakRolesHelper {
     String keycloakRealm;
 
     public List<String> getRoles(String username) {
-        List<String> roles = loadFromKeycloak(keycloakRealm, username);
-        for (String role : roles) {
-            LOG.warn("JH role="+ role);
-        }
-        return roles;
-        //return Arrays.asList("user");
+        Keycloak keycloak = KeycloakBuilder.builder()
+            .serverUrl("http://onms-keycloak:8080/auth")
+            .realm("master")
+            .grantType(OAuth2Constants.PASSWORD)
+            .username("keycloak-admin")
+            .password("admin")
+            .clientId("admin-cli")
+            //.clientSecret("-initial-admin")
+            .resteasyClient(new ResteasyClientBuilder()
+                .connectionPoolSize(10)
+                .build())
+            .build();
+
+        String userId = keycloak.realm("opennms")
+            .users()
+            .search(username)
+            .get(0)
+            .getId();
+
+        UserResource user = keycloak
+            .realm("opennms")
+            .users()
+            .get(userId);
+
+        RoleMappingResource roles = user.roles();
+
+        return Arrays.asList("user");
+
+//        List<String> roles = loadFromKeycloak(keycloakRealm, username);
+//        for (String role : roles) {
+//            LOG.warn("JH role="+ role);
+//        }
+//        return roles;
     }
 
     private List<String> loadFromKeycloak(String realm, String username) {

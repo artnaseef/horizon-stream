@@ -3,7 +3,6 @@ package org.opennms.horizon.notifications.config.keycloak;
 
 import org.opennms.horizon.notifications.config.keycloak.refresh.RefreshTokenOp;
 import org.opennms.horizon.notifications.config.keycloak.refresh.RefreshTokenResponse;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
 
