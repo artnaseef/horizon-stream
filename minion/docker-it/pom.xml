@@ -1,0 +1,315 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.opennms.horizon</groupId>
+        <artifactId>horizon-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>docker-it</artifactId>
+    <name>OpenNMS Horizon :: Docker IT</name>
+    <description>
+        Docker build-time, Black Box, System Integration Tests for the OpenNMS Horizon project.
+
+        The docker-maven-plugin is used to spin up containers with the Minion and dependencies, then exercise
+        Minion functionality.
+
+        Uses a mock of the Minion Gateway (GRPC server).
+    </description>
+
+    <properties>
+        <docker.image.tag>local</docker.image.tag>
+        <java.version>11</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.opennms.horizon.minion</groupId>
+            <artifactId>docker-assembly</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+            <version>${project.version}</version>
+            <!-- Exclude all transitive dependencies; this dependency is only needed for build order, to ensure the -->
+            <!--  docker image is built before building this module.                                                -->
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opennms.horizon.minion</groupId>
+            <artifactId>minion-gateway-wiremock-client</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+
+        <!--      -->
+        <!-- JAXB -->
+        <!--      -->
+        <!-- TODO: version in the parent / BOM -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources-filtered</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.9.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+
+            <!--         -->
+            <!--  DOCKER -->
+            <!--         -->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <configuration>
+                    <skip>${skipITs}</skip>
+                    <showLogs>true</showLogs>
+                    <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+                    <images>
+                        <!--                           -->
+                        <!-- MOCK MINION-GATEWAY IMAGE -->
+                        <!--                           -->
+                        <image>
+                            <name>mock-minion-gateway-it-image</name>
+                            <alias>minion-gateway</alias>
+                            <build>
+                                <from>opennms/horizon-stream-mock-minion-gateway:local</from>
+                            </build>
+                            <run>
+                                <env>
+                                    <JAVA_TOOL_OPTIONS>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005</JAVA_TOOL_OPTIONS>
+                                </env>
+                                <ports>
+                                    <port>mock-miniongateway.http.port:8080</port>
+                                    <port>mock-miniongateway.grpc.port:8990</port>
+                                </ports>
+                                <wait>
+                                    <log>Started MinionGatewayWiremockMain in .* seconds</log>
+                                    <time>120000</time>
+                                </wait>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>minion-docker-it-network</name>
+                                    <alias>minion-gateway</alias>
+                                </network>
+                            </run>
+                        </image>
+
+                        <!--                    -->
+                        <!-- APPLICATION IMAGE  -->
+                        <!--                    -->
+                        <image>
+                            <name>opennms-horizon-application-it-image</name>
+                            <alias>application</alias>
+                            <build>
+                                <from>opennms/horizon-stream-minion:${docker.image.tag}</from>
+                                <assembly>
+                                    <user>minion-poc</user>
+                                    <targetDir>/</targetDir>
+
+                                    <inline xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                            xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+                                            xsi:schemaLocation="
+                                             http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2
+                                             http://maven.apache.org/xsd/assembly-1.1.2.xsd
+                                             ">
+
+                                        <fileSets>
+                                            <fileSet>
+                                                <directory>${project.build.testOutputDirectory}/karaf/etc</directory>
+                                                <outputDirectory>/opt/karaf/etc</outputDirectory>
+                                            </fileSet>
+                                        </fileSets>
+                                    </inline>
+                                </assembly>
+                            </build>
+                            <run>
+                                <hostname>test-minion-001</hostname>
+                                <ports>
+                                    <port>karaf-ssh-port:8101</port>
+                                    <port>karaf-http-port:8181</port>
+                                    <!--<port>5005:5005</port>-->
+                                </ports>
+                                <env>
+                                    <LOCATION>Default</LOCATION>
+                                    <!-- Need to make sure address=* is in the DEBUG OPTS otherwise it listens on the container's localhost only -->
+                                    <JAVA_OPTS>-Djava.security.egd=file:/dev/./urandom
+                                        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+                                    </JAVA_OPTS>
+                                    <USE_KUBERNETES>false</USE_KUBERNETES>
+                                </env>
+                                <wait>
+                                    <log>Blueprint bundle org.opennms.horizon.minion.taskset-worker/.* has been started</log>
+                                    <time>300000</time>
+                                </wait>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>minion-docker-it-network</name>
+                                    <alias>minion</alias>
+                                </network>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-before-integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-after-integration-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--                -->
+            <!-- TEST EXECUTION -->
+            <!--                -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <executions>
+                    <execution>
+                        <id>horizon-integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+
+                    <!-- Fail the build on IT Failures.  Executed as a separate step so that post-integration-test -->
+                    <!--  phase executes even after an IT failure.                                                 -->
+                    <execution>
+                        <id>horizon-verify-it</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skipITs>${skipITs}</skipITs>
+                    <reuseForks>true</reuseForks>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <systemProperties>
+                        <property>
+                            <name>mock-miniongateway.base-url</name>
+                            <value>http://localhost:${mock-miniongateway.http.port}</value>
+                        </property>
+                        <property>
+                            <name>application.base-url</name>
+                            <value>http://localhost:${karaf-http-port}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
