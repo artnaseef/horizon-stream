@@ -25,7 +25,6 @@ set -e
 
 mvn clean install -f parent-pom
 mvn clean install -f shared-lib
-mvn clean install -f testtools/wiremocks/minion-gateway-wiremock
 
 mvn clean install -f minion-gateway
 mvn clean install -f minion

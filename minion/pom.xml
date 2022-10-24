@@ -29,6 +29,7 @@
         <module>docker-assembly</module>
         <module>assembly</module>
 
+        <module>testtools</module>
         <module>docker-it</module>
     </modules>
 
