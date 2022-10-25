@@ -28,9 +28,7 @@
 
 package org.opennms.horizon.core.monitor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.protobuf.Any;
 import org.opennms.icmp.contract.IcmpMonitorRequest;
 import org.opennms.horizon.core.monitor.taskset.LocationBasedTaskSetManager;
 import org.opennms.horizon.core.monitor.taskset.TaskSetManager;
@@ -48,7 +46,6 @@ import org.opennms.horizon.events.model.IEvent;
 import org.opennms.horizon.metrics.api.OnmsMetricsAdapter;
 
 import org.opennms.snmp.contract.SnmpMonitorRequest;
-import org.opennms.taskset.contract.TaskDefinition;
 import org.opennms.taskset.contract.TaskSet;
 import org.opennms.taskset.contract.TaskType;
 import org.opennms.taskset.service.api.TaskSetPublisher;
@@ -57,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -65,8 +61,6 @@ import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * TBD888: Rework still needed for task-set definitions, and general completeness

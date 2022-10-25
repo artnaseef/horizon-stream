@@ -1,4 +1,24 @@
 {
-  "type": "org.opennms.taskset.contract.TaskSet",
-  "content": "CnAKFjEyNy4wLjAuMS1pY21wLW1vbml0b3IYAiIKSUNNUFBsdWdpbioENTAwMDJCCjN0eXBlLmdvb2dsZWFwaXMuY29tL29wZW5ubXMuaWNtcC5JY21wTW9uaXRvclJlcXVlc3QSCwoJMTI3LjAuMC4xCnEKFjEyNy4wLjAuMS1zbm1wLW1vbml0b3IYAiILU05NUE1vbml0b3IqBDUwMDAyQgozdHlwZS5nb29nbGVhcGlzLmNvbS9vcGVubm1zLmljbXAuSWNtcE1vbml0b3JSZXF1ZXN0EgsKCTEyNy4wLjAuMQ==",
+  "taskDefinition": [
+    {
+      "id": "127.0.0.1-icmp-monitor",
+      "type": "MONITOR",
+      "pluginName": "ICMPPlugin",
+      "schedule": "5000",
+      "configuration": {
+        "@type": "type.googleapis.com/opennms.icmp.IcmpMonitorRequest",
+        "host": "127.0.0.1"
+      }
+    },
+    {
+      "id": "127.0.0.1-snmp-monitor",
+      "type": "MONITOR",
+      "pluginName": "SNMPMonitor",
+      "schedule": "5000",
+      "configuration": {
+        "@type": "type.googleapis.com/opennms.icmp.IcmpMonitorRequest",
+        "host": "127.0.0.1"
+      }
+    }
+  ]
 }
