@@ -59,7 +59,8 @@
         <feature>ipc-guava-internal</feature>
 
         <bundle>mvn:org.opennms.horizon.shared/protobuf/${project.version}</bundle>
-        <bundle>wrap:mvn:com.google.protobuf/protobuf-java-util/${protobuf.version}$overwrite=merge&amp;Import-Package=com.google.common.base;version=0.0.0</bundle>
+        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <bundle>wrap:mvn:com.google.protobuf/protobuf-java-util/${protobuf.version}$overwrite=merge&amp;Import-Package=com.google.common.base;version=0.0.0,com.google.common.io;version=0.0.0,com.google.common.math;version=0.0.0,com.google.common.primitives;version=0.0.0,com.google.gson;version=0.0.0,com.google.gson.stream;version=0.0.0,com.google.protobuf;version="[3.19,4)"</bundle>
     </feature>
 
     <feature name="ipc-minion" version="${project.version}">

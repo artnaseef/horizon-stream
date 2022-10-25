@@ -1,4 +1,14 @@
 {
-  "type": "org.opennms.taskset.contract.TaskSet",
-  "content": "CnAKFjEyNy4wLjAuMS1pY21wLW1vbml0b3IYAiIKSUNNUFBsdWdpbioENTAwMDJCCjN0eXBlLmdvb2dsZWFwaXMuY29tL29wZW5ubXMuaWNtcC5JY21wTW9uaXRvclJlcXVlc3QSCwoJMTI3LjAuMC4x"
+  "taskDefinition": [
+    {
+      "id": "127.0.0.1-icmp-monitor",
+      "type": "MONITOR",
+      "pluginName": "ICMPPlugin",
+      "schedule": "5000",
+      "configuration": {
+        "@type": "type.googleapis.com/opennms.icmp.IcmpMonitorRequest",
+        "host": "127.0.0.1"
+      }
+    }
+  ]
 }

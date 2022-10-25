@@ -21,7 +21,7 @@ Feature: Minion Basic Functionality
     Then MOCK send twin update for topic "task-set" at location "Default"
 
     # TBD888: REMOVE delay - use retries instead
-    Then delay 5000ms
+    Then delay 1000ms
 
     Then Send GET request to application at path "/ignite-worker/service-deployment/metrics?verbose=true"
     Then DEBUG dump the response body
@@ -29,3 +29,18 @@ Feature: Minion Basic Functionality
     Then verify JSON path expressions match
       | total == 1 |
       | serviceCount == 1 |
+
+  Scenario: Add another task to the Minion (via the Minion Gateway) and verify the task is deployed
+    Then delay 5000ms
+    Given MOCK twin update in resource file "/testdata/task-set.twin.002.json"
+    Then MOCK send twin update for topic "task-set" at location "Default"
+
+    # TBD888: REMOVE delay - use retries instead
+    Then delay 1000ms
+
+    Then Send GET request to application at path "/ignite-worker/service-deployment/metrics?verbose=true"
+    Then DEBUG dump the response body
+    Then parse the JSON response
+    Then verify JSON path expressions match
+      | total == 2 |
+      | serviceCount == 2 |
