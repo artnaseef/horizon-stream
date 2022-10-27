@@ -16,7 +16,6 @@ Feature: Minion Basic Functionality
     Then MOCK wait for minion connection with id "test-minion-001" and location "Default" timeout 30000ms
 
   Scenario: Add a task to the Minion (via the Minion Gateway) and verify the task is deployed
-    Then delay 5000ms
     Given MOCK twin update in resource file "/testdata/task-set.twin.001.json"
     Then MOCK send twin update for topic "task-set" at location "Default"
 
@@ -31,7 +30,6 @@ Feature: Minion Basic Functionality
       | serviceCount == 1 |
 
   Scenario: Add another task to the Minion (via the Minion Gateway) and verify the task is deployed
-    Then delay 5000ms
     Given MOCK twin update in resource file "/testdata/task-set.twin.002.json"
     Then MOCK send twin update for topic "task-set" at location "Default"
 
