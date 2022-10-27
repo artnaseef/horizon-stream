@@ -18,7 +18,6 @@
 
     <feature name="protobuf" version="${protobuf.version}">
         <bundle>mvn:com.google.protobuf/protobuf-java/${protobuf.version}</bundle>
-<!--        <bundle>mvn:com.google.guava/guava/30.1-jre</bundle>-->
     </feature>
 
     <feature name="grpc" version="${grpc.version}">
