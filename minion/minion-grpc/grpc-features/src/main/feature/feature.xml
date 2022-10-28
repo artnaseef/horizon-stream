@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <features name="minion-grpc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.6.0">
 
+    <repository>mvn:org.opennms.horizon.minion/ipc-features/${project.version}/xml/features</repository>
+
     <feature name="internal-grpc-metrics">
         <bundle>mvn:io.dropwizard.metrics/metrics-core/${dropwizard.metrics.version}</bundle>
     </feature>
@@ -16,9 +18,29 @@
         <bundle dependency="true">wrap:mvn:io.opentracing/opentracing-util/0.31.0</bundle>
     </feature>
 
-    <feature name="protobuf" version="${protobuf.version}">
-        <bundle>mvn:com.google.protobuf/protobuf-java/${protobuf.version}</bundle>
+    <feature name="minion-grpc-jackson-internal" version="${project.version}">
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
     </feature>
+
+    <feature name="minion-grpc-json-coreutils-internal" version="${project.version}">
+        <feature prerequisite="true">wrap</feature>
+        <feature>ipc-jackson-internal</feature>
+
+        <bundle>mvn:com.github.java-json-tools/msg-simple/${fgeMsgSimple.version}</bundle>
+        <bundle>mvn:com.github.java-json-tools/btf/${fgeBtf.version}</bundle>
+
+        <bundle>wrap:mvn:com.github.java-json-tools/jackson-coreutils/${jacksonCoreUtils.version}$overwrite=merge&amp;Import-Package=!javax.annotation,*</bundle>
+    </feature>
+
+    <feature name="minion-grpc-json-patch-internal" version="${project.version}">
+        <feature prerequisite="true">wrap</feature>
+        <feature>ipc-json-coreutils-internal</feature>
+
+        <bundle>wrap:mvn:com.github.java-json-tools/json-patch/${jsonPatch.version}$overwrite=merge&amp;Import-Package=!javax.annotation,*</bundle>
+    </feature>
+
 
     <feature name="grpc" version="${grpc.version}">
         <feature prerequisite="true">wrap</feature>
@@ -28,11 +50,6 @@
         <bundle>wrap:mvn:org.opennms.horizon.minion/shaded-grpc/${project.version}$overwrite=merge&amp;Karaf-Commands=none</bundle>
     </feature>
 
-    <feature name="grpc-ratelimitter" version="2.0.2">
-        <feature prerequisite="true">wrap</feature>
-        <bundle>wrap:mvn:com.swrve/rate-limited-logger/2.0.2$Bundle-SymbolicName=com.swrve.rate-limited-logger&amp;Bundle-Name=Rate Limited Logger</bundle>
-    </feature>
-
     <feature name="grpc-contract" version="2.0.2">
         <feature>protobuf</feature>
         <feature>grpc</feature>
@@ -40,12 +57,13 @@
     </feature>
 
     <feature name="grpc-minion" version="${project.version}">
+        <feature>ipc-minion</feature>
         <feature>aries-blueprint</feature>
 
         <feature>internal-grpc-metrics</feature>
         <feature>internal-grpc-opentracing</feature>
         <feature>internal-grpc-guava</feature>
-        <feature>grpc-ratelimitter</feature>
+        <feature>ipc-ratelimitter</feature>
         <feature>grpc-contract</feature>
         <feature>protobuf</feature>
 

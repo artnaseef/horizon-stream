@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <features name="minion-ipc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.6.0">
 
+    <repository>mvn:org.opennms.horizon.minion/observability-features/${project.version}/xml/features</repository>
+
     <feature name="ipc-guava-internal">
         <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle dependency="true">mvn:com.google.guava/failureaccess/1.0.1</bundle>
@@ -39,7 +41,7 @@
         <feature>observability-minion</feature>
         <feature>ipc-guava-internal</feature>
         <feature>protobuf</feature>
-        <feature>grpc-minion</feature>
+        <feature>ipc-ratelimitter</feature>
         <bundle>mvn:org.opennms.horizon.shared/horizon-common-logging/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.shared/ipc-api/${project.version}</bundle>
     </feature>
@@ -60,11 +62,16 @@
 
         <bundle>mvn:org.opennms.horizon.shared/protobuf/${project.version}</bundle>
         <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <bundle>mvn:com.google.protobuf/protobuf-java/${protobuf.version}</bundle>
         <bundle>wrap:mvn:com.google.protobuf/protobuf-java-util/${protobuf.version}$overwrite=merge&amp;Import-Package=com.google.common.base;version=0.0.0,com.google.common.io;version=0.0.0,com.google.common.math;version=0.0.0,com.google.common.primitives;version=0.0.0,com.google.gson;version=0.0.0,com.google.gson.stream;version=0.0.0,com.google.protobuf;version="[3.19,4)"</bundle>
     </feature>
 
+    <feature name="ipc-ratelimitter" version="2.0.2">
+        <feature prerequisite="true">wrap</feature>
+        <bundle>wrap:mvn:com.swrve/rate-limited-logger/2.0.2$Bundle-SymbolicName=com.swrve.rate-limited-logger&amp;Bundle-Name=Rate Limited Logger</bundle>
+    </feature>
+
     <feature name="ipc-minion" version="${project.version}">
-        <feature>grpc-minion</feature>
         <feature>protobuf</feature>
         <feature>ipc-jackson-internal</feature>
         <feature>ipc-json-patch-internal</feature>

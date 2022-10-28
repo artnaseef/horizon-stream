@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <features name="minion-taskset-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.6.0">
 
-    <repository>mvn:org.opennms.horizon.minion/ipc-features/${project.version}/xml/features</repository>
+    <repository>mvn:org.opennms.horizon.minion/grpc-features/${project.version}/xml/features</repository>
 
     <feature name="taskset-rest-utils-internal" version="${project.version}">
         <feature>cxf-jaxrs</feature>
@@ -26,7 +26,7 @@
     <feature name="taskset-worker-ignite-internal" version="${project.version}">
         <feature>aries-blueprint</feature>
         <feature>cxf-jackson</feature>
-        <feature>ipc-minion</feature>
+        <feature>grpc-minion</feature>
         <feature>observability-minion</feature>
         <feature>taskset-model</feature>
         <feature>taskset-ignite-core-internal</feature>
@@ -40,7 +40,7 @@
     </feature>
 
     <feature name="taskset-minion" version="${project.version}">
-        <feature>ipc-minion</feature>
+        <feature>grpc-minion</feature>
         <feature>observability-minion</feature>
         <feature>plugins-minion</feature>
         <feature>taskset-worker-ignite-internal</feature>
