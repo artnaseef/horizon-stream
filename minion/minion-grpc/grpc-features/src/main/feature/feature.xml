@@ -16,14 +16,14 @@
         <bundle dependency="true">wrap:mvn:io.opentracing/opentracing-util/0.31.0</bundle>
     </feature>
 
-    <feature name="protobuf" version="${protobuf.version}">
+    <feature name="grpc-protobuf" version="${protobuf.version}">
         <bundle>mvn:com.google.protobuf/protobuf-java/${protobuf.version}</bundle>
     </feature>
 
     <feature name="grpc" version="${grpc.version}">
         <feature prerequisite="true">wrap</feature>
         <feature>internal-grpc-guava</feature>
-        <feature>protobuf</feature>
+        <feature>grpc-protobuf</feature>
 
         <bundle>wrap:mvn:org.opennms.horizon.minion/shaded-grpc/${project.version}$overwrite=merge&amp;Karaf-Commands=none</bundle>
     </feature>
@@ -34,7 +34,7 @@
     </feature>
 
     <feature name="grpc-contract" version="2.0.2">
-        <feature>protobuf</feature>
+        <feature>grpc-protobuf</feature>
         <feature>grpc</feature>
         <bundle>mvn:org.opennms.horizon.shared/ipc-grpc-contract/${project.version}</bundle>
     </feature>
@@ -47,7 +47,7 @@
         <feature>internal-grpc-guava</feature>
         <feature>grpc-ratelimitter</feature>
         <feature>grpc-contract</feature>
-        <feature>protobuf</feature>
+        <feature>grpc-protobuf</feature>
 
         <bundle>mvn:org.opennms.horizon.shared/horizon-common-logging/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.shared/ipc-api/${project.version}</bundle>

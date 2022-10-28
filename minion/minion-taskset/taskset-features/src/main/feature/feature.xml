@@ -13,7 +13,7 @@
     </feature>
 
     <feature name="taskset-model" version="${project.version}">
-        <feature>protobuf</feature>
+        <feature>grpc-protobuf</feature>
     </feature>
 
     <feature name="taskset-scheduler-internal" version="${project.version}">
