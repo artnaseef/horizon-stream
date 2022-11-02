@@ -90,21 +90,22 @@ public class DeviceMonitorManager implements EventListener {
     private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(25, monitorThreadFactory);
 
     private final LocationBasedTaskSetManager locationBasedTaskSetManager = new LocationBasedTaskSetManager();
-    private final TaskSetPublisher taskSetIgniteClient;
+
+    private final TaskSetPublisher taskSetPublisher;
 
     public DeviceMonitorManager(EventSubscriptionService eventSubscriptionService,
                                 NodeDao nodeDao,
                                 IpInterfaceDao ipInterfaceDao,
                                 SessionUtils sessionUtils,
                                 OnmsMetricsAdapter metricsAdapter,
-                                TaskSetPublisher taskSetIgniteClient,
+                                TaskSetPublisher taskSetPublisher,
                                 MonitoringLocationDao locationDao) {
         this.eventSubscriptionService = eventSubscriptionService;
         this.nodeDao = nodeDao;
         this.ipInterfaceDao = ipInterfaceDao;
         this.sessionUtils = sessionUtils;
         this.metricsAdapter = metricsAdapter;
-        this.taskSetIgniteClient = taskSetIgniteClient;
+        this.taskSetPublisher = taskSetPublisher;
         this.monitoringLocationDao = locationDao;
     }
 
@@ -135,18 +136,18 @@ public class DeviceMonitorManager implements EventListener {
                 addPollIcmpTask(taskSetManager, onmsIpInterface.getIpAddress());
                 addPollSnmpTask(taskSetManager, onmsIpInterface.getIpAddress(), onmsNode.getSnmpCommunityString());
             });
+
+            TaskSet updatedTaskSet = locationBasedTaskSetManager.getManagerForLocation(locationName).getTaskSet();
+
+            // TODO: reduce log level to debug
+            LOG.info("Publishing task set for location: location={}; num-task={}",
+                locationName,
+                Optional.ofNullable(updatedTaskSet.getTaskDefinitionList()).map(Collection::size).orElse(0));
+
+            taskSetPublisher.publishTaskSet(locationName, updatedTaskSet);
         } catch (Exception e) {
             LOG.error("Exception while running monitors for device with Id : {}", onmsNode.getId(), e);
         }
-
-        TaskSet updatedTaskSet = locationBasedTaskSetManager.getManagerForLocation(locationName).getTaskSet();
-
-        // TODO: reduce log level to debug
-        LOG.info("Publishing task set for location: location={}; num-task={}",
-            locationName,
-            Optional.ofNullable(updatedTaskSet.getTaskDefinitionList()).map(Collection::size).orElse(0));
-
-        taskSetIgniteClient.publishTaskSet(locationName, updatedTaskSet);
     }
 
     private void addPollIcmpTask(TaskSetManager taskSetManager, InetAddress inetAddress) {

@@ -84,6 +84,7 @@
                                 <feature>horizon-core-config-rest</feature>
                                 <feature>horizon-core-traps</feature>
                                 <feature>horizon-stream-jmx</feature>
+                                <feature>horizon-task-set-client</feature>
                             </features>
                         </configuration>
                     </execution>

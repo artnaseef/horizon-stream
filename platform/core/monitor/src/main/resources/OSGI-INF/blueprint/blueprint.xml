@@ -32,12 +32,8 @@
     <reference id="nodeDao" interface="org.opennms.horizon.db.dao.api.NodeDao" />
     <reference id="ipInterfaceDao" interface="org.opennms.horizon.db.dao.api.IpInterfaceDao" />
     <reference id="minionDao" interface="org.opennms.horizon.db.dao.api.MinionDao"/>
-    <reference id="igniteClient" interface="org.apache.ignite.client.IgniteClient"/>
-    <reference id="igniteTaskSetClientFactory" interface="org.opennms.taskset.service.igniteclient.TaskSetIgnitePublisherFactory"/>
+    <reference id="taskSetGrpcClient" interface="org.opennms.taskset.service.api.TaskSetPublisher" filter="(type=grpc)"/>
 
-    <bean id="taskSetIgniteClient" factory-ref="igniteTaskSetClientFactory" factory-method="create">
-        <argument ref="igniteClient"/>
-    </bean>
     <reference id="monitoringLocationDao" interface="org.opennms.horizon.db.dao.api.MonitoringLocationDao" />
 
     <bean id="minionRpcMonitorManager" class="org.opennms.horizon.core.monitor.MinionRpcMonitorManager"
@@ -56,7 +52,7 @@
         <argument ref="ipInterfaceDao"/>
         <argument ref="sessionUtils"/>
         <argument ref="metricsAdapter"/>
-        <argument ref="taskSetIgniteClient"/>
+        <argument ref="taskSetGrpcClient"/>
         <argument ref="monitoringLocationDao"/>
     </bean>
 

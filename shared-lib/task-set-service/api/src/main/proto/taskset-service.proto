@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "taskSet.proto";
+
+package opennms.taskset.service;
+option java_multiple_files = true;
+option java_package = "org.opennms.taskset.service.contract";
+
+service TaskSetService {
+  rpc publishTaskSet(PublishTaskSetRequest) returns (PublishTaskSetResponse) {}
+}
+
+message PublishTaskSetRequest {
+  string location = 1;
+  opennms.taskset.TaskSet taskSet = 2;
+}
+
+message PublishTaskSetResponse {
+}

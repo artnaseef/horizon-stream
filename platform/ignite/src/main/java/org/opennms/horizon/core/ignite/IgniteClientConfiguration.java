@@ -4,6 +4,7 @@ import org.apache.ignite.client.ThinClientKubernetesAddressFinder;
 import org.apache.ignite.configuration.ClientConfiguration;
 import org.apache.ignite.kubernetes.configuration.KubernetesConnectionConfiguration;
 
+@Deprecated
 public class IgniteClientConfiguration {
 
     private final boolean useKubernetes;

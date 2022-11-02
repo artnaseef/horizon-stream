@@ -24,6 +24,7 @@
         <module>ipc</module>
         <module>provision</module>
         <module>datachoices</module>
+        <module>task-set-client</module>
 
         <module>assemblies</module>
         <module>docker-it</module>

@@ -3,6 +3,7 @@ package org.opennms.miniongateway.taskset;
 import org.apache.ignite.Ignite;
 import org.opennms.taskset.service.api.TaskSetPublisher;
 
+@Deprecated
 public class TaskSetIgniteReceiverServiceLifecycleManager {
     private final Ignite ignite;
     private final TaskSetIgniteReceiverService taskSetIgniteReceiverService;

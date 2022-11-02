@@ -139,6 +139,15 @@
         <bundle>mvn:org.opennms.core.ipc.twin.grpc/publisher/${project.version}</bundle>
     </feature>
 
+    <feature name="horizon-task-set-client" version="${project.version}" description="Task Set :: GRPC Client">
+        <feature>grpc</feature>
+        <feature>jackson</feature>
+
+        <bundle>mvn:org.opennms.horizon.shared/protobuf/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon.shared/task-set-service-api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon/task-set-client/${project.version}</bundle>
+    </feature>
+
     <feature name="horizon-echo-client" version="${project.version}" description="Horizon :: Echo Client">
         <feature>horizon-ignite</feature>
         <bundle>mvn:org.opennms.horizon.ipc/echo-ipc-client/${project.version}</bundle>
@@ -177,6 +186,7 @@
         <feature>horizon-shared-task-set-publisher</feature>
         <feature>horizon-core-camel</feature>
         <feature>horizon-echo-client</feature>
+        <feature>horizon-task-set-client</feature>
 
         <bundle>mvn:org.opennms.horizon.core/monitor/${project.version}</bundle>
 

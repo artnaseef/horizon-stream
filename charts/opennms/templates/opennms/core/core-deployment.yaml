@@ -96,6 +96,8 @@ spec:
                   key: password
             - name: PROMETHEUS_PUSHGATEWAY_URL
               value: "http://{{ .Values.Prometheus.PushGateway.ServiceName }}:{{ .Values.Prometheus.PushGateway.Port }}"
+            - name: TASK_SET_GRPC_HOST
+              value: "{{ .Values.OpenNMS.MinionGateway.ServiceName }}"
           volumeMounts:
             - name: config-volume
               mountPath: "/opt/horizon-stream/etc/org.opennms.horizon.alarmd.camel.cfg"
