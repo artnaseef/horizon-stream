@@ -28,6 +28,7 @@
 
     <modules>
         <module>ignite-detector</module>
+        <module>task-set-service</module>
         <module>ipc-grpc-server</module>
         <module>main</module>
     </modules>

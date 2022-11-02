@@ -4,6 +4,7 @@ import org.apache.ignite.client.IgniteClient;
 import org.opennms.taskset.service.api.TaskSetPublisher;
 import org.opennms.taskset.service.igniteclient.TaskSetIgnitePublisherFactory;
 
+@Deprecated
 public class TaskSetIgnitePublisherFactoryImpl implements TaskSetIgnitePublisherFactory {
     @Override
     public TaskSetPublisher create(IgniteClient igniteClient) {

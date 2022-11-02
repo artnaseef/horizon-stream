@@ -8,6 +8,7 @@ import org.opennms.taskset.service.model.LocatedTaskSet;
 
 import java.util.function.Consumer;
 
+@Deprecated
 public class TaskSetIgniteReceiverService implements Consumer<LocatedTaskSet>, Service {
     @SpringResource(resourceName = "ignite")
     private final transient Ignite ignite;

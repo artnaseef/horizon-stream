@@ -7,6 +7,7 @@ import org.opennms.taskset.service.model.LocatedTaskSet;
 
 import java.util.function.Consumer;
 
+@Deprecated
 public class TaskSetIgnitePublisherImpl implements TaskSetPublisher {
 
     private IgniteClient igniteClient;
