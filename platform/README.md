@@ -175,3 +175,12 @@ http.realm=keycloak
       * Enter a password (recommend `passw0rd`)
       * Uncheck the Temporary setting
       * Click "Set Password"
+
+## CONFIGURATION -- ENVIRONMENT VARIABLES
+
+| ENV VAR | Config File | Config Property Name | Default |
+| ------- | ----------- | -------------------- | ------- |
+| ``TASK_SET_GRPC_HOST`` | ``org.opennms.core.taskset.client`` | ``host`` | ``localhost`` |
+| ``TASK_SET_GRPC_PORT`` | ``org.opennms.core.taskset.client`` | ``port`` | ``8990`` |
+| ``TASK_SET_GRPC_TLS_ENABLED`` | ``org.opennms.core.taskset.client`` | ``tlsEnabled`` | ``false`` |
+| ``TASK_SET_GRPC_MAX_MESSAGE_SIZE`` | ``org.opennms.core.taskset.client`` | ``maxMessageSize`` | ``10485760`` |
