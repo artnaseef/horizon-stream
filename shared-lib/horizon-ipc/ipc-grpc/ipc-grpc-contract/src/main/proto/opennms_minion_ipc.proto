@@ -62,6 +62,14 @@ service CloudService {
   rpc MinionToCloudMessages (stream MinionToCloudMessage) returns (google.protobuf.Empty) {}
 }
 
+/**
+ * RpcRequestService
+ *  Request/Response pattern between non-streaming services.
+ */
+service RpcRequestService {
+  rpc request(minion.RpcRequestProto) returns (minion.RpcResponseProto) {}
+}
+
 message Identity {
   string system_id = 1;
   string location = 2;

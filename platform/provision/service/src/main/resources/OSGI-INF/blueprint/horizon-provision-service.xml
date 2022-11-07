@@ -19,7 +19,6 @@
   <reference id="nodeRepository" interface="org.opennms.horizon.repository.api.NodeRepository"/>
   <reference id="grpcServer" interface="org.opennms.horizon.ipc.rpc.api.RpcClientFactory"/>
   <reference id="entityScopeProvider" interface="org.opennms.horizon.core.configvars.EntityScopeProvider"/>
-  <reference id="igniteLocationAwareDetectorClient" interface="org.opennms.netmgt.provision.LocationAwareDetectorClient" filter="(type=ignite)"/>
 
   <bean id="provisioner" class="org.opennms.netmgt.provision.service.ProvisionerImpl">
     <argument ref="requisitionRepository"/>
@@ -54,9 +53,17 @@
     </property>
   </bean>
 
+  <!-- TEMPORARY STUB -->
+  <bean id="stubLocationAwareDetectorClient" class="org.opennms.netmgt.provision.stub.StubLocationAwareDetectorClient"/>
+  <service ref="stubLocationAwareDetectorClient" interface="org.opennms.netmgt.provision.LocationAwareDetectorClient">
+      <service-properties>
+          <entry key="type" value="stub"/>
+      </service-properties>
+  </service>
+
   <bean id="nodeScanner" class="org.opennms.netmgt.provision.scan.NodeScanner">
     <argument ref="provisionCamelContext"/>
-    <argument ref="igniteLocationAwareDetectorClient"/>
+    <argument ref="stubLocationAwareDetectorClient"/>
     <argument ref="foreignSourceRepository"/>
   </bean>
 

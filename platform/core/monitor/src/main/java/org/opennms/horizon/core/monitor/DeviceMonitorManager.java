@@ -91,8 +91,6 @@ public class DeviceMonitorManager implements EventListener {
     private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(25, monitorThreadFactory);
 
     private final TaskSetManagerUtil taskSetManagerUtil;
-    private final LocationBasedTaskSetManager locationBasedTaskSetManager = new LocationBasedTaskSetManager();
-
     private final TaskSetPublisher taskSetPublisher;
 
     public DeviceMonitorManager(EventSubscriptionService eventSubscriptionService,

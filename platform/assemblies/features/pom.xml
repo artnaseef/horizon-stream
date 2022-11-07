@@ -78,7 +78,6 @@
                                 <feature>camel-kafka</feature>
                                 <feature>camel-activemq</feature>
                                 <feature>horizon-metrics-prometheus</feature>
-                                <feature>horizon-ignite</feature>
                                 <feature>horizon-core-heartbeat</feature>
                                 <feature>horizon-core-monitor</feature>
                                 <feature>horizon-core-config-rest</feature>
