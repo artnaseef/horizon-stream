@@ -63,7 +63,11 @@
             <artifactId>task-set-service</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.opennms.horizon.minion.gateway</groupId>
+            <artifactId>rpc-request-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>

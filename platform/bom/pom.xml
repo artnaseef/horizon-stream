@@ -173,16 +173,6 @@
                 <artifactId>httpcore-osgi</artifactId>
                 <version>${httpcore.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.ignite</groupId>
-                <artifactId>ignite-core</artifactId>
-                <version>${ignite.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ignite</groupId>
-                <artifactId>ignite-kubernetes</artifactId>
-                <version>${ignite.version}</version>
-            </dependency>
             <!-- Mina -->
             <dependency>
                 <groupId>org.apache.mina</groupId>

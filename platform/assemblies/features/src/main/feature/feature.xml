@@ -148,18 +148,27 @@
         <bundle>mvn:org.opennms.horizon/task-set-client/${project.version}</bundle>
     </feature>
 
+    <feature name="horizon-rpc-request-client" version="${project.version}" description="RPC Request :: GRPC Client">
+        <feature>horizon-grpc</feature>
+        <feature>horizon-grpc-contract</feature>
+
+        <bundle>mvn:org.opennms.horizon.shared/ipc-api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.horizon/rpc-request-client/${project.version}</bundle>
+    </feature>
+
     <feature name="horizon-echo-client" version="${project.version}" description="Horizon :: Echo Client">
-        <feature>horizon-ignite</feature>
+        <feature>horizon-rpc-request-client</feature>
+
         <bundle>mvn:org.opennms.horizon.ipc/echo-ipc-client/${project.version}</bundle>
     </feature>
 
     <feature name="horizon-icmp-client" version="${project.version}" description="Horizon :: ICMP Client">
-        <feature>horizon-ignite</feature>
+        <feature>horizon-rpc-request-client</feature>
         <bundle>mvn:org.opennms.horizon.ipc/icmp-ipc-client/${project.version}</bundle>
     </feature>
 
     <feature name="horizon-snmp-client" version="${project.version}" description="Horizon :: SNMP Client">
-        <feature>horizon-ignite</feature>
+        <feature>horizon-rpc-request-client</feature>
         <bundle>mvn:org.opennms.horizon.ipc/snmp-ipc-client/${project.version}</bundle>
     </feature>
 
@@ -179,7 +188,6 @@
     <feature name="horizon-core-monitor" version="${project.version}">
         <feature>horizon-metrics-prometheus</feature>
         <feature>horizon-events</feature>
-        <feature>horizon-ignite</feature>
         <feature>horizon-db</feature>
         <feature>horizon-shared-lang</feature>
         <feature>horizon-shared-task-set-service</feature>
@@ -291,7 +299,6 @@
         <feature>horizon-grpc</feature>
         <feature>horizon-configvar-scopes</feature>
         <feature>3rdparty-bsf</feature>
-        <feature>provision-ignite</feature>
 
         <feature>opennms-activemq-client-fix</feature>
 
@@ -328,12 +335,6 @@
         <!--<bundle>mvn:org.opennms.horizon.provision/detector-smb/${project.version}</bundle>-->
     </feature>
 
-    <feature name="provision-ignite" version="${project.version}">
-        <feature>horizon-tracing</feature>
-        <feature>horizon-ignite</feature>
-
-        <bundle>mvn:org.opennms.horizon.provision/ignite-service/${project.version}</bundle>
-    </feature>
 
     <!--                -->
     <!-- HORIZON SHARED -->
@@ -345,7 +346,7 @@
     <feature name="horizon-shared-task-set-publisher" version="${project.version}">
         <feature version="${project.version}">horizon-shared-task-set-publisher-common</feature>
 
-        <bundle>mvn:org.opennms.horizon.shared/task-set-ignite-client/${project.version}</bundle>
+        <!--<bundle>mvn:org.opennms.horizon.shared/task-set-ignite-client/${project.version}</bundle>-->
     </feature>
 
     <feature name="horizon-shared-task-set-service" version="${project.version}">
@@ -355,7 +356,6 @@
 
     <feature name="horizon-shared-task-set-publisher-common" version="${project.version}">
         <feature>protobuf</feature>
-        <feature version="${project.version}">3rdparty-ignite</feature>
 
         <bundle>mvn:org.opennms.horizon.shared/protobuf/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon.shared/task-set-service-api/${project.version}</bundle>
@@ -521,28 +521,6 @@
     </feature>
 
 
-    <!--        -->
-    <!-- IGNITE -->
-    <!--        -->
-    <feature name="horizon-ignite" version="${project.version}">
-        <feature version="${project.version}">horizon-grpc-contract</feature>
-        <feature version="${project.version}">3rdparty-ignite</feature>
-        <feature version="${project.version}">horizon-shared-lang</feature>
-        <feature version="4.2.10">dropwizard-metrics-core-4.x</feature>
-        <feature>rate-limited-logger</feature>
-        <feature>horizon-tracing</feature>
-        <bundle dependency="true">mvn:org.opennms.horizon.shared/horizon-common-logging/${project.version}</bundle>
-
-        <bundle>mvn:org.opennms.horizon.shared/ipc-api/${project.version}</bundle>
-        <bundle>mvn:org.opennms.horizon/ignite/${project.version}</bundle>
-    </feature>
-
-    <feature name="3rdparty-ignite" version="${project.version}">
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-cache-api/1.0.0_1</bundle>
-        <bundle>mvn:org.opennms.horizon.3rdparty/ignite/${project.version}</bundle>
-    </feature>
-
-
     <!--             -->
     <!-- WORKAROUNDS -->
     <!--             -->
@@ -644,10 +622,10 @@
         <feature>horizon-grpc-contract</feature>
         <feature>snmp-snmp4j</feature>
         <feature>horizon-grpc</feature>
-        <feature>horizon-ignite</feature>
         <feature>horizon-shared-lang</feature>
         <feature>horizon-shared-task-set-service</feature>
         <feature>horizon-shared-task-set-publisher</feature>
+        <feature>horizon-task-set-client</feature>
         <bundle>mvn:org.opennms.horizon.shared/ipc-api/${project.version}</bundle>
         <bundle>mvn:org.opennms.horizon/taskset-manager/${project.version}</bundle>
         <bundle dependency="true">mvn:org.opennms.horizon.shared/horizon-common-logging/${project.version}</bundle>

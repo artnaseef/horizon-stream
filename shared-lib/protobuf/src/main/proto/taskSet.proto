@@ -30,6 +30,7 @@ syntax = "proto3";
 import "google/protobuf/any.proto";
 import "icmp.proto";
 import "snmp.proto";
+import "traps-config.proto";
 
 package opennms.taskset;
 option java_multiple_files = true;

@@ -116,7 +116,7 @@ public class MinionRpcMonitorManager implements EventListener {
                  LOG.error("Minion RPC Monitor: check for minion failed: id={}", minionId);
                  return;
              }
-             long responseTime = (System.nanoTime() / 1000000) - response.getTime();
+             long responseTime = (System.nanoTime() - response.getTime()) / 1000000;
              LOG.info("ECHO RESPONSE: node-id={}; node-location={}; duration={}ms", minionId, location, responseTime);
              updateMetrics(responseTime, new String[]{minionId, location});
          });

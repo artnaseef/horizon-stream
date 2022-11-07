@@ -41,7 +41,7 @@
         <argument ref="sessionUtils"/>
         <!--    Temp For testing only....-->
 
-        <argument ref="locationAwareDetectorClient"/>
+        <argument ref="stubLocationAwareDetectorClient"/>
     </bean>
 
 
@@ -56,5 +56,6 @@
 
 <!--    Temp For testing only....-->
 
-    <reference id="locationAwareDetectorClient" interface="org.opennms.netmgt.provision.LocationAwareDetectorClient" filter="(type=ignite)"/>
+    <!-- TEMPORARY STUB -->
+    <reference id="stubLocationAwareDetectorClient" interface="org.opennms.netmgt.provision.LocationAwareDetectorClient" filter="(type=stub)"/>
 </blueprint>

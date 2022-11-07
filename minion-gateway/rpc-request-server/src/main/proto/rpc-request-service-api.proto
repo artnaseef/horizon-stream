@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "opennms_minion_ipc.proto";
+
+package opennms.rpcrequest.service;
+option java_multiple_files = true;
+option java_package = "org.opennms.rpcrequest.service.contract";
+
+service RpcRequestService {
+  rpc request(minion.RpcRequestProto) returns (minion.RpcResponseProto) {}
+}

@@ -34,13 +34,8 @@
     <reference id="sessionUtils" interface="org.opennms.horizon.db.dao.api.SessionUtils" />
     <reference id="eventSubscriptionService" interface="org.opennms.horizon.events.api.EventSubscriptionService" availability="mandatory"/>
     <reference id="snmpHelper" interface="org.opennms.horizon.shared.snmp.SnmpHelper" />
-    <reference id="igniteClient" interface="org.apache.ignite.client.IgniteClient"/>
-    <reference id="igniteTaskSetClientFactory" interface="org.opennms.taskset.service.igniteclient.TaskSetIgnitePublisherFactory"/>
+    <reference id="taskSetGrpcClient" interface="org.opennms.taskset.service.api.TaskSetPublisher" filter="(type=grpc)"/>
     <reference id="taskSetManager" interface="org.opennms.horizon.taskset.manager.TaskSetManager"/>
-
-    <bean id="taskSetIgniteClient" factory-ref="igniteTaskSetClientFactory" factory-method="create">
-        <argument ref="igniteClient"/>
-    </bean>
 
     <bean id="trapSinkConsumer" class="org.opennms.horizon.traps.consumer.TrapSinkConsumer"
           init-method="init">
@@ -52,7 +47,7 @@
         <property name="sessionUtils" ref="sessionUtils"/>
         <property name="eventSubscriptionService" ref="eventSubscriptionService"/>
         <property name="snmpHelper" ref="snmpHelper"/>
-        <property name="taskSetPublisher" ref="taskSetIgniteClient"/>
+        <property name="taskSetPublisher" ref="taskSetGrpcClient"/>
         <property name="taskSetManager" ref="taskSetManager"/>
     </bean>
 
