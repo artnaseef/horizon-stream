@@ -327,8 +327,8 @@
                             <run>
                                 <env>
                                     <KAFKA_ADVERTISED_HOST_NAME>kafka-host</KAFKA_ADVERTISED_HOST_NAME>
-                                    <KAFKA_LISTENERS>CLIENT://kafka-host:9092,LOCALCLIENT://localhost:59092</KAFKA_LISTENERS>
-                                    <KAFKA_ADVERTISED_LISTENERS>CLIENT://kafka-host:9092,LOCALCLIENT://localhost:59092</KAFKA_ADVERTISED_LISTENERS>
+                                    <KAFKA_LISTENERS>LOCALCLIENT://:59092,CLIENT://:9092</KAFKA_LISTENERS>
+                                    <KAFKA_ADVERTISED_LISTENERS>LOCALCLIENT://localhost:59092,CLIENT://kafka-host:9092</KAFKA_ADVERTISED_LISTENERS>
                                     <KAFKA_LISTENER_SECURITY_PROTOCOL_MAP>CLIENT:PLAINTEXT,LOCALCLIENT:PLAINTEXT</KAFKA_LISTENER_SECURITY_PROTOCOL_MAP>
                                     <KAFKA_INTER_BROKER_LISTENER_NAME>CLIENT</KAFKA_INTER_BROKER_LISTENER_NAME>
                                 </env>
@@ -347,9 +347,38 @@
                             </run>
                         </image>
 
-                        <!--                    -->
+                        <!--                  -->
+                        <!-- KAFKA-REST IMAGE -->
+                        <!--                  -->
+                        <image>
+                            <name>kafka-rest-it-image</name>
+                            <alias>kafka-rest</alias>
+                            <build>
+                                <from>confluentinc/cp-kafka-rest:7.3.0</from>
+                            </build>
+                            <run>
+                                <env>
+                                    <KAFKA_REST_BOOTSTRAP_SERVERS>kafka-host:9092</KAFKA_REST_BOOTSTRAP_SERVERS>
+                                    <KAFKA_REST_LISTENERS>http://0.0.0.0:8080</KAFKA_REST_LISTENERS>
+                                </env>
+                                <ports>
+                                    <port>kafka-rest.port:8080</port>
+                                </ports>
+                                <wait>
+                                    <log>INFO Server started, listening for requests\.\.\. \(io.confluent.kafkarest.KafkaRestMain\)</log>
+                                    <time>60000</time>
+                                </wait>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>alarm-docker-it-network</name>
+                                    <alias>kafka-rest-host</alias>
+                                </network>
+                            </run>
+                        </image>
+
+                        <!--                          -->
                         <!-- ALARM APPLICATION IMAGE  -->
-                        <!--                    -->
+                        <!--                          -->
                         <image>
                             <name>opennms-horizon-application-it-image</name>
                             <alias>alarm-application</alias>
@@ -447,6 +476,10 @@
                     <property>
                         <name>kafka.bootstrap-servers</name>
                         <value>localhost:${kafka.port}</value>
+                    </property>
+                    <property>
+                        <name>kafka-rest.url</name>
+                        <value>http://localhost:${kafka-rest.port}</value>
                     </property>
                 </systemProperties>
                 </configuration>
