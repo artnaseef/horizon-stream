@@ -27,6 +27,9 @@
  *******************************************************************************/
 package org.opennms.horizon.inventory.grpc;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Int64Value;
@@ -56,10 +59,12 @@ import org.opennms.horizon.inventory.service.taskset.DetectorTaskSetService;
 import org.opennms.horizon.inventory.service.taskset.ScannerTaskSetService;
 import org.opennms.taskset.contract.ScanType;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
@@ -76,7 +81,7 @@ public class NodeGrpcServiceTest {
     private StreamObserver<Int64Value> mockInt64ValueStreamObserver;
     private StreamObserver<BoolValue> mockBoolValueStreamObserver;
     private ExecutorService mockExecutorService;
-    private Logger mockLogger;
+    // private Logger mockLogger;
 
     private NodeGrpcService target;
 
@@ -89,6 +94,9 @@ public class NodeGrpcServiceTest {
     private MonitoringLocation testMonitoringLocation;
     private Optional<String> testTenantIdOptional;
     private List<NodeDTO> testNodeDTOList;
+
+    private ch.qos.logback.core.Appender mockLogbackAppender;
+
 
     @BeforeEach
     void setUp() {
@@ -126,7 +134,8 @@ public class NodeGrpcServiceTest {
         mockInt64ValueStreamObserver = Mockito.mock(StreamObserver.class);
         mockBoolValueStreamObserver = Mockito.mock(StreamObserver.class);
         mockExecutorService = Mockito.mock(ExecutorService.class);
-        mockLogger = Mockito.mock(Logger.class);
+        // mockLogger = Mockito.mock(Logger.class);
+        mockLogbackAppender = Mockito.mock(Appender.class);
 
         target =
             new NodeGrpcService(
@@ -141,6 +150,15 @@ public class NodeGrpcServiceTest {
         // Common test interactions
         //
         Mockito.when(mockTenantLookup.lookupTenantId(Mockito.any(Context.class))).thenReturn(testTenantIdOptional);
+
+        // TBD999
+        // TBD999 - BETTER CODE STRUCTURE
+        // TBD999
+        Logger logger = LoggerFactory.getLogger(NodeGrpcService.class);
+        if (logger instanceof ch.qos.logback.classic.Logger) {
+            ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) logger;
+            logbackLogger.addAppender(mockLogbackAppender);
+        }
     }
 
     /**
@@ -247,11 +265,44 @@ public class NodeGrpcServiceTest {
         Mockito.doThrow(testException).when(mockDetectorTaskSetService).sendDetectorTasks(testNode);
 
         // Execute
-        target.setLOG(mockLogger);
+        // target.setLOG(mockLogger);
         runnable.run();
 
         // Verify
-        Mockito.verify(mockLogger).error("Error while sending detector task for node with label {}", "x-node-label-x", testException);
+        // Mockito.verify(mockLogger).error("Error while sending detector task for node with label {}", "x-node-label-x", testException);
+        // appenderArray[i] = {ch.qos.logback.core.Appender$MockitoMock$wEnOm6cA@4495} "Mock for Appender, hashCode: 1843459456"
+        // e: java.lang.Object  = {ch.qos.logback.classic.spi.LoggingEvent@4482} "[ERROR] Error while sending detector task for node with label x-node-label-x"
+        LoggingEvent loggingEvent = new LoggingEvent();
+        // Mockito.verify(mockLogbackAppender).doAppend(
+        //     "[ERROR] Error while sending detector task for node with label x-node-label-x");
+
+        Mockito.verify(mockLogbackAppender).doAppend(
+            Mockito.argThat(new ArgumentMatcher<LoggingEvent>() {
+                @Override
+                public boolean matches(LoggingEvent argument) {
+                        System.out.println("TBD999 level = " + argument.getLevel() + ", " + argument.getLevel().getClass().getName());
+                        System.out.println("TBD999 message = " + argument.getMessage());
+                        System.out.println("TBD999 argument array size = " + argument.getArgumentArray().length);
+                        /*
+                        ch.qos.logback.classic.Level
+                         */
+                    if (argument.getLevel() == ch.qos.logback.classic.Level.ERROR) {
+                        System.out.println("TBD999 BBB");
+                        if (argument.getMessage().equals("Error while sending detector task for node with label {}")) {
+                            if (argument.getArgumentArray().length == 1) {
+                                if (Objects.equals(argument.getArgumentArray()[0], "x-node-label-x")) {
+                                    if (Objects.equals(argument.getThrowableProxy().getMessage(), "x-test-exception-x")) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }
+            })
+        );
+
         Mockito.verifyNoInteractions(mockScannerTaskSetService);
     }
 
